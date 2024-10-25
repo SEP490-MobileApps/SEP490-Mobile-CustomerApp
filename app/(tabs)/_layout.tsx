@@ -1,59 +1,84 @@
-import React from 'react';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Link, Tabs } from 'expo-router';
-import { Pressable } from 'react-native';
-
-import Colors from '@/constants/Colors';
-import { useColorScheme } from '@/components/useColorScheme';
-import { useClientOnlyValue } from '@/components/useClientOnlyValue';
-
-// You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>['name'];
-  color: string;
-}) {
-  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
-}
+import {
+  Entypo,
+  FontAwesome,
+  FontAwesome5,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
+import { Tabs } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        // Disable the static render of the header on web
-        // to prevent a hydration error in React Navigation v6.
-        headerShown: useClientOnlyValue(false, true),
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Tab One',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          headerRight: () => (
-            <Link href="/modal" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name="info-circle"
-                    size={25}
-                    color={Colors[colorScheme ?? 'light'].text}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
-          ),
+    <>
+      <Tabs
+        screenOptions={{
+          tabBarShowLabel: false,
+          tabBarActiveTintColor: "#3F72AF",
+          tabBarInactiveTintColor: "#6C757D",
+          tabBarStyle: { height: 60, backgroundColor: "#DBE2EF" },
+          headerStyle: { backgroundColor: "#4072AF" },
+          headerTintColor: "white",
+          headerTitleAlign: "center",
         }}
-      />
-      <Tabs.Screen
-        name="two"
-        options={{
-          title: 'Tab Two',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-        }}
-      />
-    </Tabs>
+      >
+        <Tabs.Screen
+          name="index" // Tệp index.tsx trong (tabs) sẽ đại diện cho tab Home
+          options={{
+            title: "Trang chủ",
+            headerShown: true,
+            tabBarIcon: ({ color, focused }) =>
+              focused ? (
+                <Entypo name="home" size={20} color={color} />
+              ) : (
+                <MaterialCommunityIcons
+                  name="home-outline"
+                  size={20}
+                  color={color}
+                />
+              ),
+          }}
+        />
+        <Tabs.Screen
+          name="StoreScreen" // Tệp StoreScreen.tsx đại diện cho tab Store
+          options={{
+            title: "Cửa hàng",
+            headerShown: true,
+            tabBarIcon: ({ color, focused }) =>
+              focused ? (
+                <FontAwesome5 name="store" size={15} color={color} />
+              ) : (
+                <FontAwesome5 name="store-alt" size={15} color={color} />
+              ),
+          }}
+        />
+        <Tabs.Screen
+          name="ChatScreen" // Tệp ChatScreen.tsx đại diện cho tab Chat
+          options={{
+            title: "Trò chuyện",
+            headerShown: true,
+            tabBarIcon: ({ color, focused }) =>
+              focused ? (
+                <FontAwesome name="comments" size={20} color={color} />
+              ) : (
+                <FontAwesome name="comments-o" size={20} color={color} />
+              ),
+          }}
+        />
+        <Tabs.Screen
+          name="ProfileScreen" // Tệp ProfileScreen.tsx đại diện cho tab Profile
+          options={{
+            title: "Hồ sơ",
+            headerShown: true,
+            tabBarIcon: ({ color, focused }) =>
+              focused ? (
+                <FontAwesome5 name="user-alt" size={20} color={color} />
+              ) : (
+                <FontAwesome5 name="user" size={20} color={color} />
+              ),
+          }}
+        />
+      </Tabs>
+      <StatusBar backgroundColor="#4072AF" style="light" />
+    </>
   );
 }
