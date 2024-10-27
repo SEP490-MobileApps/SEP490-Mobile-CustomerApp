@@ -14,7 +14,6 @@ import { GlobalProvider } from "../context/GlobalProvider";
 
 export { ErrorBoundary } from "expo-router";
 
-// Đặt route mặc định ban đầu là "(auth)"
 export const unstable_settings = {
   initialRouteName: "(auth)",
 };
@@ -67,6 +66,22 @@ function RootLayoutNav() {
               <Stack.Screen
                 name="(tabs)"
                 options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="ServicePackage/[id]" // Thay đổi đường dẫn tại đây
+                options={{
+                  title: 'Chi tiết gói dịch vụ',
+                  headerStyle: { backgroundColor: '#3F72AF' },
+                  headerTintColor: '#FFF',
+                }}
+              />
+              <Stack.Screen
+                name="ServicePackageContract"
+                options={{
+                  title: 'Chỉnh sửa chi tiết hợp đồng',
+                  headerStyle: { backgroundColor: '#3F72AF' },
+                  headerTintColor: '#FFF',
+                }}
               />
             </Stack>
           </GestureHandlerRootView>

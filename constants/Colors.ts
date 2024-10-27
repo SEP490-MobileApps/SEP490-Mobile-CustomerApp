@@ -17,3 +17,18 @@ export default {
     tabIconSelected: tintColorDark,
   },
 };
+
+// constants/colors.ts
+
+export const COLORS = {
+  pay: '#FFEB3B',
+  free: '#2196F3',
+  newRequest: '#DBE2EF',
+  inProgress: '#FFB74D',
+  completed: '#4CAF50',
+  canceled: '#E57373',
+  primaryText: '#3F72AF',
+  link: '#5185C0',
+  divider: '#CCC',
+};
+
