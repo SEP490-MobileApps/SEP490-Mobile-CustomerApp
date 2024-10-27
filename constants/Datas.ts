@@ -2,6 +2,54 @@ import { ServicePackage } from '../models/ServicePackage';
 import { Review } from '../models/Review';
 import { RepairRequest } from '../models/RepairRequest';
 import { Customer } from '../models/Customer';
+import { Product } from '../models/Product';
+
+export const products: Product[] = [
+  {
+    ProductId: "P001",
+    Name: "Ổ Cắm 3 Lỗ",
+    Description: "Ổ cắm điện với 3 lỗ cắm tiện lợi.",
+    ImageUrl: "https://cdn.pixabay.com/photo/2016/04/01/12/05/socket-1300518_960_720.png",
+    In_Of_Stock: 10,
+    WarrantyMonths: 12,
+    Status: true,
+    Price: 20000, // Giá hiện tại của sản phẩm
+  },
+  {
+    ProductId: "P002",
+    Name: "Chuông cửa",
+    Description: "Chuông cửa điện tử thông minh.",
+    ImageUrl: "https://png.pngtree.com/png-vector/20240518/ourmid/pngtree-smart-camera-doorbell-enhanced-home-security-solution-png-image_12491911.png",
+    In_Of_Stock: 5,
+    WarrantyMonths: 24,
+    Status: true,
+    Price: 300000, // Giá hiện tại của sản phẩm
+  },
+
+  {
+    ProductId: "P003",
+    Name: "Dây điện nhựa",
+    Description: "Dây điện nhựa cao cấp",
+    ImageUrl: "https://png.pngtree.com/png-clipart/20231101/original/pngtree-coil-of-a-wire-pipe-photo-png-image_13474160.png",
+    In_Of_Stock: 8,
+    WarrantyMonths: 24,
+    Status: true,
+    Price: 45000, // Giá hiện tại của sản phẩm
+  },
+
+  {
+    ProductId: "P004",
+    Name: "Máy nước nóng cao cấp",
+    Description: "Máy nước nóng cao cấp",
+    ImageUrl: "https://daihiep.com/wp-content/uploads/2019/10/REI-A450AP-WB.png",
+    In_Of_Stock: 2,
+    WarrantyMonths: 6,
+    Status: true,
+    Price: 2000000, // Giá hiện tại của sản phẩm
+  },
+
+
+];
 
 export const customers: Customer[] = [
   {

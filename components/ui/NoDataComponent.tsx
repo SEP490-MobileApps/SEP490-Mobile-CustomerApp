@@ -1,5 +1,6 @@
+// components/ui/NoDataComponent.tsx
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, Dimensions } from 'react-native';
 
 interface NoDataComponentProps {
   imageUrl: any; // Để hỗ trợ require() hoặc URL từ Internet
@@ -17,25 +18,32 @@ const NoDataComponent: React.FC<NoDataComponentProps> = ({ imageUrl, title, desc
   );
 };
 
+const { width } = Dimensions.get('window');
+
 const styles = StyleSheet.create({
   container: {
+    flex: 1, // Chiếm toàn bộ không gian để căn giữa
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
   },
   image: {
-    width: 100,
-    height: 100,
-    marginBottom: 10,
+    width: width * 0.4, // Kích thước ảnh chiếm 40% chiều rộng màn hình
+    height: width * 0.4,
+    marginBottom: 20,
   },
   title: {
-    fontSize: 18,
+    fontSize: 24, // Tăng kích thước font cho tiêu đề
     fontWeight: 'bold',
-    marginBottom: 5,
+    marginBottom: 10,
+    textAlign: 'center', // Căn giữa văn bản
+    color: '#3F72AF',
   },
   description: {
-    fontSize: 14,
+    fontSize: 16, // Tăng kích thước font cho mô tả
     color: '#6c757d',
+    textAlign: 'center', // Căn giữa văn bản
+    width: '80%', // Giới hạn chiều rộng để tránh văn bản tràn ra ngoài
   },
 });
 

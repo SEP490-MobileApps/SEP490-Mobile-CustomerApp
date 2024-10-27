@@ -6,7 +6,6 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useCallback, useEffect } from "react";
 import "react-native-reanimated";
-
 import { NativeBaseProvider } from "native-base";
 import { useColorScheme } from "../components/useColorScheme";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -18,11 +17,9 @@ export const unstable_settings = {
   initialRouteName: "(auth)",
 };
 
-// Ngăn splash screen biến mất trước khi các asset được tải
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  // Tải font
   const [loaded, error] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
     ...FontAwesome.font,
@@ -36,7 +33,6 @@ export default function RootLayout() {
     onLayoutRootView();
   }, []);
 
-  // Hàm ẩn splash screen khi các asset đã tải xong
   const onLayoutRootView = useCallback(async () => {
     if (loaded) {
       await SplashScreen.hideAsync();
@@ -68,7 +64,7 @@ function RootLayoutNav() {
                 options={{ headerShown: false }}
               />
               <Stack.Screen
-                name="ServicePackage/[id]" // Thay đổi đường dẫn tại đây
+                name="ServicePackage/[id]"
                 options={{
                   title: 'Chi tiết gói dịch vụ',
                   headerStyle: { backgroundColor: '#3F72AF' },
@@ -79,6 +75,14 @@ function RootLayoutNav() {
                 name="ServicePackageContract"
                 options={{
                   title: 'Chỉnh sửa chi tiết hợp đồng',
+                  headerStyle: { backgroundColor: '#3F72AF' },
+                  headerTintColor: '#FFF',
+                }}
+              />
+              <Stack.Screen
+                name="ProductDetail/[id]"
+                options={{
+                  title: 'Chi tiết sản phẩm',
                   headerStyle: { backgroundColor: '#3F72AF' },
                   headerTintColor: '#FFF',
                 }}
