@@ -9,12 +9,12 @@ import "react-native-reanimated";
 import { NativeBaseProvider } from "native-base";
 import { useColorScheme } from "../components/useColorScheme";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { GlobalProvider } from "../context/GlobalProvider";
+import { GlobalProvider } from "../contexts/GlobalProvider";
 
 export { ErrorBoundary } from "expo-router";
 
 export const unstable_settings = {
-  initialRouteName: "(auth)",
+  initialRouteName: "(tabs)",
 };
 
 SplashScreen.preventAutoHideAsync();
@@ -54,7 +54,7 @@ function RootLayoutNav() {
       <NativeBaseProvider>
         <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
           <GestureHandlerRootView style={{ flex: 1 }}>
-            <Stack initialRouteName="(auth)">
+            <Stack initialRouteName="(tabs)">
               <Stack.Screen
                 name="(auth)"
                 options={{ headerShown: false }}
@@ -85,6 +85,15 @@ function RootLayoutNav() {
                   title: 'Chi tiết sản phẩm',
                   headerStyle: { backgroundColor: '#3F72AF' },
                   headerTintColor: '#FFF',
+                }}
+              />
+              <Stack.Screen
+                name="CartScreen"  // Thêm CartScreen vào Stack
+                options={{
+                  title: 'Giỏ hàng',
+                  headerStyle: { backgroundColor: '#3F72AF' },
+                  headerTintColor: '#FFF',
+                  headerTitleAlign: "center",
                 }}
               />
             </Stack>

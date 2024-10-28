@@ -1,4 +1,4 @@
-// context/GlobalProvider.tsx
+// contexts/GlobalProvider.tsx
 import React, { createContext, useState, ReactNode } from "react";
 
 const GlobalContext = createContext({});

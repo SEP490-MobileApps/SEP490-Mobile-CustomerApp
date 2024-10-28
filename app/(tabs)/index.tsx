@@ -1,14 +1,54 @@
 // app/(tabs)/index.tsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, ScrollView, Image } from 'react-native';
 import { Box, Icon, Badge } from 'native-base';
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import RecentRepairs from '../../components/home/RecentRepairs';
 import ServicePackages from '../../components/home/ServicePackages';
 import CustomerReviews from '../../components/home/CustomerReviews';
+import FloatButton from '../../components/ui/FloatButton';
+import LeaderContactModal from '../../components/home/LeaderContactModal';
+
+type LeaderInfo = {
+  name: string;
+  phoneNumber: string;
+  avatarUrl: string;
+};
+
+// Giả sử lấy thông tin leader từ API
+const fetchLeaderInfo = async (): Promise<LeaderInfo> => {
+  return {
+    name: "Võ Hoàng Vũ",
+    phoneNumber: "0898901823",
+    avatarUrl: "https://www.pngplay.com/wp-content/uploads/12/User-Avatar-Profile-PNG-Photos.png",
+  };
+};
 
 function HomeScreen(): React.JSX.Element {
   const notificationsCount = 2;
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [leaderInfo, setLeaderInfo] = useState<LeaderInfo | null>(null);
+
+  useEffect(() => {
+    const getLeaderInfo = async () => {
+      const data = await fetchLeaderInfo();
+      setLeaderInfo(data);
+    };
+    getLeaderInfo();
+  }, []);
+
+  const handleFloatButtonPress = () => {
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+  };
+
+  const handleContactPress = () => {
+    console.log('Liên hệ với leader');
+    setModalOpen(false);
+  };
 
   return (
     <View style={styles.container}>
@@ -62,6 +102,22 @@ function HomeScreen(): React.JSX.Element {
         {/* Phần đánh giá từ khách hàng */}
         <CustomerReviews />
       </ScrollView>
+
+      {/* Nút Float Button với icon tùy chỉnh */}
+      <FloatButton
+        onPress={handleFloatButtonPress}
+        icon={<Icon as={FontAwesome5} name="phone" size="md" color="#DBE2EF" />}
+      />
+
+      {/* Modal thông tin liên hệ */}
+      {leaderInfo && (
+        <LeaderContactModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          leader={leaderInfo}
+          onContactPress={handleContactPress}
+        />
+      )}
     </View>
   );
 }

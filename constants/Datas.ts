@@ -8,7 +8,7 @@ export const products: Product[] = [
   {
     ProductId: "P001",
     Name: "Ổ Cắm 3 Lỗ",
-    Description: "Ổ cắm điện với 3 lỗ cắm tiện lợi.",
+    Description: `Ổ cắm 3 lỗ là thiết bị điện tiện dụng, cho phép kết nối nhiều thiết bị cùng lúc. Với thiết kế nhỏ gọn, chất liệu nhựa cách điện bền bỉ, và khả năng chịu tải cao, ổ cắm này phù hợp cho nhiều loại phích cắm khác nhau. Nó cũng có tính năng bảo vệ quá tải, đảm bảo an toàn khi sử dụng`,
     ImageUrl: "https://cdn.pixabay.com/photo/2016/04/01/12/05/socket-1300518_960_720.png",
     In_Of_Stock: 10,
     WarrantyMonths: 12,
@@ -18,7 +18,7 @@ export const products: Product[] = [
   {
     ProductId: "P002",
     Name: "Chuông cửa",
-    Description: "Chuông cửa điện tử thông minh.",
+    Description: "Thiết bị báo hiệu khi có khách đến, với âm thanh rõ ràng và thiết kế hiện đại. Chuông cửa dễ lắp đặt và sử dụng, có thể kết nối không dây hoặc có dây tùy theo nhu cầu. Một số mẫu còn tích hợp camera để quan sát và ghi hình, tăng cường an ninh cho ngôi nhà của bạn.",
     ImageUrl: "https://png.pngtree.com/png-vector/20240518/ourmid/pngtree-smart-camera-doorbell-enhanced-home-security-solution-png-image_12491911.png",
     In_Of_Stock: 5,
     WarrantyMonths: 24,
@@ -29,7 +29,7 @@ export const products: Product[] = [
   {
     ProductId: "P003",
     Name: "Dây điện nhựa",
-    Description: "Dây điện nhựa cao cấp",
+    Description: "Dây điện bọc nhựa cách điện, chịu nhiệt tốt, an toàn cho các công trình điện dân dụng và công nghiệp. Dây điện nhựa có nhiều loại kích thước và màu sắc khác nhau, phù hợp với nhiều mục đích sử dụng. Chất liệu nhựa bền bỉ giúp bảo vệ lõi dây khỏi các tác động bên ngoài, đảm bảo an toàn và độ bền cao.",
     ImageUrl: "https://png.pngtree.com/png-clipart/20231101/original/pngtree-coil-of-a-wire-pipe-photo-png-image_13474160.png",
     In_Of_Stock: 8,
     WarrantyMonths: 24,
@@ -40,7 +40,7 @@ export const products: Product[] = [
   {
     ProductId: "P004",
     Name: "Máy nước nóng cao cấp",
-    Description: "Máy nước nóng cao cấp",
+    Description: "Thiết bị làm nóng nước nhanh chóng, tiết kiệm năng lượng, với nhiều chế độ điều chỉnh nhiệt độ và tính năng an toàn cao. Máy nước nóng cao cấp thường có thiết kế sang trọng, dễ dàng lắp đặt và sử dụng. Một số mẫu còn tích hợp công nghệ chống giật và bảo vệ quá nhiệt, đảm bảo an toàn tuyệt đối cho người sử dụng.",
     ImageUrl: "https://daihiep.com/wp-content/uploads/2019/10/REI-A450AP-WB.png",
     In_Of_Stock: 2,
     WarrantyMonths: 6,

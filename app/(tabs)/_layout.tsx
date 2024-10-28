@@ -1,13 +1,19 @@
+// app/(tabs)/_layout.tsx
 import {
   Entypo,
   FontAwesome,
   FontAwesome5,
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
-import { Tabs } from "expo-router";
+import { Tabs, useRouter } from "expo-router"; // Import useRouter
 import { StatusBar } from "expo-status-bar";
+import { View } from "react-native";
+import { Icon, IconButton, Badge } from "native-base";
 
 export default function TabLayout() {
+  const cartItemCount = 3; // Giả sử đây là số lượng sản phẩm trong giỏ hàng
+  const router = useRouter(); // Khởi tạo router để điều hướng
+
   return (
     <>
       <Tabs
@@ -22,7 +28,7 @@ export default function TabLayout() {
         }}
       >
         <Tabs.Screen
-          name="index" // Tệp index.tsx trong (tabs) sẽ đại diện cho tab Home
+          name="index"
           options={{
             title: "Trang chủ",
             headerShown: true,
@@ -39,10 +45,44 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="StoreScreen" // Tệp StoreScreen.tsx đại diện cho tab Store
+          name="StoreScreen"
           options={{
-            title: "Cửa hàng",
+            title: "Vật Tư Điện Nước",
             headerShown: true,
+            headerRight: () => (
+              <View style={{ marginRight: 15 }}>
+                <IconButton
+                  onPress={() => router.push("/CartScreen")} // Thêm sự kiện onPress để điều hướng đến CartScreen
+                  icon={
+                    <View>
+                      <Icon
+                        as={FontAwesome5}
+                        name="shopping-cart"
+                        size="lg"
+                        color="#DBE2EF"
+                        key="cart-icon"
+                      />
+                      {cartItemCount > 0 && (
+                        <Badge
+                          key="cart-badge"
+                          rounded="full"
+                          position="absolute"
+                          top={-12}
+                          right={-12}
+                          bg="#FF4136"
+                          _text={{
+                            color: '#FFFFFF',
+                            fontSize: 12,
+                          }}
+                        >
+                          {cartItemCount}
+                        </Badge>
+                      )}
+                    </View>
+                  }
+                />
+              </View>
+            ),
             tabBarIcon: ({ color, focused }) =>
               focused ? (
                 <FontAwesome5 name="store" size={15} color={color} />
@@ -52,7 +92,7 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="ChatScreen" // Tệp ChatScreen.tsx đại diện cho tab Chat
+          name="ChatScreen"
           options={{
             title: "Trò chuyện",
             headerShown: true,
@@ -65,7 +105,7 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="ProfileScreen" // Tệp ProfileScreen.tsx đại diện cho tab Profile
+          name="ProfileScreen"
           options={{
             title: "Hồ sơ",
             headerShown: true,

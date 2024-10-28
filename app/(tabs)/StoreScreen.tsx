@@ -1,7 +1,7 @@
 // app/(tabs)/StoreScreen.tsx
 import React from 'react';
 import { Text, View, TextInput, StyleSheet, FlatList } from 'react-native';
-import { IconButton, Actionsheet, useDisclose } from 'native-base';
+import { IconButton, Actionsheet, useDisclose, Icon } from 'native-base';
 import { FontAwesome5 } from '@expo/vector-icons';
 import ProductListItem from '../../components/store/ProductListItem';
 import { products } from '../../constants/Datas';
@@ -42,13 +42,13 @@ export default function StoreScreen() {
           renderItem={({ item }) => (
             <ProductListItem
               product={item}
-              onPress={() => handleProductPress(item.ProductId)} // Thêm sự kiện onPress
+              onPress={() => handleProductPress(item.ProductId)}
             />
           )}
           keyExtractor={(item) => item.ProductId}
           numColumns={2}
           columnWrapperStyle={styles.columnWrapper}
-          showsVerticalScrollIndicator={false} // Tắt thanh cuộn dọc
+          showsVerticalScrollIndicator={false}
         />
       ) : (
         <NoDataComponent
