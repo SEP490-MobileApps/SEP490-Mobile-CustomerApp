@@ -107,7 +107,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="ProfileScreen"
           options={{
-            title: "Hồ sơ",
+            title: "Hồ sơ cá nhân",
             headerShown: true,
             tabBarIcon: ({ color, focused }) =>
               focused ? (
