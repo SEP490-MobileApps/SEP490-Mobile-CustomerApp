@@ -4,6 +4,16 @@ import { RepairRequest } from '../models/RepairRequest';
 import { Customer } from '../models/Customer';
 import { Product } from '../models/Product';
 
+export const mockCustomer: Customer = {
+  customerId: "001",
+  fullName: "Võ Hoàng Vũ",
+  email: "vuvhse172148@fpt.edu.vn",
+  phoneNumber: "0123456789",
+  avatarUrl: "https://cdn-icons-png.flaticon.com/512/219/219983.png",
+  dateOfBirth: "1990-02-01",
+  cmtCccd: "012345678",
+};
+
 export const products: Product[] = [
   {
     ProductId: "P001",

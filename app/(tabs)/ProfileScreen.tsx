@@ -24,8 +24,8 @@ export default function ProfileScreen() {
         <Text style={styles.sectionTitle}>THÔNG TIN CHUNG</Text>
       </View>
       <View style={styles.sectionContainer}>
-        <TouchableOpacity style={styles.optionContainer} onPress={() => router.push("/EditProfileScreen")}>
-          <FontAwesome name="edit" size={24} color="#112D4E" />
+        <TouchableOpacity style={styles.optionContainer} onPress={() => router.push("/ProfileDetailScreen")}>
+          <FontAwesome name="user" size={24} color="#112D4E" />
           <Text style={styles.optionText}>Thông tin cá nhân chi tiết</Text>
           <MaterialIcons name="navigate-next" size={24} color="#112D4E" />
         </TouchableOpacity>
