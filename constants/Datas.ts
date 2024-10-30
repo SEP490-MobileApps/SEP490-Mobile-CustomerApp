@@ -3,6 +3,17 @@ import { Review } from '../models/Review';
 import { RepairRequest } from '../models/RepairRequest';
 import { Customer } from '../models/Customer';
 import { Product } from '../models/Product';
+import { Leader } from "../models/Leader";
+
+
+// export const leaderData: Leader | null = null;
+
+export const leaderData: Leader | null = {
+  name: "Võ Minh Thuận",
+  phone: "0932757406",
+  email: "thuanvm@gmail.com",
+  avatarUrl: "https://via.placeholder.com/150", // Thay thế bằng URL ảnh thật nếu có
+};
 
 export const mockCustomer: Customer = {
   customerId: "001",

@@ -1,11 +1,22 @@
 // app/(tabs)/ProfileScreen.tsx
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { useToast } from "native-base";
+import SignOutModal from "../../components/profile/SignOutModal";
 
 export default function ProfileScreen() {
+  const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
   const router = useRouter();
+  const toast = useToast();
+
+  const handleSignOut = () => {
+    toast.show({
+      description: "Đã đăng xuất thành công",
+      duration: 3000,
+    });
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -34,7 +45,7 @@ export default function ProfileScreen() {
           <Text style={styles.optionText}>Lịch sử</Text>
           <MaterialIcons name="navigate-next" size={24} color="#112D4E" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.optionContainer}>
+        <TouchableOpacity style={styles.optionContainer} onPress={() => router.push("/LeaderDetailScreen")}>
           <FontAwesome name="user" size={24} color="#112D4E" />
           <Text style={styles.optionText}>Coi thông tin Leader</Text>
           <MaterialIcons name="navigate-next" size={24} color="#112D4E" />
@@ -69,9 +80,15 @@ export default function ProfileScreen() {
       </View>
 
       {/* Logout Button */}
-      <TouchableOpacity style={styles.logoutButton}>
+      <TouchableOpacity onPress={() => setIsSignOutModalOpen(true)} style={styles.logoutButton}>
         <Text style={styles.logoutButtonText}>ĐĂNG XUẤT</Text>
       </TouchableOpacity>
+
+      <SignOutModal
+        isOpen={isSignOutModalOpen}
+        onClose={() => setIsSignOutModalOpen(false)}
+        onConfirm={handleSignOut} // Đặt hàm handleSignOut tại đây
+      />
     </ScrollView>
   );
 }

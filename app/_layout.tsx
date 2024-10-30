@@ -15,7 +15,7 @@ import { FontAwesome as FontAwesomeIcon } from "@expo/vector-icons";
 export { ErrorBoundary } from "expo-router";
 
 export const unstable_settings = {
-  initialRouteName: "(tabs)",
+  initialRouteName: "(auth)",
 };
 
 SplashScreen.preventAutoHideAsync();
@@ -49,14 +49,14 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
-  const router = useRouter(); // Sử dụng router từ expo-router
+  const router = useRouter();
 
   return (
     <GlobalProvider>
       <NativeBaseProvider>
         <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
           <GestureHandlerRootView style={{ flex: 1 }}>
-            <Stack initialRouteName="(tabs)">
+            <Stack initialRouteName="(auth)">
               <Stack.Screen
                 name="(auth)"
                 options={{ headerShown: false }}
@@ -110,6 +110,14 @@ function RootLayoutNav() {
                       onPress={() => router.setParams({ isEdit: "true" })}
                     />
                   ),
+                }}
+              />
+              <Stack.Screen
+                name="LeaderDetailScreen"
+                options={{
+                  title: "Chi tiết Leader",
+                  headerStyle: { backgroundColor: "#3F72AF" },
+                  headerTintColor: "#FFF",
                 }}
               />
             </Stack>
