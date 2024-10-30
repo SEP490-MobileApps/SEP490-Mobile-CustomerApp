@@ -1,10 +1,10 @@
 // app/ProfileDetailScreen.tsx
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Platform } from "react-native";
 import { Input, Button, HStack, useToast, IconButton } from "native-base";
 import { FontAwesome } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
-import DatePicker from "react-native-date-picker";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import ConfirmModal from "../components/profile/ConfirmModal";
 import { formatDate } from "../utils/formatDate";
 import { useRouter, useLocalSearchParams } from "expo-router";
@@ -44,10 +44,17 @@ export default function ProfileDetailScreen() {
     }
   };
 
+  // Sửa lỗi tại đây
+  const onDateChange = (_: any, selectedDate: Date | undefined) => {
+    setShowDatePicker(Platform.OS === "ios");
+    if (selectedDate) {
+      setBirthDate(selectedDate);
+    }
+  };
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.section}>
-
         <View style={styles.imageContainer}>
           <Image source={{ uri: profileImage }} style={styles.profileImage} />
           {isEditing && (
@@ -94,23 +101,20 @@ export default function ProfileDetailScreen() {
                 isReadOnly
                 variant="outline"
                 style={styles.input}
-                w="85%" // Adjust width to make space for the calendar icon
+                w="85%" // Điều chỉnh độ rộng để đủ chỗ cho biểu tượng lịch
               />
               <IconButton
                 icon={<FontAwesome name="calendar" size={24} color="#3F72AF" />}
                 onPress={() => setShowDatePicker(true)}
               />
-              <DatePicker
-                modal
-                mode="date"
-                open={showDatePicker}
-                date={birthDate}
-                onConfirm={(date) => {
-                  setBirthDate(date);
-                  setShowDatePicker(false);
-                }}
-                onCancel={() => setShowDatePicker(false)}
-              />
+              {showDatePicker && (
+                <DateTimePicker
+                  value={birthDate}
+                  mode="date"
+                  display="default"
+                  onChange={onDateChange} // Sử dụng hàm đã sửa đổi
+                />
+              )}
             </HStack>
           ) : (
             <Text style={styles.fieldValue}>{formatDate(birthDate)}</Text>
