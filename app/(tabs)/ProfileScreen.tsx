@@ -5,13 +5,19 @@ import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useToast } from "native-base";
 import SignOutModal from "../../components/profile/SignOutModal";
+import { useAuth } from "../../hooks/useAuth";
+import useUser from "../../hooks/useUser";
 
 export default function ProfileScreen() {
   const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
   const router = useRouter();
   const toast = useToast();
+  const { handleLogout } = useAuth();
+  const { user } = useUser();
 
-  const handleSignOut = () => {
+  // Hàm thực hiện đăng xuất và hiển thị thông báo
+  const handleSignOut = async () => {
+    await handleLogout();
     toast.show({
       description: "Đã đăng xuất thành công",
       duration: 3000,
@@ -23,11 +29,11 @@ export default function ProfileScreen() {
       {/* Personal Info */}
       <View style={styles.personalInfoContainer}>
         <Image
-          source={{ uri: 'https://cdn-icons-png.flaticon.com/512/219/219983.png' }}
+          source={{ uri: user?.avatarUrl || 'https://cdn-icons-png.flaticon.com/512/219/219983.png' }}
           style={styles.profileImage}
         />
-        <Text style={styles.profileName}>Võ Hoàng Vũ</Text>
-        <Text style={styles.profileEmail}>vuvhse172148@fpt.edu.vn</Text>
+        <Text style={styles.profileName}>{user?.fullName || "Chưa có tên"}</Text>
+        <Text style={styles.profileEmail}>{user?.email || "Chưa có email"}</Text>
       </View>
 
       {/* Section: Thông tin chung */}

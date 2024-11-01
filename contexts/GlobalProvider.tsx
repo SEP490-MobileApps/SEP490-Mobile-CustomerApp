@@ -1,16 +1,33 @@
-// contexts/GlobalProvider.tsx
-import React, { createContext, useState, ReactNode } from "react";
+// src/contexts/GlobalProvider.tsx
+import React, { createContext, useContext, useState, ReactNode } from "react";
+import { User } from "../models/User"; // Sửa lại đường dẫn nếu cần thiết
 
-const GlobalContext = createContext({});
+interface GlobalStateContextProps {
+  loading: boolean;
+  setLoading: (value: boolean) => void;
+  userInfo: User | null;
+  setUserInfo: (value: User | null) => void;
+}
 
-export const GlobalProvider = ({ children }: { children: ReactNode }) => {
-  const [state, setState] = useState({}); // Replace with your initial state and logic
+const GlobalStateContext = createContext<GlobalStateContextProps | undefined>(
+  undefined
+);
+
+export const GlobalProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [loading, setLoading] = useState(false);
+  const [userInfo, setUserInfo] = useState<User | null>(null);
 
   return (
-    <GlobalContext.Provider value={{ state, setState }}>
+    <GlobalStateContext.Provider value={{ userInfo, setUserInfo, loading, setLoading }}>
       {children}
-    </GlobalContext.Provider>
+    </GlobalStateContext.Provider>
   );
 };
 
-export default GlobalContext;
+export const useGlobalState = () => {
+  const context = useContext(GlobalStateContext);
+  if (context === undefined) {
+    throw new Error("useGlobalState must be used within a GlobalProvider");
+  }
+  return context;
+};

@@ -1,7 +1,7 @@
 import { ServicePackage } from '../models/ServicePackage';
 import { Review } from '../models/Review';
 import { RepairRequest } from '../models/RepairRequest';
-import { Customer } from '../models/Customer';
+import { User } from '../models/User';
 import { Product } from '../models/Product';
 import { Leader } from "../models/Leader";
 
@@ -15,15 +15,15 @@ export const leaderData: Leader | null = {
   avatarUrl: "https://via.placeholder.com/150", // Thay thế bằng URL ảnh thật nếu có
 };
 
-export const mockCustomer: Customer = {
-  customerId: "001",
-  fullName: "Võ Hoàng Vũ",
-  email: "vuvhse172148@fpt.edu.vn",
-  phoneNumber: "0123456789",
-  avatarUrl: "https://cdn-icons-png.flaticon.com/512/219/219983.png",
-  dateOfBirth: "1990-02-01",
-  cmtCccd: "012345678",
-};
+// export const mockCustomer: User = {
+//   customerId: "001",
+//   fullName: "Võ Hoàng Vũ",
+//   email: "vuvhse172148@fpt.edu.vn",
+//   phoneNumber: "0123456789",
+//   avatarUrl: "https://cdn-icons-png.flaticon.com/512/219/219983.png",
+//   dateOfBirth: "1990-02-01",
+//   cmtCccd: "012345678",
+// };
 
 export const products: Product[] = [
   {
@@ -72,28 +72,28 @@ export const products: Product[] = [
 
 ];
 
-export const customers: Customer[] = [
-  {
-    customerId: '123',
-    fullName: 'Võ Hoàng Vũ',
-    email: 'vu@gmail.com',
-    phoneNumber: '0898901823',
-    avatarUrl: 'https://via.placeholder.com/150',
-    dateOfBirth: '2024-09-24T10:00:00Z',
-    cmtCccd: '067865444678',
-  },
+// export const customers: User[] = [
+//   {
+//     customerId: '123',
+//     fullName: 'Võ Hoàng Vũ',
+//     email: 'vu@gmail.com',
+//     phoneNumber: '0898901823',
+//     avatarUrl: 'https://via.placeholder.com/150',
+//     dateOfBirth: '2024-09-24T10:00:00Z',
+//     cmtCccd: '067865444678',
+//   },
 
-  {
-    customerId: '456',
-    fullName: 'Nguyễn Thị Bích',
-    email: 'bich@gmail.com',
-    phoneNumber: '0898901824',
-    avatarUrl: 'https://via.placeholder.com/150',
-    dateOfBirth: '2024-09-24T10:00:00Z',
-    cmtCccd: '067865444679',
-  },
+//   {
+//     customerId: '456',
+//     fullName: 'Nguyễn Thị Bích',
+//     email: 'bich@gmail.com',
+//     phoneNumber: '0898901824',
+//     avatarUrl: 'https://via.placeholder.com/150',
+//     dateOfBirth: '2024-09-24T10:00:00Z',
+//     cmtCccd: '067865444679',
+//   },
 
-];
+// ];
 
 export const repairRequests: RepairRequest[] = [
   {

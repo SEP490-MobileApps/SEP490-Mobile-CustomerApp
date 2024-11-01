@@ -2,10 +2,9 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { Stack, useRouter } from "expo-router"; // Sử dụng useRouter từ expo-router
+import { Stack, useRouter } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useCallback, useEffect } from "react";
-import "react-native-reanimated";
 import { NativeBaseProvider, IconButton } from "native-base";
 import { useColorScheme } from "../components/useColorScheme";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
