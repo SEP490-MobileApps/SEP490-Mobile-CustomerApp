@@ -1,4 +1,3 @@
-// app/ProfileDetailScreen.tsx
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Platform } from "react-native";
 import { Input, Button, HStack, useToast, IconButton } from "native-base";
@@ -8,22 +7,32 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import ConfirmModal from "../components/profile/ConfirmModal";
 import { formatDate } from "../utils/formatDate";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { mockCustomer } from "../constants/Datas";
+import useUser from "../hooks/useUser";
 
 export default function ProfileDetailScreen() {
   const { isEdit } = useLocalSearchParams();
   const router = useRouter();
   const toast = useToast();
+  const { user } = useUser(); // Sử dụng dữ liệu từ useUser
 
-  const customer = mockCustomer;
   const [isEditing, setIsEditing] = useState(false);
-  const [name, setName] = useState(customer.fullName);
-  const [email, setEmail] = useState(customer.email);
-  const [phone] = useState(customer.phoneNumber);
-  const [birthDate, setBirthDate] = useState(new Date(customer.dateOfBirth));
-  const [profileImage, setProfileImage] = useState(customer.avatarUrl);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [birthDate, setBirthDate] = useState(new Date());
+  const [profileImage, setProfileImage] = useState("");
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      setName(user.fullName || "");
+      setEmail(user.email || "");
+      setPhone(user.phoneNumber || "");
+      setBirthDate(user.dateOfBirth ? new Date(user.dateOfBirth) : new Date());
+      setProfileImage(user.avatarUrl || "");
+    }
+  }, [user]);
 
   useEffect(() => {
     setIsEditing(isEdit === "true");
@@ -43,7 +52,6 @@ export default function ProfileDetailScreen() {
     }
   };
 
-  // Sửa lỗi tại đây
   const onDateChange = (_: any, selectedDate: Date | undefined) => {
     setShowDatePicker(Platform.OS === "ios");
     if (selectedDate) {
@@ -51,11 +59,18 @@ export default function ProfileDetailScreen() {
     }
   };
 
+  if (!user) {
+    return <Text>Đang tải...</Text>; // Hiển thị khi dữ liệu chưa có
+  }
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.section}>
         <View style={styles.imageContainer}>
-          <Image source={{ uri: profileImage }} style={styles.profileImage} />
+          <Image
+            source={{ uri: profileImage || 'https://cdn-icons-png.flaticon.com/512/219/219983.png' }} // Sử dụng hình ảnh mặc định nếu profileImage không có giá trị
+            style={styles.profileImage}
+          />
           {isEditing && (
             <TouchableOpacity style={styles.cameraIcon} onPress={pickImage}>
               <FontAwesome name="camera" size={24} color="white" />
@@ -83,7 +98,11 @@ export default function ProfileDetailScreen() {
 
         <View style={styles.fieldContainer}>
           <Text style={styles.label}>Số điện thoại</Text>
-          <Text style={styles.fieldValue}>{phone}</Text>
+          {isEditing ? (
+            <Input value={phone} onChangeText={setPhone} variant="outline" style={styles.input} keyboardType="phone-pad" />
+          ) : (
+            <Text style={styles.fieldValue}>{phone}</Text>
+          )}
         </View>
 
         <View style={styles.fieldContainer}>
@@ -106,7 +125,7 @@ export default function ProfileDetailScreen() {
                   value={birthDate}
                   mode="date"
                   display="default"
-                  onChange={onDateChange} // Sử dụng hàm đã sửa đổi
+                  onChange={onDateChange}
                 />
               )}
             </HStack>

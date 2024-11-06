@@ -1,29 +1,24 @@
 // utils/useAxios.ts
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const useAxios = () => {
   const [error, setError] = useState("");
-  let controller = new AbortController();
 
   const axiosInstance = axios.create({
     baseURL: "https://ewmhuser.azurewebsites.net/api",
   });
 
   axiosInstance.interceptors.request.use(
-    (config) => config, // Giữ nguyên request nếu không có thay đổi
+    (config) => config,
     (error) => Promise.reject(error)
   );
 
   axiosInstance.interceptors.response.use(
-    (response) => response, // Giữ nguyên response nếu không có thay đổi
+    (response) => response,
     (error) => Promise.reject(error)
   );
-
-  useEffect(() => {
-    return () => controller.abort();
-  }, []);
 
   type Method = "GET" | "POST" | "PUT" | "DELETE";
 
@@ -42,10 +37,9 @@ const useAxios = () => {
     params = {},
     header = {},
   }: FetchDataParams) => {
-    controller.abort();
-    controller = new AbortController();
+    const controller = new AbortController(); // Tạo controller cho từng request
 
-    const accessToken = await SecureStore.getItemAsync("accessToken"); // Lấy accessToken từ SecureStore
+    const accessToken = await SecureStore.getItemAsync("accessToken");
 
     try {
       const result = await axiosInstance({
@@ -56,13 +50,13 @@ const useAxios = () => {
         signal: controller.signal,
         headers: {
           ...header,
-          Authorization: `Bearer ${accessToken}`, // Sử dụng accessToken
+          Authorization: `Bearer ${accessToken}`,
         },
       });
       return result.data;
     } catch (error: any) {
       if (axios.isCancel(error)) {
-        console.error("Request cancelled", error.message);
+        console.warn("Request cancelled", error.message);
       } else {
         setError(error.response ? error.response.data : error.message);
       }

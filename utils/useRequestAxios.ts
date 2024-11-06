@@ -1,11 +1,10 @@
 // utils/useRequestAxios.ts
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const useRequestAxios = () => {
   const [error, setError] = useState("");
-  let controller = new AbortController();
 
   const axiosInstance = axios.create({
     baseURL: "https://ewmhrequest.azurewebsites.net/api",
@@ -20,10 +19,6 @@ const useRequestAxios = () => {
     (response) => response,
     (error) => Promise.reject(error)
   );
-
-  useEffect(() => {
-    return () => controller.abort();
-  }, []);
 
   type Method = "GET" | "POST" | "PUT" | "DELETE";
 
@@ -42,8 +37,7 @@ const useRequestAxios = () => {
     params = {},
     header = {},
   }: FetchDataParams) => {
-    controller.abort();
-    controller = new AbortController();
+    const controller = new AbortController(); // Tạo mới controller cho mỗi yêu cầu
 
     const accessToken = await SecureStore.getItemAsync("accessToken");
 
@@ -62,7 +56,7 @@ const useRequestAxios = () => {
       return result.data;
     } catch (error: any) {
       if (axios.isCancel(error)) {
-        console.error("Request cancelled", error.message);
+        console.warn("Request cancelled", error.message);
       } else {
         setError(error.response ? error.response.data : error.message);
       }
