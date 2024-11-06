@@ -128,6 +128,15 @@ function RootLayoutNav() {
                   headerTitleAlign: "center",
                 }}
               />
+              <Stack.Screen
+                name="MyContractScreen"
+                options={{
+                  title: "Hợp đồng của tôi",
+                  headerStyle: { backgroundColor: "#3F72AF" },
+                  headerTintColor: "#FFF",
+                  headerTitleAlign: "center",
+                }}
+              />
             </Stack>
           </GestureHandlerRootView>
         </ThemeProvider>

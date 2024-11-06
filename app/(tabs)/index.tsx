@@ -1,4 +1,3 @@
-// app/(tabs)/index.tsx
 import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, ScrollView, Image } from 'react-native';
 import { Box, Icon, Badge } from 'native-base';
@@ -9,6 +8,7 @@ import CustomerReviews from '../../components/home/CustomerReviews';
 import FloatButton from '../../components/ui/FloatButton';
 import LeaderContactModal from '../../components/home/LeaderContactModal';
 import useServicePackages from '../../hooks/useServicePackage';
+import useUser from '../../hooks/useUser'; // Import useUser
 
 type LeaderInfo = {
   name: string;
@@ -16,7 +16,6 @@ type LeaderInfo = {
   avatarUrl: string;
 };
 
-// Giả sử lấy thông tin leader từ API
 const fetchLeaderInfo = async (): Promise<LeaderInfo> => {
   return {
     name: "Võ Hoàng Vũ",
@@ -32,9 +31,9 @@ function HomeScreen(): React.JSX.Element {
   const [pageIndex, setPageIndex] = useState(1);
 
   const { packages, totalCount, loading } = useServicePackages(pageIndex, 2);
+  const { user } = useUser(); // Sử dụng dữ liệu từ useUser
 
   useEffect(() => {
-    // Fetch thông tin leader giữ nguyên như trước
     const getLeaderInfo = async () => {
       const data = await fetchLeaderInfo();
       setLeaderInfo(data);
@@ -62,10 +61,10 @@ function HomeScreen(): React.JSX.Element {
         <Box style={styles.infoContainer}>
           <View style={styles.avatarContainer}>
             <Image
-              source={{ uri: 'https://via.placeholder.com/50' }}
+              source={{ uri: user?.avatarUrl || 'https://via.placeholder.com/50' }}
               style={styles.avatar}
             />
-            <Text style={styles.userName}>Võ Hoàng Vũ</Text>
+            <Text style={styles.userName}>{user?.fullName || 'Người dùng chưa xác định'}</Text>
           </View>
           <View style={styles.notificationIconContainer}>
             <Icon as={MaterialIcons} name="notifications" size="8" color="#3F72AF" />

@@ -57,7 +57,7 @@ export default function ProfileScreen() {
           <Text style={styles.optionText}>Coi thông tin Leader</Text>
           <MaterialIcons name="navigate-next" size={24} color="#112D4E" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.optionContainer}>
+        <TouchableOpacity style={styles.optionContainer} onPress={() => router.push("/MyContractScreen")}>
           <FontAwesome name="file-text" size={24} color="#112D4E" />
           <Text style={styles.optionText}>Hợp đồng của tôi</Text>
           <MaterialIcons name="navigate-next" size={24} color="#112D4E" />
