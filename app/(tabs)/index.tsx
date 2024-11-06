@@ -8,6 +8,7 @@ import ServicePackages from '../../components/home/ServicePackages';
 import CustomerReviews from '../../components/home/CustomerReviews';
 import FloatButton from '../../components/ui/FloatButton';
 import LeaderContactModal from '../../components/home/LeaderContactModal';
+import useServicePackages from '../../hooks/useServicePackage';
 
 type LeaderInfo = {
   name: string;
@@ -28,8 +29,12 @@ function HomeScreen(): React.JSX.Element {
   const notificationsCount = 2;
   const [isModalOpen, setModalOpen] = useState(false);
   const [leaderInfo, setLeaderInfo] = useState<LeaderInfo | null>(null);
+  const [pageIndex, setPageIndex] = useState(1);
+
+  const { packages, totalCount, loading } = useServicePackages(pageIndex, 2);
 
   useEffect(() => {
+    // Fetch thông tin leader giữ nguyên như trước
     const getLeaderInfo = async () => {
       const data = await fetchLeaderInfo();
       setLeaderInfo(data);
@@ -94,7 +99,13 @@ function HomeScreen(): React.JSX.Element {
         <View style={styles.divider} />
 
         {/* Tất cả các gói dịch vụ */}
-        <ServicePackages />
+        <ServicePackages
+          servicePackages={packages}
+          loading={loading}
+          totalCount={totalCount}
+          currentPage={pageIndex}
+          setPageIndex={setPageIndex}
+        />
 
         {/* Đường kẻ phân cách */}
         <View style={styles.divider} />

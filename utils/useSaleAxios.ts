@@ -1,10 +1,11 @@
 // utils/useSaleAxios.ts
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 const useSaleAxios = () => {
-  const [error, setError] = useState("");
+  const [error, setError] = useState<string>("");
+  const controllerRef = useRef<AbortController | null>(null);
 
   const axiosInstance = axios.create({
     baseURL: "https://ewmhsale.azurewebsites.net/api",
@@ -37,7 +38,11 @@ const useSaleAxios = () => {
     params = {},
     header = {},
   }: FetchDataParams) => {
-    const controller = new AbortController(); // Tạo mới controller cho mỗi yêu cầu
+    // Hủy bỏ yêu cầu trước đó (nếu có) trước khi tạo yêu cầu mới
+    if (controllerRef.current) {
+      controllerRef.current.abort();
+    }
+    controllerRef.current = new AbortController(); // Tạo mới controller
 
     const accessToken = await SecureStore.getItemAsync("accessToken");
 
@@ -47,7 +52,7 @@ const useSaleAxios = () => {
         method,
         data,
         params,
-        signal: controller.signal,
+        signal: controllerRef.current.signal,
         headers: {
           ...header,
           Authorization: `Bearer ${accessToken}`,
