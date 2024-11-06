@@ -1,4 +1,4 @@
-// models/Customer.ts
+// models/User.ts
 export interface User {
   accountId: string;
   email: string;

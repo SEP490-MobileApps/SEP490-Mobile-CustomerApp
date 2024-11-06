@@ -7,4 +7,5 @@ export interface ServicePackage {
   description: string; // Thêm thuộc tính mô tả
   policy: string; // Thêm thuộc tính chính sách
   servicesList: string; // Thêm thuộc tính danh sách dịch vụ
+  purchaseTime: string;
 }

@@ -20,7 +20,6 @@ export default function ProfileDetailScreen() {
   const [name, setName] = useState(customer.fullName);
   const [email, setEmail] = useState(customer.email);
   const [phone] = useState(customer.phoneNumber);
-  const [idCard] = useState(customer.cmtCccd);
   const [birthDate, setBirthDate] = useState(new Date(customer.dateOfBirth));
   const [profileImage, setProfileImage] = useState(customer.avatarUrl);
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -85,11 +84,6 @@ export default function ProfileDetailScreen() {
         <View style={styles.fieldContainer}>
           <Text style={styles.label}>Số điện thoại</Text>
           <Text style={styles.fieldValue}>{phone}</Text>
-        </View>
-
-        <View style={styles.fieldContainer}>
-          <Text style={styles.label}>CCCD</Text>
-          <Text style={styles.fieldValue}>{idCard}</Text>
         </View>
 
         <View style={styles.fieldContainer}>

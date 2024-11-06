@@ -119,6 +119,15 @@ function RootLayoutNav() {
                   headerTintColor: "#FFF",
                 }}
               />
+              <Stack.Screen
+                name="HistoryScreen"
+                options={{
+                  title: "Lịch sử",
+                  headerStyle: { backgroundColor: "#3F72AF" },
+                  headerTintColor: "#FFF",
+                  headerTitleAlign: "center",
+                }}
+              />
             </Stack>
           </GestureHandlerRootView>
         </ThemeProvider>

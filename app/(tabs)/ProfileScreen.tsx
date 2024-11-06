@@ -46,11 +46,12 @@ export default function ProfileScreen() {
           <Text style={styles.optionText}>Thông tin cá nhân chi tiết</Text>
           <MaterialIcons name="navigate-next" size={24} color="#112D4E" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.optionContainer}>
+        <TouchableOpacity style={styles.optionContainer} onPress={() => router.push("/HistoryScreen")}>
           <FontAwesome name="history" size={24} color="#112D4E" />
           <Text style={styles.optionText}>Lịch sử</Text>
           <MaterialIcons name="navigate-next" size={24} color="#112D4E" />
         </TouchableOpacity>
+
         <TouchableOpacity style={styles.optionContainer} onPress={() => router.push("/LeaderDetailScreen")}>
           <FontAwesome name="user" size={24} color="#112D4E" />
           <Text style={styles.optionText}>Coi thông tin Leader</Text>

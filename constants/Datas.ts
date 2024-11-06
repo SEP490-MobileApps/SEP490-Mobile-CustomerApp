@@ -4,8 +4,111 @@ import { RepairRequest } from '../models/RepairRequest';
 import { User } from '../models/User';
 import { Product } from '../models/Product';
 import { Leader } from "../models/Leader";
+import { Order } from "../models/Order";
+
+export const orders: Order[] = [
+  { id: 1, productCount: 2, purchaseTime: "2024-09-04", price: "9.260.000" },
+  { id: 2, productCount: 12, purchaseTime: "2024-12-04", price: "400.000" },
+  { id: 3, productCount: 3, purchaseTime: "2024-03-04", price: "50.000" },
+  { id: 4, productCount: 6, purchaseTime: "2024-07-04", price: "670.000" },
+  { id: 5, productCount: 9, purchaseTime: "2024-06-04", price: "870.000" },
+];
 
 
+export const servicePackages: ServicePackage[] = [
+  {
+    id: '1',
+    purchaseTime: "2024-09-20",
+    name: 'Gói dịch vụ 9 lần',
+    price: 600000,
+    imageUrl: require('../assets/images/package1.png'),
+    description: 'Được sử dụng 9 lượt sửa chữa vĩnh viễn...',
+    policy: 'Cam kết bảo hành 30 ngày cho mỗi lần sửa chữa...',
+    servicesList: `
+1. Điện
+- Thay bóng đèn (âm tường, gắn ngoài)
+- Lắp đặt thiết bị điện gia dụng như máy nước nóng, máy khử mùi...
+
+2. Nước
+- Lắp đặt/thay thế ống nước, vòi sen...
+- Sửa chữa các sự cố về tắc nghẽn cống/bồn rửa...
+    `,
+  },
+
+  {
+    id: '2',
+    purchaseTime: "2024-09-25",
+    name: 'Gói dịch vụ 3 lần',
+    price: 400000,
+    imageUrl: require('../assets/images/package2.png'),
+    description: 'Được sử dụng 3 lượt sửa chữa vĩnh viễn...',
+    policy: 'Cam kết bảo hành 30 ngày cho mỗi lần sửa chữa...',
+    servicesList: `
+1.Điện
+- Thay bóng đèn (âm tường, gắn ngoài)
+- Lắp đặt thiết bị điện gia dụng như máy nước nóng, máy khử mùi...
+
+2.Nước
+- Lắp đặt/thay thế ống nước, vòi sen...
+- Sửa chữa các sự cố về tắc nghẽn cống/bồn rửa...
+    `,
+  },
+  {
+    id: '3',
+    purchaseTime: "2024-10-20",
+    name: 'Gói dịch vụ 1 lần',
+    price: 200000,
+    imageUrl: require('../assets/images/package3.png'),
+    description: 'Được sử dụng 1 lượt sửa chữa vĩnh viễn...',
+    policy: 'Cam kết bảo hành 30 ngày cho mỗi lần sửa chữa...',
+    servicesList: `
+1. Điện
+- Thay bóng đèn (âm tường, gắn ngoài)
+- Lắp đặt thiết bị điện gia dụng như máy nước nóng, máy khử mùi...
+
+2. Nước
+- Lắp đặt/thay thế ống nước, vòi sen...
+- Sửa chữa các sự cố về tắc nghẽn cống/bồn rửa...
+    `,
+  },
+
+  {
+    id: '4',
+    purchaseTime: "2024-09-02",
+    name: 'Gói dịch vụ 2 lần',
+    price: 300000,
+    imageUrl: require('../assets/images/package4.png'),
+    description: 'Được sử dụng 2 lượt sửa chữa vĩnh viễn...',
+    policy: 'Cam kết bảo hành 30 ngày cho mỗi lần sửa chữa...',
+    servicesList: `
+1. Điện
+- Thay bóng đèn (âm tường, gắn ngoài)
+- Lắp đặt thiết bị điện gia dụng như máy nước nóng, máy khử mùi...
+
+2. Nước
+- Lắp đặt/thay thế ống nước, vòi sen...
+- Sửa chữa các sự cố về tắc nghẽn cống/bồn rửa...
+    `,
+  },
+  {
+    id: '5',
+    purchaseTime: "2024-12-28",
+    name: 'Gói dịch vụ 1 lần',
+    price: 200000,
+    imageUrl: require('../assets/images/package4.png'),
+    description: 'Được sử dụng 1 lượt sửa chữa vĩnh viễn...',
+    policy: 'Cam kết bảo hành 30 ngày cho mỗi lần sửa chữa...',
+    servicesList: `
+1. Điện
+- Thay bóng đèn (âm tường, gắn ngoài)
+- Lắp đặt thiết bị điện gia dụng như máy nước nóng, máy khử mùi...
+
+2. Nước
+- Lắp đặt/thay thế ống nước, vòi sen...
+- Sửa chữa các sự cố về tắc nghẽn cống/bồn rửa...
+    `,
+  },
+];
 // export const leaderData: Leader | null = null;
 
 export const leaderData: Leader | null = {
@@ -15,15 +118,15 @@ export const leaderData: Leader | null = {
   avatarUrl: "https://via.placeholder.com/150", // Thay thế bằng URL ảnh thật nếu có
 };
 
-// export const mockCustomer: User = {
-//   customerId: "001",
-//   fullName: "Võ Hoàng Vũ",
-//   email: "vuvhse172148@fpt.edu.vn",
-//   phoneNumber: "0123456789",
-//   avatarUrl: "https://cdn-icons-png.flaticon.com/512/219/219983.png",
-//   dateOfBirth: "1990-02-01",
-//   cmtCccd: "012345678",
-// };
+export const mockCustomer: User = {
+  accountId: "001",
+  fullName: "Võ Hoàng Vũ",
+  email: "vuvhse172148@fpt.edu.vn",
+  phoneNumber: "0123456789",
+  avatarUrl: "https://cdn-icons-png.flaticon.com/512/219/219983.png",
+  dateOfBirth: "1990-02-01",
+  role: "CUSTOMER"
+};
 
 export const products: Product[] = [
   {
@@ -149,79 +252,6 @@ export const repairRequests: RepairRequest[] = [
     fileUrl: undefined,
     orderCode: undefined,
     isOnlinePayment: false,
-  },
-];
-
-export const servicePackages: ServicePackage[] = [
-  {
-    id: '1',
-    name: 'Gói dịch vụ 9 lần',
-    price: 600000,
-    imageUrl: require('../assets/images/package1.png'),
-    description: 'Được sử dụng 9 lượt sửa chữa vĩnh viễn...',
-    policy: 'Cam kết bảo hành 30 ngày cho mỗi lần sửa chữa...',
-    servicesList: `
-1. Điện
-- Thay bóng đèn (âm tường, gắn ngoài)
-- Lắp đặt thiết bị điện gia dụng như máy nước nóng, máy khử mùi...
-
-2. Nước
-- Lắp đặt/thay thế ống nước, vòi sen...
-- Sửa chữa các sự cố về tắc nghẽn cống/bồn rửa...
-    `,
-  },
-
-  {
-    id: '2',
-    name: 'Gói dịch vụ 3 lần',
-    price: 400000,
-    imageUrl: require('../assets/images/package2.png'),
-    description: 'Được sử dụng 3 lượt sửa chữa vĩnh viễn...',
-    policy: 'Cam kết bảo hành 30 ngày cho mỗi lần sửa chữa...',
-    servicesList: `
-1.Điện
-- Thay bóng đèn (âm tường, gắn ngoài)
-- Lắp đặt thiết bị điện gia dụng như máy nước nóng, máy khử mùi...
-
-2.Nước
-- Lắp đặt/thay thế ống nước, vòi sen...
-- Sửa chữa các sự cố về tắc nghẽn cống/bồn rửa...
-    `,
-  },
-  {
-    id: '3',
-    name: 'Gói dịch vụ 1 lần',
-    price: 200000,
-    imageUrl: require('../assets/images/package3.png'),
-    description: 'Được sử dụng 1 lượt sửa chữa vĩnh viễn...',
-    policy: 'Cam kết bảo hành 30 ngày cho mỗi lần sửa chữa...',
-    servicesList: `
-1. Điện
-- Thay bóng đèn (âm tường, gắn ngoài)
-- Lắp đặt thiết bị điện gia dụng như máy nước nóng, máy khử mùi...
-
-2. Nước
-- Lắp đặt/thay thế ống nước, vòi sen...
-- Sửa chữa các sự cố về tắc nghẽn cống/bồn rửa...
-    `,
-  },
-
-  {
-    id: '4',
-    name: 'Gói dịch vụ 2 lần',
-    price: 300000,
-    imageUrl: require('../assets/images/package4.png'),
-    description: 'Được sử dụng 2 lượt sửa chữa vĩnh viễn...',
-    policy: 'Cam kết bảo hành 30 ngày cho mỗi lần sửa chữa...',
-    servicesList: `
-1. Điện
-- Thay bóng đèn (âm tường, gắn ngoài)
-- Lắp đặt thiết bị điện gia dụng như máy nước nóng, máy khử mùi...
-
-2. Nước
-- Lắp đặt/thay thế ống nước, vòi sen...
-- Sửa chữa các sự cố về tắc nghẽn cống/bồn rửa...
-    `,
   },
 ];
 
