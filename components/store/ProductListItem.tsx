@@ -4,25 +4,31 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { Product } from '../../models/Product';
 import { FormatPriceToVnd } from '../../utils/PriceUtils';
 import { Divider } from 'native-base';
+import { useRouter } from 'expo-router'; // Import useRouter
 
 interface ProductListItemProps {
   product: Product;
-  onPress: () => void;
 }
 
-const ProductListItem: React.FC<ProductListItemProps> = ({ product, onPress }) => {
+const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
+  const router = useRouter(); // Dùng router để điều hướng
+
+  const handlePress = () => {
+    router.push(`/ProductDetail/${product.productId}`); // Điều hướng đến trang chi tiết sản phẩm
+  };
+
   const getShortName = (name: string) => (name.length > 20 ? `${name.substring(0, 17)}...` : name);
 
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress}>
-      <Image source={{ uri: product.ImageUrl }} style={styles.image} />
+    <TouchableOpacity style={styles.container} onPress={handlePress}>
+      <Image source={{ uri: product.imageUrl }} style={styles.image} />
       <Divider my="2" bg="#112D4E" />
-      <Text style={styles.name}>{getShortName(product.Name)}</Text>
-      <Text style={styles.price}>{FormatPriceToVnd(product.Price)}</Text>
+      <Text style={styles.name}>{getShortName(product.name)}</Text>
+      <Text style={styles.price}>{FormatPriceToVnd(product.priceByDate)}</Text>
       <Text style={styles.warranty}>
-        {product.WarrantyMonths >= 12
-          ? `${product.WarrantyMonths / 12} năm bảo hành`
-          : `${product.WarrantyMonths} tháng bảo hành`}
+        {product.warantyMonths >= 12
+          ? `${product.warantyMonths / 12} năm bảo hành`
+          : `${product.warantyMonths} tháng bảo hành`}
       </Text>
     </TouchableOpacity>
   );

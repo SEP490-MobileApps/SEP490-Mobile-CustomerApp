@@ -1,18 +1,37 @@
 // app/ProductDetail/[id].tsx
-import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { FormatPriceToVnd } from '../../utils/PriceUtils';
-import { products } from '../../constants/Datas';
-import { Divider, Button } from 'native-base';
+import useProduct from '../../hooks/useProduct'; // Import useProducts
+import { Button } from 'native-base';
+import { WebView } from 'react-native-webview'; // Import WebView
 
 export default function ProductDetailScreen() {
   const { id } = useLocalSearchParams();
+  const { fetchProductDetail, productDetail, detailLoading } = useProduct();
   const [quantity, setQuantity] = useState(1);
 
-  const product = products.find((item) => item.ProductId === id);
+  const handleIncrease = () => setQuantity(quantity + 1);
+  const handleDecrease = () => {
+    if (quantity > 1) setQuantity(quantity - 1);
+  };
 
-  if (!product) {
+  useEffect(() => {
+    if (id) {
+      fetchProductDetail(id as string); // Gọi API lấy chi tiết sản phẩm
+    }
+  }, [id]);
+
+  if (detailLoading) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="#3F72AF" />
+      </View>
+    );
+  }
+
+  if (!productDetail) {
     return (
       <View style={styles.container}>
         <Text style={styles.errorText}>Sản phẩm không tồn tại.</Text>
@@ -20,39 +39,27 @@ export default function ProductDetailScreen() {
     );
   }
 
-  const handleIncrease = () => setQuantity(quantity + 1);
-  const handleDecrease = () => {
-    if (quantity > 1) setQuantity(quantity - 1);
-  };
-
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Image source={{ uri: product.ImageUrl }} style={styles.image} />
-      <Divider my={2} bg="#000" />
+      <Image source={{ uri: productDetail.imageUrl }} style={styles.image} />
+      <Text style={styles.name}>{productDetail.name}</Text>
+      <Text style={styles.price}>{FormatPriceToVnd(productDetail.priceByDate)}</Text>
 
-      <Text style={styles.name}>{product.Name}</Text>
-
-      <View style={styles.priceStockContainer}>
-        <Text style={styles.price}>{FormatPriceToVnd(product.Price)}</Text>
-        <View style={styles.stockContainer}>
-          <Text style={styles.stockText}>Còn hàng: {product.In_Of_Stock}</Text>
-        </View>
+      {/* Hiển thị mô tả sản phẩm bằng WebView */}
+      <Text style={styles.descriptionTitle}>Mô tả sản phẩm</Text>
+      <View style={styles.webViewContainer}>
+        <WebView
+          originWhitelist={['*']}
+          source={{ html: productDetail.description }}
+          style={styles.webView}
+          scalesPageToFit={false}
+        />
       </View>
 
-      <Text style={styles.descriptionTitle}>Mô tả sản phẩm</Text>
-      <Text style={styles.description}>{product.Description}</Text>
-
-      {/* Cập nhật bảo hành */}
+      <Text style={styles.stockText}>Còn hàng: {productDetail.inOfStock}</Text>
       <Text style={styles.warranty}>
-        Bảo hành:{" "}
-        <Text style={styles.warrantyValue}>
-          {product.WarrantyMonths >= 12
-            ? `${product.WarrantyMonths / 12} năm`
-            : `${product.WarrantyMonths} tháng`}
-        </Text>
+        Bảo hành: {productDetail.warantyMonths >= 12 ? `${productDetail.warantyMonths / 12} năm` : `${productDetail.warantyMonths} tháng`}
       </Text>
-
-      <Divider my={2} bg="#000" />
 
       <View style={styles.quantityContainer}>
         <TouchableOpacity style={styles.quantityButton} onPress={handleDecrease}>
@@ -63,7 +70,6 @@ export default function ProductDetailScreen() {
           <Text style={styles.quantityButtonText}>+</Text>
         </TouchableOpacity>
       </View>
-
       <Button style={styles.addToCartButton}>Thêm vào giỏ hàng</Button>
     </ScrollView>
   );
@@ -87,48 +93,27 @@ const styles = StyleSheet.create({
     color: '#112D4E',
     marginBottom: 8,
   },
-  priceStockContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
   price: {
     fontSize: 20,
     color: '#3F72AF',
+    marginBottom: 8,
   },
-  stockContainer: {
-    backgroundColor: '#EEFAF6',
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-    borderRadius: 5,
+  webViewContainer: {
+    height: 200, // Chiều cao của WebView, điều chỉnh theo nhu cầu
+    marginBottom: 16,
+  },
+  webView: {
+    flex: 1,
   },
   stockText: {
     color: '#3A9B7A',
-  },
-  descriptionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    textDecorationLine: 'underline',
-    color: '#333',
-    marginBottom: 5,
-  },
-  description: {
-    fontSize: 16,
-    color: '#333',
     marginBottom: 8,
   },
   warranty: {
     fontSize: 18,
     fontWeight: 'bold',
-    textDecorationLine: 'underline',
     color: '#112D4E',
     marginBottom: 8,
-  },
-  warrantyValue: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#112D4E',
   },
   quantityContainer: {
     flexDirection: 'row',
@@ -165,5 +150,12 @@ const styles = StyleSheet.create({
     color: 'red',
     textAlign: 'center',
     marginTop: 20,
+  },
+  descriptionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    textDecorationLine: 'underline',
+    color: '#112D4E',
+    marginBottom: 8,
   },
 });

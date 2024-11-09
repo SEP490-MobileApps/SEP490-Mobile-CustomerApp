@@ -38,7 +38,7 @@ const useSaleAxios = () => {
     params = {},
     header = {},
   }: FetchDataParams) => {
-    // Hủy bỏ yêu cầu trước đó (nếu có) trước khi tạo yêu cầu mới
+    // Chỉ hủy các yêu cầu nếu không phải là tìm kiếm
     if (controllerRef.current) {
       controllerRef.current.abort();
     }
@@ -61,7 +61,8 @@ const useSaleAxios = () => {
       return result.data;
     } catch (error: any) {
       if (axios.isCancel(error)) {
-        console.warn("Request cancelled", error.message);
+        // Không in ra console.warn khi yêu cầu bị hủy
+        console.log("Request was cancelled");
       } else {
         setError(error.response ? error.response.data : error.message);
       }

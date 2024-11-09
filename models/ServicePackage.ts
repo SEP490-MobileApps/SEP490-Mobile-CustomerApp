@@ -2,12 +2,11 @@
 export interface ServicePackage {
   servicePackageId: string,
   name: string;
-  numOfRequest: 8,
+  numOfRequest: number,
   imageUrl: any,
   description: string,
-  status: false,
-  priceByDate: number
-  policy: string;
-  servicesList: string;
+  status: boolean,
+  priceByDate: number,
+  policy: string,
   purchaseTime: string;
 }

@@ -1,6 +1,7 @@
 // app/(tabs)/_layout.tsx
 import {
   Entypo,
+  Feather,
   FontAwesome,
   FontAwesome5,
   MaterialCommunityIcons,
@@ -41,6 +42,19 @@ export default function TabLayout() {
                   size={20}
                   color={color}
                 />
+              ),
+          }}
+        />
+        <Tabs.Screen
+          name="ServicePackageScreen"
+          options={{
+            title: "Tất cả các gói dịch vụ",
+            headerShown: true,
+            tabBarIcon: ({ color, focused }) =>
+              focused ? (
+                <FontAwesome5 name="gift" size={20} color={color} />
+              ) : (
+                <Feather name="gift" size={20} color={color} />
               ),
           }}
         />
@@ -111,9 +125,9 @@ export default function TabLayout() {
             headerShown: true,
             tabBarIcon: ({ color, focused }) =>
               focused ? (
-                <FontAwesome5 name="user-alt" size={20} color={color} />
+                <FontAwesome5 name="user-alt" size={18} color={color} />
               ) : (
-                <FontAwesome5 name="user" size={20} color={color} />
+                <FontAwesome5 name="user" size={18} color={color} />
               ),
           }}
         />

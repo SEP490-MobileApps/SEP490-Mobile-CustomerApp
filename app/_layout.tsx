@@ -75,7 +75,7 @@ function RootLayoutNav() {
               <Stack.Screen
                 name="ServicePackageContract"
                 options={{
-                  title: "Chỉnh sửa chi tiết hợp đồng",
+                  title: "Chi tiết hợp đồng",
                   headerStyle: { backgroundColor: "#3F72AF" },
                   headerTintColor: "#FFF",
                 }}

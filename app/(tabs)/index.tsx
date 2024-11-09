@@ -1,9 +1,9 @@
+// app/(tabs)/index.tsx
 import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, ScrollView, Image } from 'react-native';
 import { Box, Icon, Badge } from 'native-base';
 import { MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import RecentRepairs from '../../components/home/RecentRepairs';
-import ServicePackages from '../../components/home/ServicePackages';
 import CustomerReviews from '../../components/home/CustomerReviews';
 import FloatButton from '../../components/ui/FloatButton';
 import LeaderContactModal from '../../components/home/LeaderContactModal';
@@ -96,15 +96,6 @@ function HomeScreen(): React.JSX.Element {
 
         {/* Đường kẻ phân cách */}
         <View style={styles.divider} />
-
-        {/* Tất cả các gói dịch vụ */}
-        <ServicePackages
-          servicePackages={packages}
-          loading={loading}
-          totalCount={totalCount}
-          currentPage={pageIndex}
-          setPageIndex={setPageIndex}
-        />
 
         {/* Đường kẻ phân cách */}
         <View style={styles.divider} />

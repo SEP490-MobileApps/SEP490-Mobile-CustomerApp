@@ -18,12 +18,12 @@ export default function ServiceTab() {
   return (
     <ScrollView contentContainerStyle={styles.contentContainer} showsVerticalScrollIndicator={false}>
       {filteredPackages.map((pkg) => (
-        <View key={pkg.id} style={styles.serviceCard}>
+        <View key={pkg.servicePackageId} style={styles.serviceCard}>
           <View style={styles.serviceInfo}>
             <FontAwesome name="diamond" size={40} color="#FFA500" />
             <View style={styles.serviceDetails}>
               <Text style={styles.packageName}>{pkg.name}</Text>
-              <Text style={styles.packagePrice}>{pkg.price} VNĐ</Text>
+              <Text style={styles.packagePrice}>{pkg.priceByDate} VNĐ</Text>
             </View>
           </View>
           <View style={styles.dateContainer}>

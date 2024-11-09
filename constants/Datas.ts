@@ -17,10 +17,12 @@ export const orders: Order[] = [
 
 export const servicePackages: ServicePackage[] = [
   {
-    id: '1',
+    servicePackageId: '1',
     purchaseTime: "2024-09-20",
+    numOfRequest: 8,
+    status: false,
     name: 'Gói dịch vụ 9 lần',
-    price: 600000,
+    priceByDate: 600000,
     imageUrl: require('../assets/images/package1.png'),
     description: 'Được sử dụng 9 lượt sửa chữa vĩnh viễn...',
     policy: 'Cam kết bảo hành 30 ngày cho mỗi lần sửa chữa...',
@@ -36,10 +38,12 @@ export const servicePackages: ServicePackage[] = [
   },
 
   {
-    id: '2',
+    servicePackageId: '2',
     purchaseTime: "2024-09-25",
+    numOfRequest: 8,
+    status: false,
     name: 'Gói dịch vụ 3 lần',
-    price: 400000,
+    priceByDate: 400000,
     imageUrl: require('../assets/images/package2.png'),
     description: 'Được sử dụng 3 lượt sửa chữa vĩnh viễn...',
     policy: 'Cam kết bảo hành 30 ngày cho mỗi lần sửa chữa...',
@@ -54,10 +58,12 @@ export const servicePackages: ServicePackage[] = [
     `,
   },
   {
-    id: '3',
+    servicePackageId: '3',
     purchaseTime: "2024-10-20",
+    numOfRequest: 8,
+    status: false,
     name: 'Gói dịch vụ 1 lần',
-    price: 200000,
+    priceByDate: 200000,
     imageUrl: require('../assets/images/package3.png'),
     description: 'Được sử dụng 1 lượt sửa chữa vĩnh viễn...',
     policy: 'Cam kết bảo hành 30 ngày cho mỗi lần sửa chữa...',
@@ -73,10 +79,12 @@ export const servicePackages: ServicePackage[] = [
   },
 
   {
-    id: '4',
+    servicePackageId: '4',
     purchaseTime: "2024-09-02",
     name: 'Gói dịch vụ 2 lần',
-    price: 300000,
+    numOfRequest: 8,
+    status: false,
+    priceByDate: 300000,
     imageUrl: require('../assets/images/package4.png'),
     description: 'Được sử dụng 2 lượt sửa chữa vĩnh viễn...',
     policy: 'Cam kết bảo hành 30 ngày cho mỗi lần sửa chữa...',
@@ -91,10 +99,12 @@ export const servicePackages: ServicePackage[] = [
     `,
   },
   {
-    id: '5',
+    servicePackageId: '5',
     purchaseTime: "2024-12-28",
     name: 'Gói dịch vụ 1 lần',
-    price: 200000,
+    numOfRequest: 8,
+    status: false,
+    priceByDate: 200000,
     imageUrl: require('../assets/images/package4.png'),
     description: 'Được sử dụng 1 lượt sửa chữa vĩnh viễn...',
     policy: 'Cam kết bảo hành 30 ngày cho mỗi lần sửa chữa...',
@@ -127,76 +137,6 @@ export const mockCustomer: User = {
   dateOfBirth: "1990-02-01",
   role: "CUSTOMER"
 };
-
-export const products: Product[] = [
-  {
-    ProductId: "P001",
-    Name: "Ổ Cắm 3 Lỗ",
-    Description: `Ổ cắm 3 lỗ là thiết bị điện tiện dụng, cho phép kết nối nhiều thiết bị cùng lúc. Với thiết kế nhỏ gọn, chất liệu nhựa cách điện bền bỉ, và khả năng chịu tải cao, ổ cắm này phù hợp cho nhiều loại phích cắm khác nhau. Nó cũng có tính năng bảo vệ quá tải, đảm bảo an toàn khi sử dụng`,
-    ImageUrl: "https://cdn.pixabay.com/photo/2016/04/01/12/05/socket-1300518_960_720.png",
-    In_Of_Stock: 10,
-    WarrantyMonths: 12,
-    Status: true,
-    Price: 20000, // Giá hiện tại của sản phẩm
-  },
-  {
-    ProductId: "P002",
-    Name: "Chuông cửa",
-    Description: "Thiết bị báo hiệu khi có khách đến, với âm thanh rõ ràng và thiết kế hiện đại. Chuông cửa dễ lắp đặt và sử dụng, có thể kết nối không dây hoặc có dây tùy theo nhu cầu. Một số mẫu còn tích hợp camera để quan sát và ghi hình, tăng cường an ninh cho ngôi nhà của bạn.",
-    ImageUrl: "https://png.pngtree.com/png-vector/20240518/ourmid/pngtree-smart-camera-doorbell-enhanced-home-security-solution-png-image_12491911.png",
-    In_Of_Stock: 5,
-    WarrantyMonths: 24,
-    Status: true,
-    Price: 300000, // Giá hiện tại của sản phẩm
-  },
-
-  {
-    ProductId: "P003",
-    Name: "Dây điện nhựa",
-    Description: "Dây điện bọc nhựa cách điện, chịu nhiệt tốt, an toàn cho các công trình điện dân dụng và công nghiệp. Dây điện nhựa có nhiều loại kích thước và màu sắc khác nhau, phù hợp với nhiều mục đích sử dụng. Chất liệu nhựa bền bỉ giúp bảo vệ lõi dây khỏi các tác động bên ngoài, đảm bảo an toàn và độ bền cao.",
-    ImageUrl: "https://png.pngtree.com/png-clipart/20231101/original/pngtree-coil-of-a-wire-pipe-photo-png-image_13474160.png",
-    In_Of_Stock: 8,
-    WarrantyMonths: 24,
-    Status: true,
-    Price: 45000, // Giá hiện tại của sản phẩm
-  },
-
-  {
-    ProductId: "P004",
-    Name: "Máy nước nóng cao cấp",
-    Description: "Thiết bị làm nóng nước nhanh chóng, tiết kiệm năng lượng, với nhiều chế độ điều chỉnh nhiệt độ và tính năng an toàn cao. Máy nước nóng cao cấp thường có thiết kế sang trọng, dễ dàng lắp đặt và sử dụng. Một số mẫu còn tích hợp công nghệ chống giật và bảo vệ quá nhiệt, đảm bảo an toàn tuyệt đối cho người sử dụng.",
-    ImageUrl: "https://daihiep.com/wp-content/uploads/2019/10/REI-A450AP-WB.png",
-    In_Of_Stock: 2,
-    WarrantyMonths: 6,
-    Status: true,
-    Price: 2000000, // Giá hiện tại của sản phẩm
-  },
-
-
-];
-
-// export const customers: User[] = [
-//   {
-//     customerId: '123',
-//     fullName: 'Võ Hoàng Vũ',
-//     email: 'vu@gmail.com',
-//     phoneNumber: '0898901823',
-//     avatarUrl: 'https://via.placeholder.com/150',
-//     dateOfBirth: '2024-09-24T10:00:00Z',
-//     cmtCccd: '067865444678',
-//   },
-
-//   {
-//     customerId: '456',
-//     fullName: 'Nguyễn Thị Bích',
-//     email: 'bich@gmail.com',
-//     phoneNumber: '0898901824',
-//     avatarUrl: 'https://via.placeholder.com/150',
-//     dateOfBirth: '2024-09-24T10:00:00Z',
-//     cmtCccd: '067865444679',
-//   },
-
-// ];
 
 export const repairRequests: RepairRequest[] = [
   {

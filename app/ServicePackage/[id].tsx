@@ -1,20 +1,26 @@
 // app/ServicePackage/[id].tsx
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Button } from 'native-base';
-import { servicePackages } from '../../constants/Datas';
 import { FormatPriceToVnd } from '../../utils/PriceUtils';
+import useServicePackages from '../../hooks/useServicePackage';
 
 export default function ServicePackageDetail() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
-  const packageItem = servicePackages.find((pkg) => pkg.id === id);
+  const { fetchServicePackageDetail, servicePackageDetail, loading } = useServicePackages();
 
-  if (!packageItem) {
+  useEffect(() => {
+    if (id) {
+      fetchServicePackageDetail(id as string);
+    }
+  }, [id]);
+
+  if (loading || !servicePackageDetail) {
     return (
       <View style={styles.container}>
-        <Text style={styles.errorText}>Gói dịch vụ không tồn tại.</Text>
+        <Text>{loading ? 'Loading...' : 'Gói dịch vụ không tồn tại.'}</Text>
       </View>
     );
   }
@@ -22,37 +28,26 @@ export default function ServicePackageDetail() {
   const handleRegisterPress = () => {
     router.push({
       pathname: '/ServicePackageContract',
-      params: {
-        packageItem: JSON.stringify(packageItem), // Truyền toàn bộ gói dịch vụ dưới dạng chuỗi JSON
-      },
+      params: { packageItem: JSON.stringify(servicePackageDetail) },
     });
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      {/* Ảnh gói dịch vụ, tên và giá */}
       <View style={styles.header}>
-        <Image source={packageItem.imageUrl} style={styles.image} />
-        <Text style={styles.packageName}>{packageItem.name}</Text>
-        <Text style={styles.packagePrice}>{FormatPriceToVnd(packageItem.price)}</Text>
+        <Image source={{ uri: servicePackageDetail.imageUrl }} style={styles.image} />
+        <Text style={styles.packageName}>{servicePackageDetail.name}</Text>
+        <Text style={styles.packagePrice}>{FormatPriceToVnd(servicePackageDetail.priceByDate)}</Text>
       </View>
 
-      {/* Divider */}
       <View style={styles.divider} />
 
-      {/* Mô tả gói */}
       <Text style={styles.sectionTitle}>Mô tả gói:</Text>
-      <Text style={styles.sectionContent}>{packageItem.description}</Text>
+      <Text style={styles.sectionContent}>{servicePackageDetail.description}</Text>
 
-      {/* Chính sách gói */}
       <Text style={styles.sectionTitle}>Chính sách:</Text>
-      <Text style={styles.sectionContent}>{packageItem.policy}</Text>
+      <Text style={styles.sectionContent}>{servicePackageDetail.policy}</Text>
 
-      {/* Danh sách các dịch vụ sửa chữa gói */}
-      <Text style={styles.sectionTitle}>Danh sách các dịch vụ sửa chữa gói:</Text>
-      <Text style={styles.servicesList}>{packageItem.servicesList}</Text>
-
-      {/* Nút Đăng Ký */}
       <Button style={styles.registerButton} onPress={handleRegisterPress}>
         ĐĂNG KÝ
       </Button>
