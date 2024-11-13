@@ -1,55 +1,57 @@
 // hooks/useServicePackage.ts
-import { useState, useEffect } from 'react';
+import { useCallback, useState } from 'react';
 import useSaleAxios from '../utils/useSaleAxios';
 import { ServicePackage } from '../models/ServicePackage';
 
-const useServicePackages = (pageIndex: number = 1, pageSize: number = 8, searchByName: string = '') => {
-  const { fetchData, error } = useSaleAxios();
+const useServicePackages = () => {
+  const { fetchData } = useSaleAxios();
   const [packages, setPackages] = useState<ServicePackage[]>([]);
   const [totalCount, setTotalCount] = useState<number>(0);
   const [servicePackageDetail, setServicePackageDetail] = useState<ServicePackage | null>(null);
-  const [draftContract, setDraftContract] = useState<any | null>(null);
+  const [contracts, setContracts] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [apiError, setApiError] = useState<string | null>(null);
+  const [draftContract, setDraftContract] = useState<any | null>(null); // Thêm state để lưu hợp đồng nháp
+  const servicePackageCache = new Map(); // Cache for service package details to avoid redundant calls
 
-  // Fetch list of service packages with pagination and optional search
-  useEffect(() => {
-    let isMounted = true;
-    const fetchPackages = async () => {
-      setLoading(true);
-      try {
-        const response = await fetchData({
-          url: '/service-package/5',
-          method: 'GET',
-          params: {
-            PageIndex: pageIndex,
-            PageSize: pageSize,
-            Status: false,
-            SearchByName: searchByName, // New search parameter added
-          },
-        });
-        if (response && isMounted) {
-          setPackages((prev) => (pageIndex === 1 ? response[0] || [] : [...prev, ...(response[0] || [])]));
-          setTotalCount(response[1] || 0);
-        }
-      } catch (error) {
-        console.error('Error fetching service packages:', error);
-      } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
+  // Fetch list of service packages
+  const fetchPackages = useCallback(async (pageIndex: number = 1, pageSize: number = 8, searchByName: string = '') => {
+    setLoading(true);
+    setApiError(null);
+    try {
+      const response = await fetchData({
+        url: '/service-package/5',
+        method: 'GET',
+        params: {
+          PageIndex: pageIndex,
+          PageSize: pageSize,
+          Status: false,
+          SearchByName: searchByName,
+        },
+      });
+      if (response) {
+        setPackages(response[0] || []);
+        setTotalCount(response[1] || 0);
       }
-    };
-
-    fetchPackages();
-    return () => {
-      isMounted = false;
-    };
-  }, [pageIndex, pageSize, searchByName]);
+    } catch (error) {
+      setApiError('Không thể tải dữ liệu gói dịch vụ.');
+      console.error('Lỗi tải dữ liệu gói dịch vụ:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [fetchData]);
 
   // Fetch detailed information about a service package
-  const fetchServicePackageDetail = async (servicePackageId: string) => {
+  const fetchServicePackageDetail = useCallback(async (servicePackageId: string) => {
     setLoading(true);
+    setApiError(null);
     try {
+      // Check cache first
+      if (servicePackageCache.has(servicePackageId)) {
+        setServicePackageDetail(servicePackageCache.get(servicePackageId));
+        return;
+      }
+
       const response = await fetchData({
         url: '/service-package/4',
         method: 'GET',
@@ -58,43 +60,94 @@ const useServicePackages = (pageIndex: number = 1, pageSize: number = 8, searchB
 
       if (response) {
         setServicePackageDetail(response);
+        // Cache the response for future use
+        servicePackageCache.set(servicePackageId, response);
       }
     } catch (error) {
-      console.error('Error fetching service package detail:', error);
+      setApiError('Không thể tải thông tin chi tiết gói dịch vụ.');
+      console.error('Lỗi tải thông tin chi tiết gói dịch vụ:', error);
     } finally {
       setLoading(false);
     }
-  };
+  }, [fetchData]);
 
-  // Create a draft contract for a service package
-  const createDraftContract = async (servicePackageId: string) => {
+  // Fetch customer contracts and enrich with service package details
+  const fetchCustomerContracts = useCallback(async (customerId: string) => {
     setLoading(true);
+    setApiError(null);
+    try {
+      const response = await fetchData({
+        url: '/service-package/12',
+        method: 'GET',
+        params: { CustomerId: customerId },
+      });
+
+      if (response) {
+        const enrichedContracts = await Promise.all(
+          response.map(async (contract: any) => {
+            // Check cache for service package details first
+            let packageDetails = servicePackageCache.get(contract.servicePackageId);
+            if (!packageDetails) {
+              // If not in cache, fetch the details
+              const packageResponse = await fetchData({
+                url: '/service-package/4',
+                method: 'GET',
+                params: { ServicePackageId: contract.servicePackageId },
+              });
+              if (packageResponse) {
+                packageDetails = packageResponse;
+                servicePackageCache.set(contract.servicePackageId, packageResponse);
+              }
+            }
+
+            return {
+              ...contract,
+              ...packageDetails,
+            };
+          })
+        );
+        setContracts(enrichedContracts);
+      }
+    } catch (error) {
+      setApiError('Không thể tải dữ liệu hợp đồng.');
+      console.error('Lỗi tải dữ liệu hợp đồng:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [fetchData]);
+
+  const createDraftContract = useCallback(async (servicePackageId: string) => {
+    setLoading(true);
+    setApiError(null);
     try {
       const response = await fetchData({
         url: '/service-package/6',
         method: 'GET',
         params: { servicePackageId },
       });
-
       if (response) {
-        setDraftContract(response);
+        setDraftContract(response); // Lưu dữ liệu hợp đồng nháp
       }
     } catch (error) {
-      console.error('Error creating draft contract:', error);
+      setApiError('Không thể tạo hợp đồng nháp.');
+      console.error('Lỗi tạo hợp đồng nháp:', error);
     } finally {
       setLoading(false);
     }
-  };
+  }, [fetchData]);
 
   return {
     packages,
     totalCount,
     servicePackageDetail,
+    contracts,
     draftContract,
+    fetchPackages,
     fetchServicePackageDetail,
+    fetchCustomerContracts,
     createDraftContract,
     loading,
-    error,
+    apiError,
   };
 };
 

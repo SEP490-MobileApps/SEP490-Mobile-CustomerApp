@@ -1,16 +1,17 @@
-// app/(auth)/index.tsx
+/// app/(auth)/index.tsx
 import React from "react";
-import { View, Text, TextInput, StyleSheet, Alert, TouchableOpacity, Keyboard } from "react-native";
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Keyboard } from "react-native";
 import { useRouter } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
-import { Button, Checkbox, Spinner, HStack } from "native-base";
+import { Button, Checkbox, Spinner, HStack, Icon } from "native-base";
 import { useAuth } from "../../hooks/useAuth";
 import { useGlobalState } from "../../contexts/GlobalProvider";
+import { MaterialIcons } from "@expo/vector-icons";
 
 export default function LoginScreen() {
   const router = useRouter();
   const { handleLogin } = useAuth();
-  const { loading, setLoading } = useGlobalState();
+  const { loadingLogin, setLoadingLogin } = useGlobalState();
   const { control, handleSubmit, formState: { errors } } = useForm({
     defaultValues: {
       emailOrPhone: "",
@@ -20,20 +21,21 @@ export default function LoginScreen() {
   });
 
   const onSubmit = async (data: { emailOrPhone: string; password: string }) => {
-    Keyboard.dismiss(); // Ẩn bàn phím khi bắt đầu đăng nhập
-    setLoading(true);
+    Keyboard.dismiss();
+    setLoadingLogin(true);
     const isLoginSuccessful = await handleLogin(data.emailOrPhone, data.password);
+    setLoadingLogin(false);
 
     if (isLoginSuccessful) {
-      router.replace("/(tabs)"); // Chỉ điều hướng khi đăng nhập thành công và vai trò là CUSTOMER
+      router.replace("/(tabs)");
     }
-
-    setLoading(false);
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Xin chào!</Text>
+      <Text style={styles.title}>Xin Chào Bạn,</Text>
+      <Text style={styles.subtitle}>Hãy Đăng Nhập Để Khám Phá Những Tính Năng Của Chúng Tôi</Text>
+
       <Controller
         name="emailOrPhone"
         control={control}
@@ -45,51 +47,62 @@ export default function LoginScreen() {
           },
         }}
         render={({ field: { onChange, value } }) => (
-          <View>
+          <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
-              placeholder="Email hoặc SĐT"
+              placeholder="Địa chỉ Email/Số điện thoại"
               onChangeText={onChange}
               value={value}
+              placeholderTextColor="#B0B3B8"
             />
+            <Icon as={MaterialIcons} name="email" size={5} color="#B0B3B8" style={styles.inputIcon} />
             {errors.emailOrPhone && <Text style={styles.error}>{errors.emailOrPhone.message}</Text>}
           </View>
         )}
       />
+
       <Controller
         name="password"
         control={control}
         rules={{
           required: "Mật khẩu không được để trống",
-          minLength: { value: 6, message: "Mật khẩu phải có ít nhất 6 ký tự" },
         }}
         render={({ field: { onChange, value } }) => (
-          <View>
+          <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
               placeholder="Mật khẩu"
               secureTextEntry
               onChangeText={onChange}
               value={value}
+              placeholderTextColor="#B0B3B8"
             />
+            <Icon as={MaterialIcons} name="lock" size={5} color="#B0B3B8" style={styles.inputIcon} />
             {errors.password && <Text style={styles.error}>{errors.password.message}</Text>}
           </View>
         )}
       />
-      <Checkbox value="rememberMe" accessibilityLabel="Ghi nhớ đăng nhập">
-        Ghi nhớ đăng nhập
-      </Checkbox>
-      <Button onPress={handleSubmit(onSubmit)} isDisabled={loading} style={styles.loginButton}>
+
+      <View style={styles.row}>
+        <Checkbox value="rememberMe" accessibilityLabel="Ghi nhớ đăng nhập">
+          Ghi nhớ đăng nhập
+        </Checkbox>
+        <TouchableOpacity onPress={() => router.push("/(auth)/ForgotPasswordScreen")}>
+          <Text style={styles.forgotPassword}>Quên mật khẩu?</Text>
+        </TouchableOpacity>
+      </View>
+
+      <Button onPress={handleSubmit(onSubmit)} isDisabled={loadingLogin} style={styles.loginButton}>
         <HStack space={2} alignItems="center">
-          {loading && <Spinner size="sm" color="white" />}
-          <Text style={styles.buttonText}>Đăng nhập</Text>
+          {loadingLogin && <Spinner size="sm" color="white" />}
+          <Text style={styles.buttonText}>ĐĂNG NHẬP</Text>
         </HStack>
       </Button>
-      <TouchableOpacity onPress={() => router.push("/(auth)/ForgotPasswordScreen")}>
-        <Text style={styles.link}>Quên mật khẩu?</Text>
-      </TouchableOpacity>
+
       <TouchableOpacity onPress={() => router.push("/(auth)/RegisterScreen")}>
-        <Text style={styles.link}>Chưa có tài khoản? Đăng ký ngay!</Text>
+        <Text style={styles.registerLink}>
+          Bạn chưa có tài khoản? <Text style={styles.registerText}>Đăng ký tại đây!</Text>
+        </Text>
       </TouchableOpacity>
     </View>
   );
@@ -97,10 +110,17 @@ export default function LoginScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 16, backgroundColor: '#fff' },
-  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 10 },
-  input: { width: '100%', height: 40, borderColor: 'gray', borderWidth: 1, marginBottom: 12, paddingHorizontal: 10, borderRadius: 5 },
-  error: { color: "red", fontSize: 12 },
-  loginButton: { width: '100%', marginTop: 20 },
-  buttonText: { color: "white", fontWeight: "bold" },
-  link: { color: '#3F72AF', textDecorationLine: 'underline', marginTop: 10 },
+  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 8 },
+  subtitle: { fontSize: 14, color: '#6C757D', textAlign: 'center', marginBottom: 23 },
+  inputContainer: { width: '100%', marginBottom: 15, position: 'relative' },
+  input: { width: '100%', height: 50, borderColor: '#DBE2EF', borderWidth: 1, borderRadius: 10, paddingHorizontal: 40, backgroundColor: '#F0F4F8' },
+  inputIcon: { position: 'absolute', left: 10, top: 15 },
+  error: { color: "red", fontSize: 12, marginTop: 4 },
+  row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginBottom: 23 },
+  forgotPassword: { color: '#3F72AF', textDecorationLine: 'underline' },
+  loginButton: { width: '100%', height: 50, backgroundColor: '#3F72AF', justifyContent: 'center', borderRadius: 10 },
+  buttonText: { color: "white", fontWeight: "bold", fontSize: 16 },
+  registerLink: { color: '#6C757D', marginTop: 20 },
+  registerText: { color: '#3F72AF', fontWeight: 'bold' },
 });
+

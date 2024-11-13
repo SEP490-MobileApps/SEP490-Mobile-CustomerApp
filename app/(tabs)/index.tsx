@@ -1,56 +1,51 @@
 // app/(tabs)/index.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Text, View, StyleSheet, ScrollView, Image } from 'react-native';
 import { Box, Icon, Badge } from 'native-base';
 import { MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import RecentRepairs from '../../components/home/RecentRepairs';
 import CustomerReviews from '../../components/home/CustomerReviews';
+import CustomerInUseContract from '../../components/home/CustomerInUseContract'; // Import component mới
 import FloatButton from '../../components/ui/FloatButton';
 import LeaderContactModal from '../../components/home/LeaderContactModal';
-import useServicePackages from '../../hooks/useServicePackage';
-import useUser from '../../hooks/useUser'; // Import useUser
+import { useFocusEffect } from '@react-navigation/native'; // Import useFocusEffect
+import useUser from '../../hooks/useUser';
+import useRequest from '../../hooks/useRequest';
+import useServicePackages from '../../hooks/useServicePackage'; // Import custom hook mới
+import { useGlobalState } from '@/contexts/GlobalProvider';
+import NoDataComponent from '@/components/ui/NoDataComponent';
 
-type LeaderInfo = {
-  name: string;
-  phoneNumber: string;
-  avatarUrl: string;
-};
-
-const fetchLeaderInfo = async (): Promise<LeaderInfo> => {
-  return {
-    name: "Võ Hoàng Vũ",
-    phoneNumber: "0898901823",
-    avatarUrl: "https://www.pngplay.com/wp-content/uploads/12/User-Avatar-Profile-PNG-Photos.png",
-  };
-};
 
 function HomeScreen(): React.JSX.Element {
-  const notificationsCount = 2;
+  const { user, leaderInfo, fetchUserAndLeader, loading: userLoading } = useUser();
+  const { requests, feedbacks, fetchRecentRequests, fetchFeedbacks, loading: requestLoading } = useRequest();
+  const { contracts, fetchCustomerContracts, loading: contractLoading } = useServicePackages();
   const [isModalOpen, setModalOpen] = useState(false);
-  const [leaderInfo, setLeaderInfo] = useState<LeaderInfo | null>(null);
-  const [pageIndex, setPageIndex] = useState(1);
+  const { userInfo } = useGlobalState();
 
-  const { packages, totalCount, loading } = useServicePackages(pageIndex, 2);
-  const { user } = useUser(); // Sử dụng dữ liệu từ useUser
+  useFocusEffect(
+    React.useCallback(() => {
+      // Fetch user and leader information
+      fetchUserAndLeader();
 
-  useEffect(() => {
-    const getLeaderInfo = async () => {
-      const data = await fetchLeaderInfo();
-      setLeaderInfo(data);
-    };
-    getLeaderInfo();
-  }, []);
+      // Fetch recent requests
+      fetchRecentRequests(3);
+
+      // Fetch customer contracts if user accountId exists
+      if (userInfo?.accountId) {
+        fetchCustomerContracts(userInfo.accountId);
+      }
+
+      fetchFeedbacks();
+
+    }, []) // No dependencies
+  );
 
   const handleFloatButtonPress = () => {
     setModalOpen(true);
   };
 
   const closeModal = () => {
-    setModalOpen(false);
-  };
-
-  const handleContactPress = () => {
-    console.log('Liên hệ với leader');
     setModalOpen(false);
   };
 
@@ -66,22 +61,6 @@ function HomeScreen(): React.JSX.Element {
             />
             <Text style={styles.userName}>{user?.fullName || 'Người dùng chưa xác định'}</Text>
           </View>
-          <View style={styles.notificationIconContainer}>
-            <Icon as={MaterialIcons} name="notifications" size="8" color="#3F72AF" />
-            {notificationsCount > 0 && (
-              <Badge
-                colorScheme="danger"
-                rounded="full"
-                position="absolute"
-                top={-5}
-                right={-5}
-                zIndex={1}
-                variant="solid"
-              >
-                {notificationsCount}
-              </Badge>
-            )}
-          </View>
         </Box>
 
         {/* Ảnh chính */}
@@ -92,16 +71,51 @@ function HomeScreen(): React.JSX.Element {
         />
 
         {/* Phần sửa chữa gần đây */}
-        <RecentRepairs />
+        {requestLoading ? (
+          <Text>Đang tải dữ liệu...</Text>
+        ) : requests.length === 0 ? (
+          <NoDataComponent
+            imageUrl={require('../../assets/images/no-request.png')}
+            title="Không có yêu cầu sửa chữa"
+            description="Hiện tại bạn không có yêu cầu sửa chữa nào."
+          />
+        ) : (
+          <RecentRepairs requests={requests} />
+        )}
 
         {/* Đường kẻ phân cách */}
         <View style={styles.divider} />
+
+        {/* Phần hợp đồng đang sử dụng */}
+        <Text style={styles.title}>HỢP ĐỒNG ĐANG SỬ DỤNG</Text>
+        {contractLoading ? (
+          <Text>Đang tải dữ liệu hợp đồng...</Text>
+        ) : contracts.length === 0 ? (
+          <NoDataComponent
+            imageUrl={require('../../assets/images/no-contract.png')}
+            title="Không có hợp đồng"
+            description="Hiện tại bạn không có hợp đồng nào đang được sử dụng."
+          />
+        ) : (
+          contracts.map((contract) => (
+            <CustomerInUseContract key={contract.contractId} contract={contract} />
+          ))
+        )}
 
         {/* Đường kẻ phân cách */}
         <View style={styles.divider} />
 
         {/* Phần đánh giá từ khách hàng */}
-        <CustomerReviews />
+        {/* Phần đánh giá từ khách hàng */}
+        {feedbacks.length === 0 ? (
+          <NoDataComponent
+            imageUrl={require('../../assets/images/no-review.png')}
+            title="Không có đánh giá"
+            description="Hiện tại chưa có đánh giá nào cho dịch vụ này."
+          />
+        ) : (
+          <CustomerReviews feedbacks={feedbacks} />
+        )}
       </ScrollView>
 
       {/* Nút Float Button với icon tùy chỉnh */}
@@ -116,7 +130,7 @@ function HomeScreen(): React.JSX.Element {
           isOpen={isModalOpen}
           onClose={closeModal}
           leader={leaderInfo}
-          onContactPress={handleContactPress}
+          onContactPress={() => { }}
         />
       )}
     </View>
@@ -155,9 +169,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  notificationIconContainer: {
-    position: 'relative',
-  },
   homeImage: {
     width: '100%',
     height: 150,
@@ -166,9 +177,16 @@ const styles = StyleSheet.create({
   },
   divider: {
     height: 1,
-    backgroundColor: '#000',
+    backgroundColor: '#112D4E',
     marginVertical: 20,
   },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    textAlign: 'center',
+    color: '#112D4E'
+  }
 });
 
 export default HomeScreen;

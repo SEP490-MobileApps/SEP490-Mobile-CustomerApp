@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+// components/home/RecentRepairs.tsx
+import React, { useMemo, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Collapsible from 'react-native-collapsible';
-import { repairRequests } from '../../constants/Datas';
 import { MaterialIcons } from '@expo/vector-icons';
 import NewRequestAccordion from './NewRequestAccordion';
 import InProgressAccordion from './InProgressAccordion';
@@ -10,8 +10,17 @@ import CanceledRequestAccordion from './CanceledRequestAccordion';
 import { RepairRequest } from '../../models/RepairRequest';
 import { formatDate } from '../../utils/formatDate';
 
-function RecentRepairs(): React.JSX.Element {
+interface RecentRepairsProps {
+  requests: RepairRequest[];
+}
+
+const RecentRepairs: React.FC<RecentRepairsProps> = ({ requests }) => {
   const [expandedRequestId, setExpandedRequestId] = useState<string | null>(null);
+
+  const sortedRequests = useMemo(() => {
+    const sorted = [...requests].sort((a, b) => a.status - b.status);
+    return sorted.slice(0, 3); // Get top 3 requests
+  }, [requests]);
 
   const toggleAccordion = (requestId: string) => {
     setExpandedRequestId(expandedRequestId === requestId ? null : requestId);
@@ -19,28 +28,28 @@ function RecentRepairs(): React.JSX.Element {
 
   const renderAccordionContent = (request: RepairRequest) => {
     switch (request.status) {
-      case 'requested':
+      case 0: // requested
         return <NewRequestAccordion key={request.requestId} request={request} />;
-      case 'processing':
+      case 1: // processing
         return <InProgressAccordion key={request.requestId} request={request} />;
-      case 'done':
+      case 2: // done
         return <CompletedRequestAccordion key={request.requestId} request={request} />;
-      case 'canceled':
+      case 3: // canceled
         return <CanceledRequestAccordion key={request.requestId} request={request} />;
       default:
         return null;
     }
   };
 
-  const renderBadge = (status: string) => {
+  const renderBadge = (status: number) => {
     switch (status) {
-      case 'requested':
+      case 0:
         return <View style={[styles.badge, styles.newBadge]}><Text style={styles.badgeText}>Yêu Cầu Mới</Text></View>;
-      case 'processing':
+      case 1:
         return <View style={[styles.badge, styles.inProgressBadge]}><Text style={styles.badgeText}>Đang Thực Hiện</Text></View>;
-      case 'done':
+      case 2:
         return <View style={[styles.badge, styles.completedBadge]}><Text style={styles.badgeText}>Hoàn Thành</Text></View>;
-      case 'canceled':
+      case 3:
         return <View style={[styles.badge, styles.canceledBadge]}><Text style={styles.badgeText}>Hủy Bỏ</Text></View>;
       default:
         return null;
@@ -50,10 +59,10 @@ function RecentRepairs(): React.JSX.Element {
   return (
     <View>
       <Text style={styles.sectionTitle}>NHỮNG LẦN SỬA CHỮA GẦN ĐÂY</Text>
-      {repairRequests.slice(0, 3).map((request) => (
+      {sortedRequests.map((request) => (
         <View key={request.requestId} style={styles.accordionContainer}>
           <TouchableOpacity onPress={() => toggleAccordion(request.requestId)} style={styles.header}>
-            <Text style={styles.headerDate}>Ngày: {formatDate(request.start)}</Text>
+            <Text style={styles.headerDate}>Mã căn hộ: {request.roomId}</Text>
             <View style={styles.rowContainer}>
               {renderBadge(request.status)}
               <MaterialIcons name={expandedRequestId === request.requestId ? "expand-less" : "expand-more"} size={24} color="white" style={styles.arrowIcon} />
@@ -66,7 +75,7 @@ function RecentRepairs(): React.JSX.Element {
       ))}
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -100,7 +109,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
-    marginRight: 2, // Khoảng cách giữa badge và mũi tên
+    marginRight: 2,
   },
   badgeText: {
     color: '#112D4E',

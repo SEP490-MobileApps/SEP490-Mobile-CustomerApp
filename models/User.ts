@@ -1,10 +1,10 @@
 // models/User.ts
 export interface User {
   accountId: string;
-  email: string;
   fullName: string;
-  dateOfBirth: string;
+  email: string;
+  avatarUrl?: string;
   phoneNumber: string;
-  avatarUrl: string;
+  dateOfBirth: string;
   role: string;
 }

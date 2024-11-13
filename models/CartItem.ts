@@ -1,8 +1,8 @@
 // models/CartItem.ts
 export interface CartItem {
-  id: string;
+  productId: string;
   name: string;
-  price: number;
+  priceByDate: number;
   quantity: number;
   imageUrl: string;
 }

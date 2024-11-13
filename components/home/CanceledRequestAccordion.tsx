@@ -1,6 +1,7 @@
-import React from 'react';
+// components/home/CanceledRequestAccordion.tsx
+import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Pressable } from 'native-base';
+import { Pressable, Modal, Button } from 'native-base';
 import { RepairRequest } from '../../models/RepairRequest';
 import { COLORS } from '../../constants/Colors';
 import { formatDate } from '../../utils/formatDate';
@@ -10,42 +11,46 @@ interface Props {
 }
 
 const CanceledRequestAccordion: React.FC<Props> = ({ request }) => {
+  const [isConclusionModalOpen, setConclusionModalOpen] = useState(false);
+
   return (
     <View style={styles.container}>
       <View style={styles.row}>
-        <Text style={styles.label}>Ngày hủy:</Text>
-        <Text style={styles.value}>{formatDate(request.end || '')}</Text>
+        <Text>Ngày hủy:</Text>
+        <Text>{formatDate(request.end || '')}</Text>
       </View>
       <View style={styles.divider} />
       <View style={styles.row}>
-        <Text style={styles.label}>Lý do hủy:</Text>
-        <Pressable>
-          <Text style={styles.detailLink}>chi tiết</Text>
-        </Pressable>
+        <Text>Lý do hủy:</Text>
+        <Button size="xs" variant="link" onPress={() => setConclusionModalOpen(true)}>Xem chi tiết</Button>
       </View>
+
+      {/* Modal hiện thông tin kết luận */}
+      <Modal isOpen={isConclusionModalOpen} onClose={() => setConclusionModalOpen(false)}>
+        <Modal.Content>
+          <Modal.CloseButton />
+          <Modal.Header>Chi tiết lý do hủy</Modal.Header>
+          <Modal.Body>
+            <Text>{request.conclusion || 'Không có lý do'}</Text>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    padding: 12,
+    padding: 10,
     backgroundColor: COLORS.newRequest,
     borderRadius: 8,
   },
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 5,
   },
-  label: {
-    fontWeight: '600',
-  },
-  value: {
-    color: COLORS.primaryText,
-  },
-  detailLink: {
+  link: {
     color: COLORS.link,
     textDecorationLine: 'underline',
   },

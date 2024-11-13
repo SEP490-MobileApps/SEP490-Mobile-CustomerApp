@@ -1,49 +1,37 @@
 // app/CartScreen.tsx
-import React, { useState } from 'react';
+import React, { useCallback, useState, useRef } from 'react';
 import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
-import { Button, Icon } from 'native-base';
+import { Button, Icon, AlertDialog } from 'native-base';
 import { FontAwesome } from '@expo/vector-icons';
 import { FormatPriceToVnd } from '../utils/PriceUtils';
 import NoDataComponent from '../components/ui/NoDataComponent';
-
-const initialCartItems = [
-  {
-    id: '1',
-    name: 'Vòi chậu rửa nhôm cao cấp',
-    price: 4600000,
-    quantity: 2,
-    imageUrl: 'https://inaxvn.com/uploads/shops/voi-lavabo/voi-chau-rua-lavabo-lanh-inax-lfv-21s.png',
-  },
-  {
-    id: '2',
-    name: 'Ổ cắm 3 lỗ hiện đại',
-    price: 60000,
-    quantity: 3,
-    imageUrl: 'https://cdn.pixabay.com/photo/2016/04/01/12/05/socket-1300518_960_720.png',
-  },
-];
+import useProducts from '../hooks/useProduct'; // Import hook useProducts
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function CartScreen() {
-  const [cartItems, setCartItems] = useState(initialCartItems);
+  const { cartItems, totalAmount, fetchCartItems, deleteCartItem } = useProducts(); // Add deleteCartItem function from hook
+  const [isOpen, setIsOpen] = useState(false); // State for AlertDialog
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+  const onClose = () => setIsOpen(false);
+  const cancelRef = useRef(null); // Ref for least destructive action
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchCartItems(); // Fetch cart items when screen is focused
+    }, [])
+  );
+
+  const handleDeleteItem = async () => {
+    if (selectedProductId) {
+      await deleteCartItem(selectedProductId); // Call API to delete product
+      fetchCartItems(); // Refresh the cart items
+      onClose(); // Close the AlertDialog
+    }
+  };
 
   const updateQuantity = (id: string, action: 'increase' | 'decrease') => {
-    setCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === id
-          ? {
-            ...item,
-            quantity: action === 'increase' ? item.quantity + 1 : Math.max(1, item.quantity - 1),
-          }
-          : item
-      )
-    );
+    // Logic to update product quantity (if necessary)
   };
-
-  const removeItem = (id: string) => {
-    setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
-  };
-
-  const totalAmount = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
     <View style={styles.container}>
@@ -57,24 +45,31 @@ export default function CartScreen() {
         <>
           <FlatList
             data={cartItems}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => item.productId}
             renderItem={({ item }) => (
               <View style={styles.itemContainer}>
                 <Image source={{ uri: item.imageUrl }} style={styles.image} />
                 <View style={styles.detailsContainer}>
                   <Text style={styles.name}>{item.name}</Text>
+                  <Text style={styles.price}>{FormatPriceToVnd(item.priceByDate)}</Text>
                   <View style={styles.quantityContainer}>
-                    <TouchableOpacity onPress={() => updateQuantity(item.id, 'decrease')}>
+                    <TouchableOpacity onPress={() => updateQuantity(item.productId, 'decrease')}>
                       <Text style={styles.quantityButton}>−</Text>
                     </TouchableOpacity>
-                    <Text style={styles.quantity}>{item.quantity}</Text>
-                    <TouchableOpacity onPress={() => updateQuantity(item.id, 'increase')}>
+                    <View style={styles.quantityBox}>
+                      <Text style={styles.quantity}>{item.quantity}</Text>
+                    </View>
+                    <TouchableOpacity onPress={() => updateQuantity(item.productId, 'increase')}>
                       <Text style={styles.quantityButton}>+</Text>
                     </TouchableOpacity>
                   </View>
-                  <Text style={styles.price}>{FormatPriceToVnd(item.price)}</Text>
                 </View>
-                <TouchableOpacity onPress={() => removeItem(item.id)}>
+                <TouchableOpacity
+                  onPress={() => {
+                    setSelectedProductId(item.productId);
+                    setIsOpen(true); // Open AlertDialog
+                  }}
+                >
                   <FontAwesome name="remove" size={24} color="red" />
                 </TouchableOpacity>
               </View>
@@ -91,6 +86,31 @@ export default function CartScreen() {
           </Button>
         </>
       )}
+
+      {/* AlertDialog for delete confirmation */}
+      <AlertDialog
+        leastDestructiveRef={cancelRef}
+        isOpen={isOpen}
+        onClose={onClose}
+        closeOnOverlayClick={false} // Đảm bảo việc bấm ra ngoài sẽ không đóng dialog
+      >
+        <AlertDialog.Content>
+          <AlertDialog.CloseButton />
+          <AlertDialog.Header>Xác nhận xóa</AlertDialog.Header>
+          <AlertDialog.Body>
+            Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng không?
+          </AlertDialog.Body>
+          <AlertDialog.Footer>
+            <Button ref={cancelRef} onPress={onClose} variant="ghost" colorScheme="coolGray">
+              Hủy
+            </Button>
+            <Button colorScheme="red" onPress={handleDeleteItem} ml={3}>
+              Xóa
+            </Button>
+          </AlertDialog.Footer>
+        </AlertDialog.Content>
+      </AlertDialog>
+
     </View>
   );
 }
@@ -122,6 +142,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 8,
   },
+  price: {
+    fontSize: 16,
+    color: '#3F72AF',
+    marginBottom: 8,
+  },
   quantityContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -131,13 +156,16 @@ const styles = StyleSheet.create({
     fontSize: 20,
     paddingHorizontal: 10,
   },
+  quantityBox: {
+    borderWidth: 1,
+    borderColor: '#112D4E',
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 4,
+    marginHorizontal: 8,
+  },
   quantity: {
     fontSize: 16,
-    paddingHorizontal: 10,
-  },
-  price: {
-    fontSize: 16,
-    color: '#3F72AF',
   },
   footer: {
     flexDirection: 'row',

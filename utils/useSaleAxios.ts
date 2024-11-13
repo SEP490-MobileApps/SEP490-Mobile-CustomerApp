@@ -1,7 +1,7 @@
 // utils/useSaleAxios.ts
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 const useSaleAxios = () => {
   const [error, setError] = useState<string>("");
@@ -21,15 +21,13 @@ const useSaleAxios = () => {
     (error) => Promise.reject(error)
   );
 
-  type Method = "GET" | "POST" | "PUT" | "DELETE";
-
-  interface FetchDataParams {
-    url: string;
-    method: Method;
-    data?: object;
-    params?: object;
-    header?: object;
-  }
+  useEffect(() => {
+    return () => {
+      if (controllerRef.current) {
+        controllerRef.current.abort();
+      }
+    };
+  }, []);
 
   const fetchData = async ({
     url,
@@ -37,16 +35,26 @@ const useSaleAxios = () => {
     data = {},
     params = {},
     header = {},
-  }: FetchDataParams) => {
-    // Chỉ hủy các yêu cầu nếu không phải là tìm kiếm
+  }: {
+    url: string;
+    method: "GET" | "POST" | "PUT" | "DELETE";
+    data?: object;
+    params?: object;
+    header?: object;
+  }) => {
     if (controllerRef.current) {
       controllerRef.current.abort();
     }
-    controllerRef.current = new AbortController(); // Tạo mới controller
+    controllerRef.current = new AbortController();
 
     const accessToken = await SecureStore.getItemAsync("accessToken");
 
     try {
+      console.log("Request URL:", url);
+      console.log("Request Data:", data);
+      console.log("Request Method:", method);
+      console.log("Request Params:", params);
+
       const result = await axiosInstance({
         url,
         method,
@@ -58,13 +66,14 @@ const useSaleAxios = () => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
+      console.log("Response Data:", result.data);
       return result.data;
     } catch (error: any) {
       if (axios.isCancel(error)) {
-        // Không in ra console.warn khi yêu cầu bị hủy
         console.log("Request was cancelled");
       } else {
         setError(error.response ? error.response.data : error.message);
+        console.error("Error Response:", error.response?.data || error.message);
       }
       return null;
     }

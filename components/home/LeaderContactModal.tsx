@@ -2,14 +2,19 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 import { Modal, Button } from 'native-base';
+import { Linking, Alert } from 'react-native';
 
 interface LeaderContactModalProps {
   isOpen: boolean;
   onClose: () => void;
   leader: {
-    avatarUrl: string;
-    name: string;
+    accountId: string;
+    fullName: string;
+    email: string;
+    password: string;
     phoneNumber: string;
+    avatarUrl: string;
+    dateOfBirth: Date;
   };
   onContactPress: () => void;
 }
@@ -18,12 +23,16 @@ const LeaderContactModal: React.FC<LeaderContactModalProps> = ({
   isOpen,
   onClose,
   leader,
-  onContactPress,
 }) => {
+  const handleCallPress = () => {
+    if (leader.phoneNumber) {
+      Linking.openURL(`tel:${leader.phoneNumber}`);
+    }
+  };
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false}>
       <Modal.Content style={styles.modalContent}>
-
         {/* Modal Title */}
         <Modal.Header style={styles.modalHeader}>
           <Text style={styles.headerText}>Yêu cầu sửa chữa</Text>
@@ -34,7 +43,7 @@ const LeaderContactModal: React.FC<LeaderContactModalProps> = ({
           <Image source={{ uri: leader.avatarUrl }} style={styles.avatar} />
 
           {/* Leader's Name */}
-          <Text style={styles.name}>{leader.name}</Text>
+          <Text style={styles.name}>{leader.fullName}</Text>
 
           {/* Leader's Phone Number */}
           <Text style={styles.phoneNumber}>{leader.phoneNumber}</Text>
@@ -45,7 +54,7 @@ const LeaderContactModal: React.FC<LeaderContactModalProps> = ({
           <Button variant="outline" onPress={onClose} style={styles.closeButton}>
             Đóng
           </Button>
-          <Button onPress={onContactPress} style={styles.contactButton}>
+          <Button onPress={handleCallPress} style={styles.contactButton}>
             Liên hệ ngay
           </Button>
         </Modal.Footer>

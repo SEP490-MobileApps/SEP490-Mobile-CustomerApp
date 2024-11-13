@@ -4,7 +4,7 @@ import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { Button, useDisclose } from 'native-base';
 import { useLocalSearchParams } from 'expo-router';
 import useServicePackages from '../hooks/useServicePackage';
-import PaymentMethodModal from '../components/home/PaymentMethodModal'; // Import modal
+import PaymentMethodModal from '../components/home/PaymentMethodModal';
 
 export default function ServicePackageContract() {
   const { packageItem } = useLocalSearchParams();
@@ -15,7 +15,7 @@ export default function ServicePackageContract() {
   useEffect(() => {
     if (packageItem) {
       const packageData = JSON.parse(packageItem as string);
-      createDraftContract(packageData.servicePackageId);
+      createDraftContract(packageData.servicePackageId); // Tạo hợp đồng nháp
     }
   }, [packageItem]);
 
@@ -32,7 +32,7 @@ export default function ServicePackageContract() {
       <Text style={styles.header}>{draftContract.header}</Text>
       <Text style={styles.date}>{draftContract.date}</Text>
 
-      {/* Displaying side A */}
+      {/* Hiển thị thông tin bên A */}
       <View style={styles.section}>
         <Text>{draftContract.side_A.a}</Text>
         <Text>{draftContract.side_A.businessName}</Text>
@@ -43,7 +43,7 @@ export default function ServicePackageContract() {
         <Text>{draftContract.side_A.role}</Text>
       </View>
 
-      {/* Displaying side B */}
+      {/* Hiển thị thông tin bên B */}
       <View style={styles.section}>
         <Text>{draftContract.side_B.b}</Text>
         <Text>{draftContract.side_B.userName}</Text>
@@ -53,7 +53,7 @@ export default function ServicePackageContract() {
         <Text>{draftContract.side_B.role}</Text>
       </View>
 
-      {/* Displaying contract clauses */}
+      {/* Hiển thị các điều khoản của hợp đồng */}
       <View style={styles.section}>
         <Text>{draftContract.clause1.title1}</Text>
         <Text>{`Dịch vụ: ${draftContract.clause1.name}`}</Text>
@@ -77,7 +77,7 @@ export default function ServicePackageContract() {
         <Text>{draftContract.clause4.generalTerms}</Text>
       </View>
 
-      {/* Signatures */}
+      {/* Chữ ký của hai bên */}
       <View style={styles.section}>
         <Text>{draftContract.signature_A.a}</Text>
         <Text>{draftContract.signature_A.sign}</Text>
@@ -87,12 +87,12 @@ export default function ServicePackageContract() {
         <Text>{draftContract.signature_B.sign}</Text>
       </View>
 
-      {/* Button to confirm registration and payment */}
+      {/* Nút đăng ký hợp đồng và chọn phương thức thanh toán */}
       <Button style={styles.registerButton} onPress={onOpen}>
         ĐĂNG KÝ
       </Button>
 
-      {/* Modal for selecting payment method */}
+      {/* Modal chọn phương thức thanh toán */}
       <PaymentMethodModal
         isOpen={isOpen}
         onClose={onClose}
@@ -122,11 +122,6 @@ const styles = StyleSheet.create({
   section: {
     marginBottom: 24,
   },
-  errorText: {
-    fontSize: 18,
-    color: 'red',
-    textAlign: 'center',
-  },
   registerButton: {
     backgroundColor: '#3F72AF',
     paddingVertical: 12,
@@ -135,3 +130,4 @@ const styles = StyleSheet.create({
     width: '100%',
   },
 });
+

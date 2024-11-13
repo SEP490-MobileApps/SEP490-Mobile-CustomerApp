@@ -1,10 +1,10 @@
-// src/contexts/GlobalProvider.tsx
+// contexts/GlobalProvider.tsx
 import React, { createContext, useContext, useState, ReactNode } from "react";
 import { User } from "../models/User";
 
 interface GlobalStateContextProps {
-  loading: boolean;
-  setLoading: (value: boolean) => void;
+  loadingLogin: boolean; // Thêm state mới
+  setLoadingLogin: (value: boolean) => void;
   userInfo: User | null;
   setUserInfo: (value: User | null) => void;
   serviceStartDate: Date | null;
@@ -20,22 +20,18 @@ interface GlobalStateContextProps {
 const GlobalStateContext = createContext<GlobalStateContextProps | undefined>(undefined);
 
 export const GlobalProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [loading, setLoading] = useState(false);
+  const [loadingLogin, setLoadingLogin] = useState(false); // State mới
   const [userInfo, setUserInfo] = useState<User | null>(null);
-
-  // State cho ngày lọc của ServiceTab
   const [serviceStartDate, setServiceStartDate] = useState<Date | null>(null);
   const [serviceEndDate, setServiceEndDate] = useState<Date | null>(null);
-
-  // State cho ngày lọc của OrderTab
   const [orderStartDate, setOrderStartDate] = useState<Date | null>(null);
   const [orderEndDate, setOrderEndDate] = useState<Date | null>(null);
 
   return (
     <GlobalStateContext.Provider
       value={{
-        loading,
-        setLoading,
+        loadingLogin,
+        setLoadingLogin,
         userInfo,
         setUserInfo,
         serviceStartDate,

@@ -1,44 +1,46 @@
 // app/(tabs)/ServicePackageScreen.tsx
-import React, { useState, useCallback, useRef } from 'react';
-import { View, Text, FlatList, ActivityIndicator, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
+import { View, Text, ActivityIndicator, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import useServicePackages from '../../hooks/useServicePackage'; // Import custom hook
 import ServicePackageItem from '../../components/home/ServicePackageItem'; // Import item component
 import { FontAwesome5 } from '@expo/vector-icons';
-
-let searchTimeout: NodeJS.Timeout;
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function ServicePackageScreen() {
   const [pageIndex, setPageIndex] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
-  const { packages, totalCount, loading } = useServicePackages(pageIndex, 8, searchQuery);
-  const flatListRef = useRef<FlatList>(null);
+  const { packages, totalCount, loading, fetchPackages } = useServicePackages();
 
-  // Reset dữ liệu khi vào tab
+  // Fetch packages when pageIndex or searchQuery changes
   useFocusEffect(
     useCallback(() => {
-      setPageIndex(1);
-      setSearchQuery('');
-    }, [])
+      fetchPackages(pageIndex, 6, searchQuery); // Adjusted to 6 items per page
+    }, [pageIndex, searchQuery])
   );
 
-  const handleLoadMore = () => {
-    if (packages.length < totalCount && !loading) {
-      setPageIndex((prev) => prev + 1);
-    }
-  };
+  // Calculate total pages
+  const totalPages = Math.ceil(totalCount / 8);
 
   const handleSearchChange = (text: string) => {
     setSearchQuery(text);
-    clearTimeout(searchTimeout);
-    searchTimeout = setTimeout(() => {
-      setPageIndex(1);
-    }, 2000);
+    setPageIndex(1);
   };
 
   const clearSearch = () => {
     setSearchQuery('');
     setPageIndex(1);
+  };
+
+  const handleNextPage = () => {
+    if (pageIndex < totalPages) {
+      setPageIndex(pageIndex + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (pageIndex > 1) {
+      setPageIndex(pageIndex - 1);
+    }
   };
 
   return (
@@ -60,24 +62,33 @@ export default function ServicePackageScreen() {
             </TouchableOpacity>
           ) : null}
         </View>
+
+        {/* Pagination Controls (Moved here) */}
+        <View style={styles.paginationContainer}>
+          <TouchableOpacity
+            onPress={handlePrevPage}
+            disabled={pageIndex === 1}
+            style={[styles.pageButton, pageIndex === 1 && styles.disabledButton]}
+          >
+            <Text style={styles.pageButtonText}>◀</Text>
+          </TouchableOpacity>
+          <Text style={styles.pageIndicator}>{`${pageIndex} / ${totalPages}`}</Text>
+          <TouchableOpacity
+            onPress={handleNextPage}
+            disabled={pageIndex === totalPages}
+            style={[styles.pageButton, pageIndex === totalPages && styles.disabledButton]}
+          >
+            <Text style={styles.pageButtonText}>▶</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
-      {loading && pageIndex === 1 ? (
+      {loading ? (
         <ActivityIndicator size="large" color="#3F72AF" />
       ) : packages.length > 0 ? (
-        <FlatList
-          ref={flatListRef}
-          data={packages}
-          renderItem={({ item }) => <ServicePackageItem packageItem={item} />}
-          keyExtractor={(item) => item.servicePackageId}
-          onEndReached={handleLoadMore}
-          onEndReachedThreshold={0.5}
-          ListFooterComponent={() =>
-            loading && pageIndex > 1 && (
-              <ActivityIndicator size="small" color="#3F72AF" style={{ marginVertical: 16 }} />
-            )
-          }
-        />
+        packages.map((packageItem) => (
+          <ServicePackageItem key={packageItem.servicePackageId} packageItem={packageItem} />
+        ))
       ) : (
         <Text>Không có dữ liệu</Text>
       )}
@@ -107,5 +118,29 @@ const styles = StyleSheet.create({
   },
   clearIcon: {
     marginLeft: 8,
+  },
+  paginationContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  pageButton: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    marginHorizontal: 5,
+    backgroundColor: '#3F72AF',
+    borderRadius: 5,
+  },
+  disabledButton: {
+    backgroundColor: '#CCC',
+  },
+  pageButtonText: {
+    color: '#FFF',
+    fontSize: 16,
+  },
+  pageIndicator: {
+    fontSize: 16,
+    color: '#3F72AF',
   },
 });

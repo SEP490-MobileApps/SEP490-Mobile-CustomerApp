@@ -3,18 +3,24 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { FormatPriceToVnd } from '../../utils/PriceUtils';
-import useProduct from '../../hooks/useProduct'; // Import useProducts
-import { Button } from 'native-base';
+import useProducts from '../../hooks/useProduct'; // Import useProducts
+import { Button, Divider } from 'native-base';
 import { WebView } from 'react-native-webview'; // Import WebView
 
 export default function ProductDetailScreen() {
   const { id } = useLocalSearchParams();
-  const { fetchProductDetail, productDetail, detailLoading } = useProduct();
+  const { fetchProductDetail, productDetail, detailLoading, addToCart } = useProducts();
   const [quantity, setQuantity] = useState(1);
 
   const handleIncrease = () => setQuantity(quantity + 1);
   const handleDecrease = () => {
     if (quantity > 1) setQuantity(quantity - 1);
+  };
+
+  const handleAddToCart = () => {
+    if (id && typeof id === 'string') {
+      addToCart(id, quantity);
+    }
   };
 
   useEffect(() => {
@@ -42,11 +48,15 @@ export default function ProductDetailScreen() {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Image source={{ uri: productDetail.imageUrl }} style={styles.image} />
+      <Divider bg="#112D4E" my={2} />
       <Text style={styles.name}>{productDetail.name}</Text>
-      <Text style={styles.price}>{FormatPriceToVnd(productDetail.priceByDate)}</Text>
+      <View style={styles.priceStockContainer}>
+        <Text style={styles.price}>{FormatPriceToVnd(productDetail.priceByDate)}</Text>
+        <Text style={styles.stockText}>Còn hàng: {productDetail.inOfStock}</Text>
+      </View>
 
       {/* Hiển thị mô tả sản phẩm bằng WebView */}
-      <Text style={styles.descriptionTitle}>Mô tả sản phẩm</Text>
+      <Text style={styles.descriptionTitle}>Mô tả sản phẩm:</Text>
       <View style={styles.webViewContainer}>
         <WebView
           originWhitelist={['*']}
@@ -56,10 +66,11 @@ export default function ProductDetailScreen() {
         />
       </View>
 
-      <Text style={styles.stockText}>Còn hàng: {productDetail.inOfStock}</Text>
       <Text style={styles.warranty}>
         Bảo hành: {productDetail.warantyMonths >= 12 ? `${productDetail.warantyMonths / 12} năm` : `${productDetail.warantyMonths} tháng`}
       </Text>
+
+      <Divider bg="#112D4E" my={2} />
 
       <View style={styles.quantityContainer}>
         <TouchableOpacity style={styles.quantityButton} onPress={handleDecrease}>
@@ -70,7 +81,9 @@ export default function ProductDetailScreen() {
           <Text style={styles.quantityButtonText}>+</Text>
         </TouchableOpacity>
       </View>
-      <Button style={styles.addToCartButton}>Thêm vào giỏ hàng</Button>
+      <Button style={styles.addToCartButton} onPress={handleAddToCart}>
+        Thêm vào giỏ hàng
+      </Button>
     </ScrollView>
   );
 }
@@ -85,7 +98,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 200,
     resizeMode: 'contain',
-    marginBottom: 16,
+    marginBottom: 8,
   },
   name: {
     fontSize: 24,
@@ -93,10 +106,19 @@ const styles = StyleSheet.create({
     color: '#112D4E',
     marginBottom: 8,
   },
+  priceStockContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
   price: {
     fontSize: 20,
     color: '#3F72AF',
-    marginBottom: 8,
+  },
+  stockText: {
+    fontSize: 16,
+    color: '#3A9B7A',
   },
   webViewContainer: {
     height: 200, // Chiều cao của WebView, điều chỉnh theo nhu cầu
@@ -104,10 +126,6 @@ const styles = StyleSheet.create({
   },
   webView: {
     flex: 1,
-  },
-  stockText: {
-    color: '#3A9B7A',
-    marginBottom: 8,
   },
   warranty: {
     fontSize: 18,

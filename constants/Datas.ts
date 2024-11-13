@@ -3,7 +3,7 @@ import { Review } from '../models/Review';
 import { RepairRequest } from '../models/RepairRequest';
 import { User } from '../models/User';
 import { Product } from '../models/Product';
-import { Leader } from "../models/Leader";
+import { Leader } from "../models/LeaderInfo";
 import { Order } from "../models/Order";
 
 export const orders: Order[] = [

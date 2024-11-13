@@ -1,4 +1,4 @@
-// src/hooks/useAuth.ts
+// hooks/useAuth.ts
 import useAxios from "../utils/useAuthAxios";
 import { router } from "expo-router";
 import { jwtDecode } from "jwt-decode";
@@ -8,10 +8,10 @@ import { useGlobalState } from "../contexts/GlobalProvider";
 
 export function useAuth() {
   const { fetchData } = useAxios();
-  const { setLoading, setUserInfo } = useGlobalState();
+  const { setLoadingLogin, setUserInfo } = useGlobalState();
 
   const handleLogin = async (emailOrPhone: string, password: string) => {
-    setLoading(true);
+    setLoadingLogin(true);
 
     try {
       const response = await fetchData({
@@ -47,12 +47,12 @@ export function useAuth() {
       console.error("Login error:", err);
       return false;
     } finally {
-      setLoading(false);
+      setLoadingLogin(false);
     }
   };
 
   const handleLogout = async () => {
-    setLoading(true);
+    setLoadingLogin(true);
     try {
       const accessToken = await SecureStore.getItemAsync("accessToken");
       await fetchData({
@@ -71,7 +71,7 @@ export function useAuth() {
     } catch (err) {
       console.error("Logout failed", err);
     } finally {
-      setLoading(false);
+      setLoadingLogin(false);
     }
   };
 

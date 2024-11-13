@@ -1,6 +1,6 @@
 // components/store/ProductListItem.tsx
 import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { Product } from '../../models/Product';
 import { FormatPriceToVnd } from '../../utils/PriceUtils';
 import { Divider } from 'native-base';
@@ -14,7 +14,7 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
   const router = useRouter(); // Dùng router để điều hướng
 
   const handlePress = () => {
-    router.push(`/ProductDetail/${product.productId}`); // Điều hướng đến trang chi tiết sản phẩm
+    router.push(`/ProductDetail/${product.productId}`);
   };
 
   const getShortName = (name: string) => (name.length > 20 ? `${name.substring(0, 17)}...` : name);

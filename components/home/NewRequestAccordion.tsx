@@ -1,6 +1,7 @@
-import React from 'react';
+// components/home/NewRequestAccordion.tsx
+import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Badge, Box } from 'native-base';
+import { Badge, Box, Modal, Button } from 'native-base';
 import { RepairRequest } from '../../models/RepairRequest';
 import { COLORS } from '../../constants/Colors';
 
@@ -8,21 +9,36 @@ interface Props {
   request: RepairRequest;
 }
 
-const NewRequestAccordion: React.FC<Props> = ({ request }) => (
-  <Box style={styles.container}>
-    <View style={styles.row}>
-      <Text>Loại sửa chữa</Text>
-      <Badge style={[styles.badge, request.categoryRequest === 'pay' ? styles.pay : styles.free]}>
-        {request.categoryRequest === 'pay' ? 'Tính Phí' : 'Miễn Phí'}
-      </Badge>
-    </View>
-    <View style={styles.divider} />
-    <View style={styles.row}>
-      <Text>Yêu cầu chi tiết</Text>
-      <Text style={styles.link}>chi tiết</Text>
-    </View>
-  </Box>
-);
+const NewRequestAccordion: React.FC<Props> = ({ request }) => {
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  return (
+    <Box style={styles.container}>
+      <View style={styles.row}>
+        <Text>Vấn đề:</Text>
+        <Button size="xs" variant="link" onPress={() => setModalOpen(true)}>Chi tiết</Button>
+      </View>
+      <View style={styles.divider} />
+      <View style={styles.row}>
+        <Text>Loại yêu cầu:</Text>
+        <Badge style={[styles.badge, request.categoryRequest === 1 ? styles.pay : styles.free]}>
+          {request.categoryRequest === 1 ? 'SỬA CHỮA' : 'BẢO HÀNH'}
+        </Badge>
+      </View>
+
+      {/* Modal hiện thông tin chi tiết */}
+      <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
+        <Modal.Content>
+          <Modal.CloseButton />
+          <Modal.Header>Chi tiết vấn đề</Modal.Header>
+          <Modal.Body>
+            <Text>{request.customerProblem}</Text>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
+    </Box>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -44,10 +60,6 @@ const styles = StyleSheet.create({
   },
   free: {
     backgroundColor: COLORS.free,
-  },
-  link: {
-    color: COLORS.link,
-    textDecorationLine: 'underline',
   },
   divider: {
     height: 1,

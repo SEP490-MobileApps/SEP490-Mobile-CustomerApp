@@ -1,22 +1,43 @@
 // components/home/CustomerReviews.tsx
-import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { Box, Progress } from 'native-base';
-import { reviews } from '../../constants/Datas';
-import { Review } from '../../models/Review';
-import NoDataComponent from '../ui/NoDataComponent';
+import { Feedback } from '../../models/Feedback';
 
-function CustomerReviews(): React.JSX.Element {
-  const totalReviews = reviews.length;
-  const averageRating = totalReviews > 0 ? (reviews.reduce((acc, curr) => acc + curr.rating, 0) / totalReviews).toFixed(1) : '0';
+interface Props {
+  feedbacks: Feedback[];
+}
+
+const ITEMS_PER_PAGE = 2; // Số lượng phản hồi mỗi trang
+
+function CustomerReviews({ feedbacks }: Props): React.JSX.Element {
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalReviews = feedbacks.length;
+  const totalPages = Math.ceil(totalReviews / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const displayedFeedbacks = feedbacks.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+  const averageRating = totalReviews > 0 ? (feedbacks.reduce((acc, curr) => acc + curr.rate, 0) / totalReviews).toFixed(1) : '0';
   const ratingsCount = [5, 4, 3, 2, 1].map((star) => {
-    return reviews.filter((review) => review.rating === star).length;
+    return feedbacks.filter((feedback) => feedback.rate === star).length;
   });
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
 
   return (
     <View>
       <Text style={styles.title}>ĐÁNH GIÁ TỪ KHÁCH HÀNG</Text>
-      {totalReviews > 0 ? (
+      {totalReviews > 0 && (
         <>
           <View style={styles.ratingSummary}>
             <View style={styles.progressBars}>
@@ -37,33 +58,45 @@ function CustomerReviews(): React.JSX.Element {
                 <Text style={styles.stars}>{'★'.repeat(Math.floor(Number(averageRating)))}</Text>
                 <Text style={styles.stars}>{"☆".repeat(5 - Math.floor(Number(averageRating)))}</Text>
               </View>
-              <Text style={styles.totalReviews}>{totalReviews} Reviews</Text>
+              <Text style={styles.totalReviews}>{totalReviews} Đánh giá</Text>
             </View>
           </View>
-          {reviews.map((review: Review) => (
-            <Box key={review.id} style={styles.reviewContainer}>
+          {displayedFeedbacks.map((feedback) => (
+            <Box key={feedback.feedbackId} style={styles.reviewContainer}>
               <View style={styles.reviewHeader}>
-                <Image source={review.avatarUrl} style={styles.reviewAvatar} />
+                <Image source={{ uri: feedback.avatarUrl }} style={styles.reviewAvatar} />
                 <View>
-                  <Text style={styles.reviewName}>{review.userName}</Text>
+                  <Text style={styles.reviewName}>{feedback.customerName}</Text>
                   <View style={{ flexDirection: 'row' }}>
                     {[...Array(5)].map((_, i) => (
-                      <Text key={i} style={{ fontSize: 14, color: i < review.rating ? '#3F72AF' : '#CCC' }}>★</Text>
+                      <Text key={i} style={{ fontSize: 14, color: i < feedback.rate ? '#3F72AF' : '#CCC' }}>★</Text>
                     ))}
                   </View>
                 </View>
               </View>
-              <Text style={styles.reviewText}>{review.comment}</Text>
+              <Text style={styles.reviewText}>{feedback.content}</Text>
               <View style={styles.reviewDivider} />
             </Box>
           ))}
+          {/* Phân trang */}
+          <View style={styles.paginationContainer}>
+            <TouchableOpacity
+              onPress={handlePrevPage}
+              disabled={currentPage === 1}
+              style={[styles.pageButton, currentPage === 1 && styles.disabledButton]}
+            >
+              <Text style={styles.pageButtonText}>◀</Text>
+            </TouchableOpacity>
+            <Text style={styles.pageIndicator}>{`${currentPage} / ${totalPages}`}</Text>
+            <TouchableOpacity
+              onPress={handleNextPage}
+              disabled={currentPage === totalPages}
+              style={[styles.pageButton, currentPage === totalPages && styles.disabledButton]}
+            >
+              <Text style={styles.pageButtonText}>▶</Text>
+            </TouchableOpacity>
+          </View>
         </>
-      ) : (
-        <NoDataComponent
-          imageUrl={require('../../assets/images/no-review.png')}
-          title="Không có đánh giá"
-          description="Hiện tại chưa có đánh giá nào cho dịch vụ này."
-        />
       )}
     </View>
   );
@@ -109,7 +142,7 @@ const styles = StyleSheet.create({
   },
   stars: {
     fontSize: 20,
-    color: '#3F72AF', // màu cho ngôi sao trung bình
+    color: '#3F72AF',
   },
   totalReviews: {
     fontSize: 14,
@@ -145,5 +178,30 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
     marginTop: 10,
   },
+  paginationContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  pageButton: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    marginHorizontal: 5,
+    backgroundColor: '#3F72AF',
+    borderRadius: 5,
+  },
+  disabledButton: {
+    backgroundColor: '#CCC',
+  },
+  pageButtonText: {
+    color: '#FFF',
+    fontSize: 16,
+  },
+  pageIndicator: {
+    fontSize: 16,
+    color: '#3F72AF',
+  },
 });
+
 export default CustomerReviews;

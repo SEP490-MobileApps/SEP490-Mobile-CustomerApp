@@ -1,5 +1,5 @@
 // app/(tabs)/StoreScreen.tsx
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Text, View, TextInput, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { IconButton, Actionsheet, useDisclose, Button, Radio, Box } from 'native-base';
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -14,33 +14,18 @@ export default function StoreScreen() {
   const { isOpen, onOpen, onClose } = useDisclose();
   const [pageIndex, setPageIndex] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortAscending, setSortAscending] = useState<null | boolean>(null); // Mặc định không có filter
-  const [pendingSort, setPendingSort] = useState<null | boolean>(null); // State tạm thời cho sort chưa áp dụng
-  const flatListRef = useRef<FlatList>(null);
-  const { products, totalCount, loading } = useProducts(pageIndex, 8, searchQuery, sortAscending);
+  const [sortAscending, setSortAscending] = useState<null | boolean>(null); // Default: no sort
+  const [pendingSort, setPendingSort] = useState<null | boolean>(null); // Temp state for unapplied sort
+  const { products, totalCount, loading, fetchProducts } = useProducts();
 
-  // Dùng useFocusEffect để làm mới dữ liệu và xoá bộ lọc khi chuyển tab
+  // Fetch products when pageIndex or searchQuery changes
   useFocusEffect(
     useCallback(() => {
-      setPageIndex(1);
-      setSortAscending(null); // Reset sorting khi quay lại tab
-      setSearchQuery(''); // Reset tìm kiếm khi quay lại tab
-    }, [])
+      fetchProducts(pageIndex, 6, searchQuery, sortAscending);
+    }, [pageIndex, searchQuery, sortAscending])
   );
 
-  const handleLoadMore = () => {
-    if (products.length < totalCount && !loading) {
-      setPageIndex((prev) => prev + 1);
-    }
-  };
-
-  const scrollToTop = () => {
-    if (flatListRef.current) {
-      flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
-    }
-  };
-
-  // Hàm để xử lý tìm kiếm với debounce
+  // Handle search with debounce
   const handleSearchChange = (text: string) => {
     setSearchQuery(text);
     clearTimeout(searchTimeout);
@@ -49,14 +34,14 @@ export default function StoreScreen() {
     }, 2000);
   };
 
-  // Hàm để áp dụng sắp xếp
+  // Handle sorting application
   const handleApplySort = () => {
     setSortAscending(pendingSort);
     setPageIndex(1);
-    onClose(); // Đóng Actionsheet
+    onClose(); // Close the actionsheet
   };
 
-  // Hàm để xóa bộ lọc
+  // Handle clearing filters
   const handleClearFilters = () => {
     setSortAscending(null);
     setSearchQuery('');
@@ -64,9 +49,23 @@ export default function StoreScreen() {
     onClose();
   };
 
+  // Pagination logic
+  const handlePrevPage = () => {
+    if (pageIndex > 1) {
+      setPageIndex((prev) => prev - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    const totalPages = Math.ceil(totalCount / 6);
+    if (pageIndex < totalPages) {
+      setPageIndex((prev) => prev + 1);
+    }
+  };
+
   return (
     <View style={styles.container}>
-      {/* Thanh tìm kiếm */}
+      {/* Search and Filter */}
       <View style={styles.searchContainer}>
         <View style={styles.searchInputContainer}>
           <FontAwesome5 name="search" size={20} color="#112D4E" style={styles.searchIcon} />
@@ -90,29 +89,33 @@ export default function StoreScreen() {
         />
       </View>
 
-      {/* Danh sách sản phẩm */}
+      {/* Pagination controls */}
+      <View style={styles.paginationContainer}>
+        <TouchableOpacity onPress={handlePrevPage} disabled={pageIndex === 1} style={styles.pageButton}>
+          <Text style={styles.pageButtonText}>◀</Text>
+        </TouchableOpacity>
+        <Text style={styles.pageIndicator}>{`Trang ${pageIndex}`}</Text>
+        <TouchableOpacity
+          onPress={handleNextPage}
+          disabled={products.length === 0 || products.length < 6}
+          style={styles.pageButton}
+        >
+          <Text style={styles.pageButtonText}>▶</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Product list */}
       {loading && pageIndex === 1 ? (
         <ActivityIndicator size="large" color="#3F72AF" />
       ) : products.length > 0 ? (
         <FlatList
-          ref={flatListRef}
           data={products}
-          renderItem={({ item }) => (
-            <ProductListItem
-              product={item}
-            />
-          )}
+          renderItem={({ item }) => <ProductListItem product={item} />}
           keyExtractor={(item) => item.productId}
           numColumns={2}
           columnWrapperStyle={styles.columnWrapper}
           showsVerticalScrollIndicator={false}
-          onEndReached={handleLoadMore}
-          onEndReachedThreshold={0.5}
-          ListFooterComponent={() =>
-            loading && pageIndex > 1 && (
-              <ActivityIndicator size="small" color="#3F72AF" style={{ marginVertical: 16 }} />
-            )
-          }
+          contentContainerStyle={styles.listContent}
         />
       ) : (
         <NoDataComponent
@@ -122,7 +125,7 @@ export default function StoreScreen() {
         />
       )}
 
-      {/* ActionSheet Lọc */}
+      {/* ActionSheet for Filter */}
       <Actionsheet isOpen={isOpen} onClose={onClose}>
         <Actionsheet.Content style={styles.actionSheetContent}>
           <View style={styles.filterContainer}>
@@ -151,11 +154,6 @@ export default function StoreScreen() {
           </View>
         </Actionsheet.Content>
       </Actionsheet>
-
-      {/* Nút nổi để cuộn lên đầu */}
-      <TouchableOpacity style={styles.scrollToTopButton} onPress={scrollToTop}>
-        <FontAwesome5 name="arrow-up" size={24} color="white" />
-      </TouchableOpacity>
     </View>
   );
 }
@@ -191,23 +189,6 @@ const styles = StyleSheet.create({
   clearIcon: {
     marginLeft: 8,
   },
-  columnWrapper: {
-    justifyContent: 'space-between',
-  },
-  scrollToTopButton: {
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-    backgroundColor: '#3F72AF',
-    padding: 12,
-    borderRadius: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-    elevation: 5,
-  },
-  actionSheetContent: {
-    backgroundColor: '#DBE2EF',
-  },
   filterButtonContainer: {
     width: 40,
     height: 40,
@@ -216,6 +197,34 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginLeft: 8,
+  },
+  paginationContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  pageButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    marginHorizontal: 4,
+    backgroundColor: '#3F72AF',
+    borderRadius: 5,
+  },
+  pageButtonText: {
+    color: '#FFF',
+    fontSize: 16,
+  },
+  pageIndicator: {
+    fontSize: 16,
+    marginHorizontal: 10,
+    color: '#3F72AF',
+  },
+  columnWrapper: {
+    justifyContent: 'space-between',
+  },
+  actionSheetContent: {
+    backgroundColor: '#DBE2EF',
   },
   filterContainer: {
     padding: 10,
@@ -226,12 +235,11 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginBottom: 10,
   },
-  filterText: {
-    fontSize: 16,
-    color: '#333',
-  },
   filterButtonsContainer: {
     flexDirection: 'row',
     marginTop: 10,
+  },
+  listContent: {
+    paddingBottom: 100,
   },
 });
