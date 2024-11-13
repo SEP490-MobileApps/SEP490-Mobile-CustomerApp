@@ -8,6 +8,7 @@ const useRequest = () => {
   const { fetchData } = useRequestAxios();
   const [requests, setRequests] = useState<RepairRequest[]>([]);
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
+  const [allRequests, setAllRequests] = useState<RepairRequest[]>([]);
   const [currentPage, setCurrentPage] = useState(1); // Theo dõi trang hiện tại
   const [totalPages, setTotalPages] = useState(1); // Theo dõi tổng số trang
   const [loading, setLoading] = useState<boolean>(false);
@@ -55,7 +56,32 @@ const useRequest = () => {
     }
   }, [fetchData]);
 
-  return { requests, feedbacks, fetchRecentRequests, fetchFeedbacks, loading, apiError, currentPage, totalPages, setCurrentPage };
+  const fetchAllRequests = useCallback(async (customerId: string, status?: number, startDate?: string) => {
+    setLoading(true);
+    setApiError(null);
+    try {
+      const params: any = { customerId };
+      if (status !== undefined) params.status = status;
+      if (startDate) params.startDate = startDate;
+
+      const response = await fetchData({
+        url: `/request/8`,
+        method: 'GET',
+        params,
+      });
+
+      if (response) {
+        setAllRequests(response.map((item: any) => item.get)); // Lấy phần `get` từ response
+      }
+    } catch (error: any) {
+      setApiError('Không thể tải dữ liệu yêu cầu.');
+      console.error('Lỗi tải dữ liệu yêu cầu:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [fetchData]);
+
+  return { requests, feedbacks, fetchRecentRequests, fetchFeedbacks, loading, apiError, currentPage, totalPages, setCurrentPage, allRequests, fetchAllRequests };
 };
 
 export default useRequest;

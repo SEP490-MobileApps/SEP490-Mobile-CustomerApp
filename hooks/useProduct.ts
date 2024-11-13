@@ -14,6 +14,7 @@ const useProducts = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [apiError, setApiError] = useState<string | null>(null);
   const [productDetail, setProductDetail] = useState<Product | null>(null);
+  const [orders, setOrders] = useState([]);
   const [detailLoading, setDetailLoading] = useState<boolean>(false);
   const toast = useToast(); // Initialize Toast
 
@@ -75,16 +76,25 @@ const useProducts = () => {
   // Add product to cart
   const addToCart = useCallback(async (productId: string, quantity: number) => {
     try {
+
+      console.log('productId:', productId);
+      console.log('quantity:', quantity);
+
       // Sử dụng FormData để truyền dữ liệu đúng định dạng
       const formData = new FormData();
       formData.append('productId', productId);
       formData.append('quantity', quantity.toString()); // Đảm bảo quantity là chuỗi
 
+
+
       await fetchData({
         url: '/order/1',
         method: 'POST',
         data: formData, // Truyền dữ liệu vào data
+        header: { 'Content-Type': 'multipart/form-data' }
       });
+
+
 
       // Hiển thị thông báo thành công
       toast.show({
@@ -137,6 +147,7 @@ const useProducts = () => {
         url: '/order/3',
         method: 'DELETE',
         data: formData, // Truyền vào formData
+        header: { 'Content-Type': 'multipart/form-data' }
       });
 
       toast.show({
@@ -156,6 +167,29 @@ const useProducts = () => {
     }
   }, [fetchData, toast]);
 
+  const fetchOrders = useCallback(async (customerId: string, startDate?: string, endDate?: string) => {
+    setLoading(true);
+    setApiError(null);
+    try {
+      const params: any = { customerId };
+      if (startDate) params.startDate = startDate;
+      if (endDate) params.endDate = endDate;
+
+      const response = await fetchData({
+        url: '/order/6',
+        method: 'GET',
+        params,
+      });
+
+      setOrders(response || []);
+    } catch (error) {
+      setApiError('Không thể tải đơn hàng.');
+      console.error('Lỗi tải đơn hàng:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [fetchData]);
+
   return {
     products,
     totalCount,
@@ -169,7 +203,9 @@ const useProducts = () => {
     apiError,
     cartItems,
     totalAmount,
-    deleteCartItem
+    deleteCartItem,
+    orders,
+    fetchOrders
   };
 };
 

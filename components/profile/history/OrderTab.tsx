@@ -1,31 +1,55 @@
-// components/profile/history/OrderTab.tsx
 import React from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
-import { orders } from "../../../constants/Datas";
 import { useGlobalState } from "../../../contexts/GlobalProvider";
 import { formatDate } from "@/utils/formatDate";
+import { useFocusEffect } from "@react-navigation/native";
+import useProduct from "../../../hooks/useProduct";
+import { Divider } from "native-base";
+import { Order } from "../../../models/Order"; // Import model
+import { Linking } from "react-native"; // Import Linking from react-native
 
 export default function OrderTab() {
-  const { orderStartDate, orderEndDate } = useGlobalState();
+  const { orderStartDate, orderEndDate, userInfo } = useGlobalState();
+  const { orders, fetchOrders, loading } = useProduct();
 
-  const filteredOrders = orders.filter((order) => {
-    if (!orderStartDate || !orderEndDate) return true;
-    const purchaseDate = new Date(order.purchaseTime);
-    return purchaseDate >= orderStartDate && purchaseDate <= orderEndDate;
-  });
+  useFocusEffect(
+    React.useCallback(() => {
+      if (userInfo?.accountId) {
+        fetchOrders(userInfo.accountId, orderStartDate?.toISOString(), orderEndDate?.toISOString());
+      }
+    }, [orderStartDate, orderEndDate, userInfo?.accountId])
+  );
+
+  // Ensure orders data is correctly unwrapped if nested
+  const flatOrders = Array.isArray(orders) && Array.isArray(orders[0]) ? orders[0] : orders;
+
+  if (loading) {
+    return <Text>Đang tải đơn hàng...</Text>;
+  }
+
+  if (!flatOrders || flatOrders.length === 0) {
+    return <Text>Không có đơn hàng nào.</Text>;
+  }
 
   return (
     <ScrollView contentContainerStyle={styles.contentContainer} showsVerticalScrollIndicator={false}>
-      {filteredOrders.map((order) => (
-        <View key={order.id.toString()} style={styles.orderCard}>
+      {flatOrders.map((order: Order) => (
+        <View key={order.orderId} style={styles.orderCard}>
           <View style={styles.iconContainer}>
             <FontAwesome name="home" size={40} color="#112D4E" />
           </View>
+          <Divider orientation="vertical" bg="#112D4E" thickness={1} style={styles.divider} />
           <View style={styles.orderDetails}>
-            <Text style={styles.orderDateTitle}>Đơn hàng ngày: {formatDate(order.purchaseTime)}</Text>
-            <Text style={styles.orderInfo}>{order.productCount.toString()} sản phẩm</Text>
-            <Text style={styles.orderPrice}>{order.price.toString()} VNĐ</Text>
+            <Text style={styles.orderDateTitle}>
+              Đơn hàng ngày: {order.purchaseTime ? formatDate(order.purchaseTime) : "N/A"}
+            </Text>
+            <Text style={styles.orderInfo}>
+              {order.orderDetails ? order.orderDetails.length : 0} sản phẩm
+            </Text>
+            <TouchableOpacity onPress={() => Linking.openURL(order.fileUrl)}>
+              <Text style={styles.viewInvoice}>Xem chi tiết hóa đơn</Text>
+            </TouchableOpacity>
           </View>
         </View>
       ))}
@@ -46,8 +70,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginRight: 20,
-    width: 60,  // Đặt chiều rộng cố định để căn giữa icon
-    height: 60, // Đặt chiều cao cố định để căn giữa icon
+    width: 60,
+    height: 60,
+  },
+  divider: {
+    height: '100%',
+    marginHorizontal: 10,
   },
   orderDetails: {
     flex: 1,
@@ -62,8 +90,9 @@ const styles = StyleSheet.create({
     color: "#6C757D",
     marginBottom: 4,
   },
-  orderPrice: {
+  viewInvoice: {
     fontWeight: "bold",
-    color: "#112D4E",
+    color: "#3F72AF",
+    textDecorationLine: "underline",
   },
 });

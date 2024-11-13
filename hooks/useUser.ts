@@ -3,9 +3,11 @@ import { useCallback, useState } from 'react';
 import useAuthAxios from '../utils/useAuthAxios';
 import { User } from '../models/User';
 import { Leader } from '../models/LeaderInfo';
+import { Toast, useToast } from 'native-base';
 
 const useUser = () => {
   const { fetchData } = useAuthAxios();
+  const toast = useToast();
   const [user, setUser] = useState<User | null>(null);
   const [leaderInfo, setLeaderInfo] = useState<Leader | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -18,7 +20,7 @@ const useUser = () => {
       // Fetch user data
       const userResponse = await fetchData({ url: '/account/3', method: 'GET' });
       if (userResponse) {
-        const { customer } = userResponse.response;
+        const { customer, apartment } = userResponse.response;
         setUser({
           accountId: customer.accountId,
           fullName: customer.fullName,
@@ -27,6 +29,10 @@ const useUser = () => {
           phoneNumber: customer.phoneNumber,
           dateOfBirth: customer.dateOfBirth,
           role: customer.role,
+          apartmentAvatarUrl: apartment.avatarUrl,
+          apartmentName: apartment.name,
+          apartmentAddress: apartment.address,
+          roomId: '113'
         });
       }
 
@@ -52,7 +58,80 @@ const useUser = () => {
     }
   }, [fetchData]);
 
-  return { user, leaderInfo, fetchUserAndLeader, loading, apiError };
+  const updateUserAvatar = useCallback(async (photoUri: string) => {
+    setLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append('photo', {
+        uri: photoUri,
+        name: 'avatar.jpg',
+        type: 'image/jpeg',
+      } as any); // Casting to any to bypass TypeScript issue
+
+      await fetchData({
+        url: '/account/5',
+        method: 'PUT',
+        data: formData,
+        header: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      // Show success toast
+      toast.show({
+        description: 'Cập nhật ảnh đại diện thành công',
+        duration: 3000,
+        bg: 'green.500',
+      });
+    } catch (error) {
+      console.error('Lỗi cập nhật avatar:', error);
+      setApiError('Không thể cập nhật ảnh đại diện.');
+      toast.show({
+        description: 'Không thể cập nhật ảnh đại diện',
+        duration: 3000,
+        bg: 'red.500',
+      });
+    } finally {
+      setLoading(false);
+    }
+  }, [fetchData, toast]);
+
+  const updateUserInfo = useCallback(async (fullName: string, email: string, dateOfBirth: string) => {
+    setLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append('fullName', fullName);
+      formData.append('email', email);
+      formData.append('dateOfBirth', dateOfBirth);
+
+      await fetchData({
+        url: '/account/4',
+        method: 'PUT',
+        data: formData,
+        header: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      toast.show({
+        description: 'Cập nhật thông tin thành công',
+        duration: 3000,
+        bg: 'green.500',
+      });
+
+      // Refresh user data after update
+      await fetchUserAndLeader();
+    } catch (error) {
+      console.error('Lỗi cập nhật thông tin người dùng:', error);
+      setApiError('Không thể cập nhật thông tin người dùng.');
+      toast.show({
+        description: 'Không thể cập nhật thông tin người dùng',
+        duration: 3000,
+        bg: 'red.500',
+      });
+    } finally {
+      setLoading(false);
+    }
+  }, [fetchData, toast]);
+
+
+  return { user, leaderInfo, fetchUserAndLeader, loading, apiError, updateUserAvatar, updateUserInfo };
 };
 
 export default useUser;

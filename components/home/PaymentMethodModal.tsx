@@ -1,8 +1,8 @@
-// components/home/PaymentMethodModal.tsx
 import React from 'react';
-import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
-import { Modal, Button, Radio, Divider, IconButton, Icon } from 'native-base';
+import { StyleSheet, View, Text, Image } from 'react-native';
+import { Modal, Button, Radio, Divider, IconButton, Icon, useToast, HStack } from 'native-base';
 import { AntDesign } from '@expo/vector-icons';
+import { router } from 'expo-router';
 
 interface PaymentMethodModalProps {
   isOpen: boolean;
@@ -17,6 +17,40 @@ const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
   selectedMethod,
   setSelectedMethod,
 }) => {
+  const toast = useToast();
+
+  const handleConfirm = () => {
+    if (selectedMethod === 'payos') {
+      toast.show({
+        render: () => (
+          <HStack space={2} alignItems="center" bg="green.500" px={4} py={2} rounded="sm" mb={5}>
+            <Icon as={<AntDesign name="checkcircle" />} color="white" size="sm" />
+            <Text>
+              Thanh toán thành công, sẽ có 1 worker đưa hợp đồng cho bạn ký !!!
+            </Text>
+          </HStack>
+        ),
+        placement: 'top',
+        duration: 10000,
+      });
+    } else if (selectedMethod === 'cash') {
+      toast.show({
+        render: () => (
+          <HStack space={2} alignItems="center" bg="blue.500" px={4} py={2} rounded="sm" mb={5}>
+            <Icon as={<AntDesign name="infocirlce" />} color="white" size="sm" />
+            <Text>
+              Sẽ có 1 worker đưa hợp đồng cho bạn ký,bạn sẽ thanh toán sau !!!
+            </Text>
+          </HStack>
+        ),
+        placement: 'top',
+        duration: 10000,
+      });
+    }
+    onClose(); // Close the modal
+    router.replace("/(tabs)"); // Navigate back to home screen (change 'HomeScreen' to your screen name)
+  };
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false}>
       <Modal.Content width="80%">
@@ -63,7 +97,7 @@ const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
           <Button onPress={onClose} variant="outline" style={styles.cancelButton}>
             Hủy
           </Button>
-          <Button onPress={onClose} style={styles.modalConfirmButton}>
+          <Button onPress={handleConfirm} style={styles.modalConfirmButton}>
             Xác Nhận
           </Button>
         </Modal.Footer>
@@ -102,11 +136,11 @@ const styles = StyleSheet.create({
   paymentOptionContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between', // Để đưa radio button ra ngoài cùng bên phải
+    justifyContent: 'space-between',
     paddingHorizontal: 10,
   },
   paymentText: {
-    flex: 1, // Để đẩy radio button sang phải
+    flex: 1,
   },
   paymentImage: {
     width: 48,

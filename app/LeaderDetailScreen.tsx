@@ -1,14 +1,28 @@
 // app/LeaderDetailScreen.tsx
-import React from "react";
+import React, { useCallback } from "react";
 import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
 import { Input, Icon } from "native-base";
 import { FontAwesome } from "@expo/vector-icons";
 import NoDataComponent from "../components/ui/NoDataComponent";
-import { leaderData } from "../constants/Datas";
+import { useFocusEffect } from "@react-navigation/native";
+import useUser from "../hooks/useUser";
 
 export default function LeaderDetailScreen() {
-  // Kiểm tra nếu `leaderData` không có dữ liệu
-  if (!leaderData) {
+  const { leaderInfo, fetchUserAndLeader, loading } = useUser();
+
+  // Sử dụng useFocusEffect để gọi API khi màn hình được focus
+  useFocusEffect(
+    useCallback(() => {
+      fetchUserAndLeader(); // Gọi hàm lấy thông tin leader
+    }, [])
+  );
+
+  // Kiểm tra loading hoặc dữ liệu leaderInfo
+  if (loading) {
+    return <Text>Đang tải dữ liệu...</Text>;
+  }
+
+  if (!leaderInfo) {
     return (
       <NoDataComponent
         imageUrl={require("../assets/images/no-leader.png")}
@@ -20,13 +34,13 @@ export default function LeaderDetailScreen() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Image source={{ uri: leaderData.avatarUrl || require("../assets/images/no-leader.png") }} style={styles.avatar} />
+      <Image source={{ uri: leaderInfo.avatarUrl || require("../assets/images/no-leader.png") }} style={styles.avatar} />
 
       <View style={styles.fieldContainer}>
         <Text style={styles.label}>Tên đầy đủ</Text>
         <Input
           isReadOnly
-          value={leaderData.name || "Không có thông tin"}
+          value={leaderInfo.fullName || "Không có thông tin"}
           variant="filled"
           bg="#DBE2EF"
           InputRightElement={<Icon as={FontAwesome} name="user" size="sm" mr={2} color="#6C757D" />}
@@ -37,7 +51,7 @@ export default function LeaderDetailScreen() {
         <Text style={styles.label}>Số điện thoại</Text>
         <Input
           isReadOnly
-          value={leaderData.phone || "Không có thông tin"}
+          value={leaderInfo.phoneNumber || "Không có thông tin"}
           variant="filled"
           bg="#DBE2EF"
           InputRightElement={<Icon as={FontAwesome} name="phone" size="sm" mr={2} color="#6C757D" />}
@@ -48,7 +62,7 @@ export default function LeaderDetailScreen() {
         <Text style={styles.label}>Địa chỉ Email</Text>
         <Input
           isReadOnly
-          value={leaderData.email || "Không có thông tin"}
+          value={leaderInfo.email || "Không có thông tin"}
           variant="filled"
           bg="#DBE2EF"
           InputRightElement={<Icon as={FontAwesome} name="envelope" size="sm" mr={2} color="#6C757D" />}

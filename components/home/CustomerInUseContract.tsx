@@ -1,6 +1,6 @@
 // components/home/CustomerInUseContract.tsx
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Linking } from 'react-native';
 import { Box } from 'native-base';
 
 interface Props {
@@ -30,7 +30,7 @@ const CustomerInUseContract: React.FC<Props> = ({ contract }) => {
             Ngày đăng ký: {new Date(contract.purchaseTime).toLocaleDateString()}
           </Text>
           <TouchableOpacity onPress={handleViewContract} style={styles.button}>
-            <Text style={styles.buttonText}>Xem hợp đồng</Text>
+            <Text style={styles.buttonText} onPress={() => Linking.openURL(contract.fileUrl)}>Xem hợp đồng</Text>
           </TouchableOpacity>
         </View>
       </View>

@@ -1,6 +1,6 @@
 // app/(tabs)/ProfileScreen.tsx
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState, useCallback } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Modal } from 'react-native';
 import { FontAwesome, MaterialIcons, Fontisto } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Divider, useToast } from 'native-base';
@@ -9,13 +9,21 @@ import * as ImagePicker from 'expo-image-picker';
 import SignOutModal from '../../components/profile/SignOutModal';
 import { useAuth } from '../../hooks/useAuth';
 import useUser from '../../hooks/useUser';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function ProfileScreen() {
   const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const router = useRouter();
   const toast = useToast();
   const { handleLogout } = useAuth();
-  const { user, updateUserAvatar, loading } = useUser();
+  const { user, loading, fetchUserAndLeader, updateUserAvatar } = useUser();
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchUserAndLeader();
+    }, [])
+  );
 
   const handleSignOut = async () => {
     await handleLogout();
@@ -41,8 +49,8 @@ export default function ProfileScreen() {
 
     if (!result.canceled && result.assets && result.assets.length > 0) {
       const selectedImageUri = result.assets[0].uri;
-      console.log('Selected Image URI:', selectedImageUri); // Kiểm tra URI ảnh được chọn
-      await updateUserAvatar(selectedImageUri);
+      await updateUserAvatar(selectedImageUri); // Call the update API
+      await fetchUserAndLeader(); // Refresh the user data to reflect the updated avatar
     }
   };
 
@@ -56,10 +64,12 @@ export default function ProfileScreen() {
             style={styles.coverImage}
           />
           <View style={styles.avatarContainer}>
-            <Image
-              source={user?.avatarUrl ? { uri: user.avatarUrl } : require('../../assets/images/no-image.png')}
-              style={styles.profileImage}
-            />
+            <TouchableOpacity onPress={() => setIsImageModalOpen(true)}>
+              <Image
+                source={user?.avatarUrl ? { uri: user.avatarUrl } : require('../../assets/images/no-image.png')}
+                style={styles.profileImage}
+              />
+            </TouchableOpacity>
             <TouchableOpacity style={styles.imageActionButton} onPress={handleAddOrEditImage}>
               <MaterialCommunityIcons
                 name={user?.avatarUrl ? "image-edit" : "file-image-plus"}
@@ -76,27 +86,31 @@ export default function ProfileScreen() {
           <Text style={styles.profileEmail}>{user?.email || "Chưa có email"}</Text>
         </View>
 
-        {/* Section: Các mục chính */}
+        {/* Other sections omitted for brevity */}
         <View style={styles.sectionContainer}>
+          {/* Profile detail navigation */}
           <TouchableOpacity style={styles.optionContainer} onPress={() => router.push("/ProfileDetailScreen")}>
             <FontAwesome name="user" size={24} color="#112D4E" />
             <Divider orientation="vertical" bg="#112D4E" mx={2} />
             <Text style={styles.optionText}>Thông tin cá nhân chi tiết</Text>
             <MaterialIcons name="navigate-next" size={24} color="#112D4E" />
           </TouchableOpacity>
+          {/* History */}
           <TouchableOpacity style={styles.optionContainer} onPress={() => router.push("/HistoryScreen")}>
             <FontAwesome name="history" size={24} color="#112D4E" />
             <Divider orientation="vertical" bg="#112D4E" mx={2} />
             <Text style={styles.optionText}>Lịch sử</Text>
             <MaterialIcons name="navigate-next" size={24} color="#112D4E" />
           </TouchableOpacity>
+          {/* Leader info */}
           <TouchableOpacity style={styles.optionContainer} onPress={() => router.push("/LeaderDetailScreen")}>
             <Fontisto name="person" size={24} color="#112D4E" />
             <Divider orientation="vertical" bg="#112D4E" mx={2} />
             <Text style={styles.optionText}>Coi thông tin Leader</Text>
             <MaterialIcons name="navigate-next" size={24} color="#112D4E" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.optionContainer} onPress={() => router.push("/MyContractScreen")}>
+          {/* Contract requests */}
+          <TouchableOpacity style={styles.optionContainer} onPress={() => router.push("/RequestListScreen")}>
             <FontAwesome name="file-text" size={24} color="#112D4E" />
             <Divider orientation="vertical" bg="#112D4E" mx={2} />
             <Text style={styles.optionText}>Các lần yêu cầu</Text>
@@ -104,6 +118,19 @@ export default function ProfileScreen() {
           </TouchableOpacity>
         </View>
       </ScrollView>
+
+      {/* Image Modal for Viewing Full Image */}
+      <Modal visible={isImageModalOpen} transparent={true}>
+        <View style={styles.modalContainer}>
+          <Image
+            source={user?.avatarUrl ? { uri: user.avatarUrl } : require('../../assets/images/no-image.png')}
+            style={styles.fullSizeImage}
+          />
+          <TouchableOpacity style={styles.closeButton} onPress={() => setIsImageModalOpen(false)}>
+            <Text style={styles.closeButtonText}>Đóng</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
 
       {/* Logout Button */}
       <TouchableOpacity onPress={() => setIsSignOutModalOpen(true)} style={styles.logoutButton}>
@@ -120,10 +147,21 @@ export default function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F9F7F7' },
-  scrollContent: { paddingBottom: 100 },
-  coverContainer: { position: 'relative' },
-  coverImage: { width: '100%', height: 200, opacity: 0.6 },
+  container: {
+    flex: 1,
+    backgroundColor: '#F9F7F7',
+  },
+  scrollContent: {
+    paddingBottom: 100,
+  },
+  coverContainer: {
+    position: 'relative',
+  },
+  coverImage: {
+    width: '100%',
+    height: 200,
+    opacity: 0.6,
+  },
   avatarContainer: {
     position: 'absolute',
     bottom: -60,
@@ -147,10 +185,24 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     borderColor: '#F9F7F7',
   },
-  personalInfoContainer: { alignItems: 'center', marginTop: 50 },
-  profileName: { fontSize: 18, fontWeight: 'bold', color: '#112D4E', marginTop: 20 },
-  profileEmail: { fontSize: 14, color: '#6C757D' },
-  sectionContainer: { backgroundColor: '#F9F7F7', paddingVertical: 8 },
+  personalInfoContainer: {
+    alignItems: 'center',
+    marginTop: 50,
+  },
+  profileName: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#112D4E',
+    marginTop: 20,
+  },
+  profileEmail: {
+    fontSize: 14,
+    color: '#6C757D',
+  },
+  sectionContainer: {
+    backgroundColor: '#F9F7F7',
+    paddingVertical: 8,
+  },
   optionContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -159,7 +211,12 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#DBE2EF',
   },
-  optionText: { flex: 1, marginLeft: 16, fontSize: 16, color: '#112D4E' },
+  optionText: {
+    flex: 1,
+    marginLeft: 16,
+    fontSize: 16,
+    color: '#112D4E',
+  },
   logoutButton: {
     backgroundColor: '#3F72AF',
     margin: 16,
@@ -171,5 +228,36 @@ const styles = StyleSheet.create({
     left: 16,
     right: 16,
   },
-  logoutButtonText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
+  logoutButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  fullSizeImageContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.8)',
+  },
+  fullSizeImage: {
+    width: '90%',
+    height: '70%',
+    borderRadius: 10,
+  },
+  closeButton: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: '#3F72AF',
+    borderRadius: 8,
+  },
+  closeButtonText: {
+    color: '#FFF',
+    fontSize: 16,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)', // Nền mờ đen để làm nổi bật ảnh
+  },
 });

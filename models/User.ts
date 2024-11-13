@@ -7,4 +7,8 @@ export interface User {
   phoneNumber: string;
   dateOfBirth: string;
   role: string;
+  apartmentAvatarUrl?: string;
+  apartmentName: string;
+  apartmentAddress: string;
+  roomId: string;
 }

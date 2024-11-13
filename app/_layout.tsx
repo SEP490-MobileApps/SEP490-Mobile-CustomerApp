@@ -129,9 +129,9 @@ function RootLayoutNav() {
                 }}
               />
               <Stack.Screen
-                name="MyContractScreen"
+                name="RequestListScreen"
                 options={{
-                  title: "Hợp đồng của tôi",
+                  title: "Các lần yêu cầu",
                   headerStyle: { backgroundColor: "#3F72AF" },
                   headerTintColor: "#FFF",
                   headerTitleAlign: "center",

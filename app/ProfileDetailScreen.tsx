@@ -1,36 +1,37 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Platform } from "react-native";
-import { Input, Button, HStack, useToast, IconButton } from "native-base";
+// ProfileDetailScreen.tsx
+import React, { useState, useEffect, useCallback } from "react";
+import { View, Text, StyleSheet, Image, ScrollView, Platform } from "react-native";
+import { Input, Button, HStack, IconButton } from "native-base";
 import { FontAwesome } from "@expo/vector-icons";
-import * as ImagePicker from "expo-image-picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import ConfirmModal from "../components/profile/ConfirmModal";
 import { formatDate } from "../utils/formatDate";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import useUser from "../hooks/useUser";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function ProfileDetailScreen() {
   const { isEdit } = useLocalSearchParams();
   const router = useRouter();
-  const toast = useToast();
-  const { user } = useUser(); // Sử dụng dữ liệu từ useUser
-
+  const { user, fetchUserAndLeader, loading, updateUserInfo } = useUser();
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
   const [birthDate, setBirthDate] = useState(new Date());
-  const [profileImage, setProfileImage] = useState("");
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchUserAndLeader();
+    }, [])
+  );
 
   useEffect(() => {
     if (user) {
       setName(user.fullName || "");
       setEmail(user.email || "");
-      setPhone(user.phoneNumber || "");
       setBirthDate(user.dateOfBirth ? new Date(user.dateOfBirth) : new Date());
-      setProfileImage(user.avatarUrl || "");
     }
   }, [user]);
 
@@ -38,18 +39,14 @@ export default function ProfileDetailScreen() {
     setIsEditing(isEdit === "true");
   }, [isEdit]);
 
-  const handleSave = () => setShowConfirmModal(true);
+  const handleSave = () => {
+    setShowConfirmModal(true);
+  };
 
-  const pickImage = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
-    });
-    if (!result.canceled && result.assets?.[0]?.uri) {
-      setProfileImage(result.assets[0].uri);
-    }
+  const handleConfirmSave = async () => {
+    await updateUserInfo(name, email, birthDate.toISOString().split('T')[0]);
+    setIsEditing(false);
+    setShowConfirmModal(false);
   };
 
   const onDateChange = (_: any, selectedDate: Date | undefined) => {
@@ -59,53 +56,45 @@ export default function ProfileDetailScreen() {
     }
   };
 
-  if (!user) {
-    return <Text>Đang tải...</Text>; // Hiển thị khi dữ liệu chưa có
+  if (loading || !user) {
+    return <Text>Đang tải...</Text>;
   }
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.section}>
+        {/* Display Avatar without edit icon */}
         <View style={styles.imageContainer}>
           <Image
-            source={{ uri: profileImage || 'https://cdn-icons-png.flaticon.com/512/219/219983.png' }} // Sử dụng hình ảnh mặc định nếu profileImage không có giá trị
+            source={{ uri: user.avatarUrl || 'https://cdn-icons-png.flaticon.com/512/219/219983.png' }}
             style={styles.profileImage}
           />
-          {isEditing && (
-            <TouchableOpacity style={styles.cameraIcon} onPress={pickImage}>
-              <FontAwesome name="camera" size={24} color="white" />
-            </TouchableOpacity>
-          )}
         </View>
 
+        {/* Personal Info Fields */}
         <View style={styles.fieldContainer}>
           <Text style={styles.label}>Tên đầy đủ</Text>
           {isEditing ? (
-            <Input value={name} onChangeText={setName} variant="outline" style={styles.input} />
+            <Input value={name} onChangeText={setName} variant="outline" bg="#DBE2EF" />
           ) : (
-            <Text style={styles.fieldValue}>{name}</Text>
+            <View style={styles.fieldView}>
+              <Text style={styles.fieldValue}>{name}</Text>
+            </View>
           )}
         </View>
 
         <View style={styles.fieldContainer}>
           <Text style={styles.label}>Email</Text>
           {isEditing ? (
-            <Input value={email} onChangeText={setEmail} variant="outline" style={styles.input} keyboardType="email-address" />
+            <Input value={email} onChangeText={setEmail} variant="outline" bg="#DBE2EF" keyboardType="email-address" />
           ) : (
-            <Text style={styles.fieldValue}>{email}</Text>
+            <View style={styles.fieldView}>
+              <Text style={styles.fieldValue}>{email}</Text>
+            </View>
           )}
         </View>
 
-        <View style={styles.fieldContainer}>
-          <Text style={styles.label}>Số điện thoại</Text>
-          {isEditing ? (
-            <Input value={phone} onChangeText={setPhone} variant="outline" style={styles.input} keyboardType="phone-pad" />
-          ) : (
-            <Text style={styles.fieldValue}>{phone}</Text>
-          )}
-        </View>
-
-        <View style={styles.fieldContainer}>
+        <View style={isEditing ? styles.dateFieldContainer : styles.fieldContainer}>
           <Text style={styles.label}>Ngày sinh</Text>
           {isEditing ? (
             <HStack alignItems="center" space={2}>
@@ -113,8 +102,7 @@ export default function ProfileDetailScreen() {
                 value={formatDate(birthDate)}
                 isReadOnly
                 variant="outline"
-                style={styles.input}
-                w="85%" // Điều chỉnh độ rộng để đủ chỗ cho biểu tượng lịch
+                bg="#DBE2EF"
               />
               <IconButton
                 icon={<FontAwesome name="calendar" size={24} color="#3F72AF" />}
@@ -130,25 +118,46 @@ export default function ProfileDetailScreen() {
               )}
             </HStack>
           ) : (
-            <Text style={styles.fieldValue}>{formatDate(birthDate)}</Text>
+            <View style={styles.fieldView}>
+              <Text style={styles.fieldValue}>{formatDate(birthDate)}</Text>
+            </View>
           )}
         </View>
 
+        <View style={styles.fieldContainer}>
+          <Text style={styles.label}>Chung cư</Text>
+          <View style={styles.apartmentContainer}>
+            <Image
+              source={{ uri: user.apartmentAvatarUrl || 'https://via.placeholder.com/100' }}
+              style={styles.apartmentImage}
+            />
+            <View style={styles.apartmentInfo}>
+              <Text style={styles.apartmentName}>{user.apartmentName || "Không có thông tin"}</Text>
+              <Text style={styles.apartmentAddress}>{user.apartmentAddress || "Không có thông tin"}</Text>
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.fieldContainer}>
+          <Text style={styles.label}>Căn hộ</Text>
+          <View style={styles.fieldView}>
+            <Text style={styles.fieldValue}>Room 115</Text>
+          </View>
+        </View>
+
         {isEditing && (
-          <HStack justifyContent="center" space={4} mt={4}>
-            <Button style={styles.saveButton} onPress={handleSave} flex={1}>
-              LƯU
-            </Button>
+          <HStack justifyContent="space-between" mt={4}>
             <Button
               variant="outline"
               colorScheme="coolGray"
-              onPress={() => {
-                setIsEditing(false);
-                router.back();
-              }}
+              onPress={() => setIsEditing(false)}
               flex={1}
+              mr={2}
             >
               HỦY
+            </Button>
+            <Button style={styles.saveButton} onPress={handleSave} flex={1}>
+              LƯU
             </Button>
           </HStack>
         )}
@@ -157,15 +166,7 @@ export default function ProfileDetailScreen() {
       <ConfirmModal
         isOpen={showConfirmModal}
         onClose={() => setShowConfirmModal(false)}
-        onConfirm={() => {
-          setIsEditing(false);
-          setShowConfirmModal(false);
-          toast.show({
-            description: "Thông tin đã được lưu thành công",
-            duration: 3000,
-          });
-          router.replace("/ProfileScreen");
-        }}
+        onConfirm={handleConfirmSave}
       />
     </ScrollView>
   );
@@ -174,13 +175,25 @@ export default function ProfileDetailScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#F9F7F7", padding: 16 },
   section: { marginBottom: 24 },
-  imageContainer: { position: "relative", alignItems: "center", marginBottom: 20 },
+  imageContainer: { alignItems: "center", marginBottom: 20 },
   profileImage: { width: 100, height: 100, borderRadius: 50 },
-  cameraIcon: { position: "absolute", bottom: 0, right: 0, backgroundColor: "#3F72AF", borderRadius: 20, padding: 5 },
   fieldContainer: { width: "100%", marginVertical: 10 },
-  label: { fontSize: 16, fontWeight: "bold", color: "#112D4E" },
-  fieldValue: { fontSize: 16, color: "#333", marginTop: 4 },
-  input: { fontSize: 16, backgroundColor: "#fff" },
-  dateText: { fontSize: 16, color: "#333", marginTop: 4 },
+  label: { fontSize: 16, fontWeight: "bold", color: "#112D4E", marginBottom: 4 },
+  fieldView: {
+    padding: 10,
+    backgroundColor: "#DBE2EF",
+    borderRadius: 8,
+  },
+  fieldValue: { fontSize: 16, color: "#333" },
+  apartmentContainer: { flexDirection: "row", alignItems: "center", marginVertical: 10 },
+  apartmentImage: { width: 50, height: 50, borderRadius: 8, marginRight: 10 },
+  apartmentInfo: { flex: 1 },
+  apartmentName: { fontSize: 16, fontWeight: "bold" },
+  apartmentAddress: { fontSize: 14, color: "#6C757D" },
   saveButton: { backgroundColor: "#3F72AF" },
+  dateFieldContainer: {
+    width: "88%", // Điều chỉnh kích thước theo nhu cầu của bạn
+    marginVertical: 10,
+  },
 });
+
