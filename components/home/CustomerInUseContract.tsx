@@ -10,12 +10,14 @@ interface Props {
     priceByDate: number;
     purchaseTime: string;
     fileUrl: string;
+    remainingNumOfRequests: number;
   };
 }
 
 const CustomerInUseContract: React.FC<Props> = ({ contract }) => {
+  if (contract.remainingNumOfRequests <= 0) return null;
+
   const handleViewContract = () => {
-    // Logic để mở hoặc hiển thị file PDF từ fileUrl
     console.log(`Mở file PDF từ URL: ${contract.fileUrl}`);
   };
 
@@ -37,6 +39,7 @@ const CustomerInUseContract: React.FC<Props> = ({ contract }) => {
     </Box>
   );
 };
+
 
 const styles = StyleSheet.create({
   cardContainer: {

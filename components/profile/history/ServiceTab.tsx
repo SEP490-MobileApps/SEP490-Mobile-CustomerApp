@@ -1,56 +1,95 @@
-// components/profile/history/ServiceTab.tsx
-import React from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
-import { FontAwesome } from "@expo/vector-icons";
-import { servicePackages } from "../../../constants/Datas";
-import { useGlobalState } from "../../../contexts/GlobalProvider";
-import { formatDate } from "@/utils/formatDate";
+import React from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Linking } from 'react-native';
+import { Box } from 'native-base';
+import { useFocusEffect } from '@react-navigation/native';
+import { useGlobalState } from '@/contexts/GlobalProvider';
+import useServicePackages from '@/hooks/useServicePackage';
+import { formatDate } from '@/utils/formatDate';
 
-export default function ServiceTab() {
-  const { serviceStartDate, serviceEndDate } = useGlobalState();
+const ServiceTab: React.FC = () => {
+  const { fetchCustomerContracts, contracts, loading } = useServicePackages();
+  const { userInfo, serviceStartDate, serviceEndDate } = useGlobalState();
 
-  const filteredPackages = servicePackages.filter((pkg) => {
-    if (!serviceStartDate || !serviceEndDate) return true;
-    const purchaseDate = new Date(pkg.purchaseTime);
-    return purchaseDate >= serviceStartDate && purchaseDate <= serviceEndDate;
-  });
+  useFocusEffect(
+    React.useCallback(() => {
+      if (userInfo?.accountId) {
+        fetchCustomerContracts(
+          userInfo.accountId,
+          serviceStartDate?.toISOString(),
+          serviceEndDate?.toISOString()
+        );
+      }
+    }, [userInfo?.accountId, serviceStartDate, serviceEndDate])
+  );
+
+  if (loading) {
+    return <Text style={styles.loadingText}>Đang tải dữ liệu hợp đồng...</Text>;
+  }
+
+  if (contracts.length === 0) {
+    return (
+      <View style={styles.noDataContainer}>
+        <Text style={styles.noDataText}>Không có hợp đồng nào.</Text>
+      </View>
+    );
+  }
 
   return (
-    <ScrollView contentContainerStyle={styles.contentContainer} showsVerticalScrollIndicator={false}>
-      {filteredPackages.map((pkg) => (
-        <View key={pkg.servicePackageId} style={styles.serviceCard}>
-          <View style={styles.serviceInfo}>
-            <FontAwesome name="diamond" size={40} color="#FFA500" />
-            <View style={styles.serviceDetails}>
-              <Text style={styles.packageName}>{pkg.name}</Text>
-              <Text style={styles.packagePrice}>{pkg.priceByDate} VNĐ</Text>
+    <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+      {contracts.map(contract => (
+        <Box key={contract.contractId} style={styles.cardContainer}>
+          <View style={styles.row}>
+            <Image source={{ uri: contract.imageUrl }} style={styles.image} />
+            <View style={styles.contentContainer}>
+              <Text style={styles.name}>{contract.name}</Text>
+              <Text style={styles.price}>Giá: {contract.priceByDate} VND</Text>
+              <Text style={styles.purchaseTime}>
+                Ngày đăng ký: {formatDate(contract.purchaseTime)}
+              </Text>
+              <TouchableOpacity
+                onPress={() => Linking.openURL(contract.fileUrl)}
+                style={styles.button}
+              >
+                <Text style={styles.buttonText}>Xem hợp đồng</Text>
+              </TouchableOpacity>
             </View>
           </View>
-          <View style={styles.dateContainer}>
-            <Text style={styles.dateLabel}>Ngày đăng ký:</Text>
-            <Text style={styles.dateValue}>{formatDate(pkg.purchaseTime)}</Text>
-          </View>
-        </View>
+        </Box>
       ))}
     </ScrollView>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  contentContainer: { paddingVertical: 16 },
-  serviceCard: { backgroundColor: "#DBE2EF", padding: 16, marginBottom: 16, borderRadius: 8 },
-  serviceInfo: { flexDirection: "row", alignItems: "center", marginBottom: 18 },
-  serviceDetails: { marginLeft: 16 },
-  packageName: { fontSize: 18, fontWeight: "bold" },
-  packagePrice: { color: "#3F72AF" },
-  dateContainer: {
-    flexDirection: "row", // Sắp xếp theo hàng ngang
-    justifyContent: "space-between", // Đẩy các phần tử về hai bên
-    alignItems: "center", // Căn giữa theo trục dọc
-    backgroundColor: "#F9F7F7",
-    padding: 8,
+  scrollContainer: { paddingVertical: 16 },
+  loadingText: { textAlign: 'center', marginTop: 20, fontSize: 16 },
+  noDataContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  noDataText: { fontSize: 16, color: '#888' },
+  cardContainer: {
+    marginVertical: 10,
+    padding: 10,
+    borderRadius: 8,
+    backgroundColor: '#FFF',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
+    elevation: 3,
+  },
+  row: { flexDirection: 'row', alignItems: 'center' },
+  image: { width: 100, height: 100, borderRadius: 8, marginRight: 10 },
+  contentContainer: { flex: 1 },
+  name: { fontSize: 16, fontWeight: 'bold' },
+  price: { fontSize: 14, color: '#888' },
+  purchaseTime: { fontSize: 12, marginBottom: 5 },
+  button: {
+    marginTop: 5,
+    backgroundColor: '#3F72AF',
+    paddingVertical: 5,
+    paddingHorizontal: 10,
     borderRadius: 5,
   },
-  dateLabel: { color: "#6C757D" },
-  dateValue: { fontWeight: "bold" },
+  buttonText: { color: '#FFF', textAlign: 'center', fontWeight: 'bold' },
 });
+
+export default ServiceTab;

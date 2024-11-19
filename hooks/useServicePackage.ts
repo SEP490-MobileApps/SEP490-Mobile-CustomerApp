@@ -72,28 +72,35 @@ const useServicePackages = () => {
   }, [fetchData]);
 
   // Fetch customer contracts and enrich with service package details
-  const fetchCustomerContracts = useCallback(async (customerId: string) => {
+  const fetchCustomerContracts = useCallback(async (customerId: string, startDate?: string, endDate?: string) => {
     setLoading(true);
     setApiError(null);
+
     try {
+      // Chuẩn bị tham số API
+      const params: any = { CustomerId: customerId };
+      if (startDate) params.StartDate = startDate;
+      if (endDate) params.EndDate = endDate;
+
       const response = await fetchData({
         url: '/service-package/12',
         method: 'GET',
-        params: { CustomerId: customerId },
+        params,
       });
 
       if (response) {
+        // Kết hợp logic enrich từ phiên bản cũ
         const enrichedContracts = await Promise.all(
           response.map(async (contract: any) => {
-            // Check cache for service package details first
             let packageDetails = servicePackageCache.get(contract.servicePackageId);
             if (!packageDetails) {
-              // If not in cache, fetch the details
+              // Fetch package details nếu không có trong cache
               const packageResponse = await fetchData({
                 url: '/service-package/4',
                 method: 'GET',
                 params: { ServicePackageId: contract.servicePackageId },
               });
+
               if (packageResponse) {
                 packageDetails = packageResponse;
                 servicePackageCache.set(contract.servicePackageId, packageResponse);
@@ -106,6 +113,7 @@ const useServicePackages = () => {
             };
           })
         );
+
         setContracts(enrichedContracts);
       }
     } catch (error) {

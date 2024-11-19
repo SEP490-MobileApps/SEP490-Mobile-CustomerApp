@@ -1,15 +1,22 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import { WebView } from 'react-native-webview';
 
 export default function ChatScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>ChatScreen</Text>
+      <WebView
+        source={require('@/assets/tawk.html')}
+        javaScriptEnabled={true}
+        domStorageEnabled={true}
+        originWhitelist={['*']}
+        style={styles.webview}
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  title: { fontSize: 24, marginBottom: 20 },
+  container: { flex: 1 },
+  webview: { flex: 1 },
 });

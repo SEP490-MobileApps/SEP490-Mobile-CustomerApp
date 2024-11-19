@@ -90,23 +90,25 @@ function HomeScreen(): React.JSX.Element {
         <Text style={styles.title}>HỢP ĐỒNG ĐANG SỬ DỤNG</Text>
         {contractLoading ? (
           <Text>Đang tải dữ liệu hợp đồng...</Text>
-        ) : contracts.length === 0 ? (
+        ) : contracts.filter(contract => contract.remainingNumOfRequests > 0).length === 0 ? (
           <NoDataComponent
             imageUrl={require('../../assets/images/no-contract.png')}
             title="Không có hợp đồng"
             description="Hiện tại bạn không có hợp đồng nào đang được sử dụng."
           />
         ) : (
-          contracts.map((contract) => (
-            <CustomerInUseContract key={contract.contractId} contract={contract} />
-          ))
+          contracts
+            .filter(contract => contract.remainingNumOfRequests > 0)
+            .map(contract => (
+              <CustomerInUseContract key={contract.contractId} contract={contract} />
+            ))
         )}
 
         {/* Đường kẻ phân cách */}
         <View style={styles.divider} />
 
         {/* Phần đánh giá từ khách hàng */}
-        {/* Phần đánh giá từ khách hàng */}
+        <Text style={styles.title}>ĐÁNH GIÁ TỪ KHÁCH HÀNG</Text>
         {feedbacks.length === 0 ? (
           <NoDataComponent
             imageUrl={require('../../assets/images/no-review.png')}

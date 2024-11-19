@@ -1,4 +1,3 @@
-// app/HistoryScreen.tsx
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Button } from "native-base";
@@ -12,14 +11,12 @@ import { useGlobalState } from "../contexts/GlobalProvider";
 export default function HistoryScreen() {
   const [selectedTab, setSelectedTab] = useState<"service" | "order">("service");
   const { isOpen, onOpen, onClose } = useDisclose();
+  const { userInfo, setServiceStartDate, setServiceEndDate, setOrderStartDate, setOrderEndDate } =
+    useGlobalState();
 
-  // Lấy các hàm đặt giá trị từ GlobalProvider để reset bộ lọc
-  const { setServiceStartDate, setServiceEndDate, setOrderStartDate, setOrderEndDate } = useGlobalState();
-
-  // useEffect để xóa bộ lọc khi rời khỏi trang
+  // Xóa bộ lọc khi rời khỏi trang
   useEffect(() => {
     return () => {
-      // Xóa bộ lọc khi thoát khỏi trang
       setServiceStartDate(null);
       setServiceEndDate(null);
       setOrderStartDate(null);
@@ -59,7 +56,11 @@ export default function HistoryScreen() {
       <DateRangePicker isOpen={isOpen} onClose={onClose} selectedTab={selectedTab} />
 
       {/* Tab Content */}
-      {selectedTab === "service" ? <ServiceTab /> : <OrderTab />}
+      {selectedTab === "service" ? (
+        <ServiceTab />
+      ) : (
+        <OrderTab />
+      )}
     </View>
   );
 }
@@ -77,9 +78,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 5,
-    flexDirection: "row", // Sắp xếp theo hàng ngang
-    alignItems: "center", // Căn giữa biểu tượng và văn bản
+    flexDirection: "row",
+    alignItems: "center",
   },
-  filterIcon: { marginRight: 8 }, // Thêm khoảng cách giữa icon và văn bản
+  filterIcon: { marginRight: 8 },
   filterButtonText: { color: "#FFF" },
 });

@@ -36,7 +36,6 @@ function CustomerReviews({ feedbacks }: Props): React.JSX.Element {
 
   return (
     <View>
-      <Text style={styles.title}>ĐÁNH GIÁ TỪ KHÁCH HÀNG</Text>
       {totalReviews > 0 && (
         <>
           <View style={styles.ratingSummary}>
