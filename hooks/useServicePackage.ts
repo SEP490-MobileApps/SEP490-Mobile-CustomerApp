@@ -144,6 +144,79 @@ const useServicePackages = () => {
     }
   }, [fetchData]);
 
+  const handlePaymentMethod = useCallback(async (servicePackageId: string, isOnlinePayment: boolean) => {
+    setLoading(true);
+    setApiError(null);
+    try {
+      const formData = new FormData();
+      formData.append('servicePackageId', servicePackageId);
+      formData.append('isOnlinePayment', isOnlinePayment.toString()); // Chuyển boolean thành chuỗi
+
+      const response = await fetchData({
+        url: '/service-package/7',
+        method: 'POST',
+        header: {
+          'Content-Type': 'multipart/form-data',
+        },
+        data: formData,
+      });
+
+      // Trả về đúng loại dữ liệu
+      if (isOnlinePayment && response.startsWith('http')) {
+        return { type: 'link', data: response }; // Link thanh toán
+      } else if (!isOnlinePayment && typeof response === 'string') {
+        return { type: 'message', data: response }; // Thông báo
+      }
+
+      throw new Error('Dữ liệu từ API không hợp lệ');
+    } catch (error) {
+      setApiError('Không thể xử lý phương thức thanh toán.');
+      console.error('Lỗi xử lý phương thức thanh toán:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  }, [fetchData]);
+
+  const finalizePayment = useCallback(
+    async ({
+      servicePackageId,
+      orderCode,
+      contractId,
+    }: {
+      servicePackageId: string;
+      orderCode: number;
+      contractId: string;
+    }) => {
+      setLoading(true);
+      setApiError(null);
+      try {
+        const formData = new FormData();
+        formData.append('servicePackageId', servicePackageId);
+        formData.append('orderCode', orderCode.toString());
+        formData.append('contractId', contractId);
+
+        const response = await fetchData({
+          url: '/service-package/8',
+          method: 'POST',
+          header: {
+            'Content-Type': 'multipart/form-data',
+          },
+          data: formData,
+        });
+
+        return response; // Xử lý dữ liệu trả về nếu cần
+      } catch (error) {
+        setApiError('Không thể hoàn tất thanh toán.');
+        console.error('Error finalizing payment:', error);
+        throw error;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [fetchData]
+  );
+
   return {
     packages,
     totalCount,
@@ -154,8 +227,10 @@ const useServicePackages = () => {
     fetchServicePackageDetail,
     fetchCustomerContracts,
     createDraftContract,
+    handlePaymentMethod,
+    finalizePayment,
     loading,
-    apiError,
+    apiError
   };
 };
 

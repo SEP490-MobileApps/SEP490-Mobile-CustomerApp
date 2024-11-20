@@ -9,4 +9,5 @@ export interface ServicePackage {
   priceByDate: number,
   policy: string,
   purchaseTime: string;
+  isOnlinePayment: boolean;
 }

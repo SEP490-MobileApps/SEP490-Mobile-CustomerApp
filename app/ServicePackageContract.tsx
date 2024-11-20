@@ -1,23 +1,64 @@
 // app/ServicePackageContract.tsx
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { Button, useDisclose } from 'native-base';
+import { View, Text, StyleSheet, ScrollView, Linking } from 'react-native';
+import { Button, useDisclose, useToast } from 'native-base';
 import { useLocalSearchParams } from 'expo-router';
 import useServicePackages from '../hooks/useServicePackage';
 import PaymentMethodModal from '../components/home/PaymentMethodModal';
+import { useRouter } from 'expo-router';
 
 export default function ServicePackageContract() {
   const { packageItem } = useLocalSearchParams();
-  const { createDraftContract, draftContract, loading } = useServicePackages();
+  const { createDraftContract, handlePaymentMethod, draftContract, loading } = useServicePackages();
   const [paymentMethod, setPaymentMethod] = useState<string>('cash');
+  const [packageData, setPackageData] = useState<any | null>(null);
   const { isOpen, onOpen, onClose } = useDisclose();
+  const toast = useToast();
+  const router = useRouter();
 
+  // Lấy dữ liệu từ packageItem và tạo hợp đồng nháp
   useEffect(() => {
     if (packageItem) {
-      const packageData = JSON.parse(packageItem as string);
-      createDraftContract(packageData.servicePackageId); // Tạo hợp đồng nháp
+      const parsedPackageData = JSON.parse(packageItem as string);
+      setPackageData(parsedPackageData); // Lưu lại packageData
+      createDraftContract(parsedPackageData.servicePackageId); // Tạo hợp đồng nháp
     }
   }, [packageItem]);
+
+  // Xử lý thanh toán
+  const handlePayment = async () => {
+    if (!packageData?.servicePackageId) {
+      console.error('Missing servicePackageId in packageData');
+      return;
+    }
+
+    try {
+      const isOnlinePayment = paymentMethod === 'payos';
+      console.log('Calling handlePaymentMethod with:', packageData.servicePackageId, isOnlinePayment);
+
+      const result = await handlePaymentMethod(packageData.servicePackageId, isOnlinePayment); // Sử dụng packageData.servicePackageId
+
+      if (result.type === 'link') {
+        onClose();
+        Linking.openURL(result.data); // Mở link thanh toán
+      } else if (result.type === 'message') {
+        onClose();
+        router.replace("/(tabs)");
+        toast.show({
+          description: result.data, // Hiển thị thông báo từ API
+          placement: 'top',
+          duration: 5000,
+        });
+      }
+    } catch (error) {
+      toast.show({
+        description: 'Có lỗi xảy ra khi xử lý thanh toán.',
+        placement: 'top',
+        duration: 5000,
+      });
+      console.error('Error in handlePayment:', error);
+    }
+  };
 
   if (loading || !draftContract) {
     return (
@@ -98,6 +139,7 @@ export default function ServicePackageContract() {
         onClose={onClose}
         selectedMethod={paymentMethod}
         setSelectedMethod={setPaymentMethod}
+        handleConfirm={handlePayment} // Đảm bảo truyền đúng prop này
       />
     </ScrollView>
   );

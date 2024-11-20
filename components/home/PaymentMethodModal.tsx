@@ -1,14 +1,16 @@
+// components/home/PaymentMethodModal.tsx
+
 import React from 'react';
 import { StyleSheet, View, Text, Image } from 'react-native';
-import { Modal, Button, Radio, Divider, IconButton, Icon, useToast, HStack } from 'native-base';
+import { Modal, Button, Radio, Divider, IconButton, Icon } from 'native-base';
 import { AntDesign } from '@expo/vector-icons';
-import { router } from 'expo-router';
 
 interface PaymentMethodModalProps {
   isOpen: boolean;
   onClose: () => void;
   selectedMethod: string;
   setSelectedMethod: (method: string) => void;
+  handleConfirm: () => void; // Thêm hàm xử lý khi nhấn nút "Xác Nhận"
 }
 
 const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
@@ -16,41 +18,8 @@ const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
   onClose,
   selectedMethod,
   setSelectedMethod,
+  handleConfirm,
 }) => {
-  const toast = useToast();
-
-  const handleConfirm = () => {
-    if (selectedMethod === 'payos') {
-      toast.show({
-        render: () => (
-          <HStack space={2} alignItems="center" bg="green.500" px={4} py={2} rounded="sm" mb={5}>
-            <Icon as={<AntDesign name="checkcircle" />} color="white" size="sm" />
-            <Text>
-              Thanh toán thành công, sẽ có 1 worker đưa hợp đồng cho bạn ký !!!
-            </Text>
-          </HStack>
-        ),
-        placement: 'top',
-        duration: 10000,
-      });
-    } else if (selectedMethod === 'cash') {
-      toast.show({
-        render: () => (
-          <HStack space={2} alignItems="center" bg="blue.500" px={4} py={2} rounded="sm" mb={5}>
-            <Icon as={<AntDesign name="infocirlce" />} color="white" size="sm" />
-            <Text>
-              Sẽ có 1 worker đưa hợp đồng cho bạn ký,bạn sẽ thanh toán sau !!!
-            </Text>
-          </HStack>
-        ),
-        placement: 'top',
-        duration: 10000,
-      });
-    }
-    onClose(); // Close the modal
-    router.replace("/(tabs)"); // Navigate back to home screen (change 'HomeScreen' to your screen name)
-  };
-
   return (
     <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false}>
       <Modal.Content width="80%">
@@ -66,13 +35,13 @@ const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
           <Radio.Group
             name="paymentMethodGroup"
             value={selectedMethod}
-            onChange={(nextValue) => setSelectedMethod(nextValue)}
+            onChange={(nextValue) => setSelectedMethod(nextValue)} // Cập nhật paymentMethod
           >
             <View style={styles.paymentOptionContainer}>
               <Image source={require('../../assets/images/cash.png')} style={styles.paymentImage} />
               <Text style={styles.paymentText}>Bằng tiền mặt</Text>
               <Radio
-                value="cash"
+                value="cash" // Giá trị 'cash'
                 colorScheme="blue"
                 accessibilityLabel="Thanh toán bằng tiền mặt"
                 style={styles.radioButton}
@@ -85,7 +54,7 @@ const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
               <Image source={require('../../assets/images/payos.png')} style={styles.paymentImage} />
               <Text style={styles.paymentText}>Bằng PayOS</Text>
               <Radio
-                value="payos"
+                value="payos" // Giá trị 'payos'
                 colorScheme="blue"
                 accessibilityLabel="Thanh toán bằng PayOS"
                 style={styles.radioButton}
