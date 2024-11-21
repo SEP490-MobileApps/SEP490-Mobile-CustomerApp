@@ -1,7 +1,7 @@
 // app/CartScreen.tsx
 import React, { useCallback, useState, useRef } from 'react';
-import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
-import { Button, Icon, AlertDialog } from 'native-base';
+import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, Linking } from 'react-native';
+import { Button, Icon, AlertDialog, Toast } from 'native-base';
 import { FontAwesome } from '@expo/vector-icons';
 import { FormatPriceToVnd } from '../utils/PriceUtils';
 import NoDataComponent from '../components/ui/NoDataComponent';
@@ -9,11 +9,27 @@ import useProducts from '../hooks/useProduct'; // Import hook useProducts
 import { useFocusEffect } from '@react-navigation/native';
 
 export default function CartScreen() {
-  const { cartItems, totalAmount, fetchCartItems, deleteCartItem } = useProducts(); // Add deleteCartItem function from hook
+  const { cartItems, totalAmount, fetchCartItems, deleteCartItem, handleOrderPayment } = useProducts(); // Add deleteCartItem function from hook
   const [isOpen, setIsOpen] = useState(false); // State for AlertDialog
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const onClose = () => setIsOpen(false);
   const cancelRef = useRef(null); // Ref for least destructive action
+
+  const handleCheckout = async () => {
+    try {
+      const result = await handleOrderPayment();
+      if (result.type === 'link') {
+        Linking.openURL(result.data); // Mở link thanh toán
+      }
+    } catch (error) {
+      Toast.show({
+        description: 'Có lỗi khi tạo đơn hàng.',
+        placement: 'top',
+        duration: 5000,
+        bg: 'red.500',
+      });
+    }
+  };
 
   useFocusEffect(
     useCallback(() => {
@@ -81,7 +97,7 @@ export default function CartScreen() {
               </View>
             )}
           />
-          <Button style={styles.checkoutButton} onPress={() => console.log('Proceed to Checkout')}>
+          <Button style={styles.checkoutButton} onPress={handleCheckout}>
             <Text style={styles.checkoutText}>THANH TOÁN</Text>
           </Button>
         </>

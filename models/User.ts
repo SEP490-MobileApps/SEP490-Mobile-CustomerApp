@@ -11,4 +11,7 @@ export interface User {
   apartmentName: string;
   apartmentAddress: string;
   roomId: string;
+  cmT_CCCD: string;
+  areaId: string;
+  password: string;
 }

@@ -190,6 +190,45 @@ const useProducts = () => {
     }
   }, [fetchData]);
 
+  const handleOrderPayment = useCallback(async () => {
+    try {
+      // Gọi API /order/4 để lấy link thanh toán
+      const paymentLink = await fetchData({
+        url: '/order/4',
+        method: 'POST',
+      });
+
+      if (paymentLink && typeof paymentLink === 'string') {
+        return { type: 'link', data: paymentLink };
+      }
+
+      throw new Error('Lỗi khi lấy link thanh toán.');
+    } catch (error) {
+      console.error('Error in handleOrderPayment:', error);
+      throw error;
+    }
+  }, [fetchData]);
+
+  const finalizeOrder = useCallback(async ({ orderCode, id1 }: { orderCode: number; id1: string }) => {
+    try {
+      // Gọi API /order/5 để hoàn tất đơn hàng
+      const response = await fetchData({
+        url: '/order/5',
+        method: 'POST',
+        data: {
+          orderCode: orderCode.toString(),
+          id1,
+        },
+        header: { 'Content-Type': 'application/json' },
+      });
+
+      return response;
+    } catch (error) {
+      console.error('Error in finalizeOrder:', error);
+      throw error;
+    }
+  }, [fetchData]);
+
   return {
     products,
     totalCount,
@@ -204,6 +243,8 @@ const useProducts = () => {
     cartItems,
     totalAmount,
     deleteCartItem,
+    handleOrderPayment,
+    finalizeOrder,
     orders,
     fetchOrders
   };

@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "SEP490-Mobile-CustomerApp",
-    "slug": "SEP490-Mobile-CustomerApp",
+    "name": "EWMH-Customer",
+    "slug": "ewmhcustomer",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -19,7 +19,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.vuvohoang1823.ewmhcustomer"
     },
     "web": {
       "bundler": "metro",
@@ -31,6 +32,11 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "abe6ef40-ab22-402a-87c0-0d1f518d9238"
+      }
     }
   }
 }

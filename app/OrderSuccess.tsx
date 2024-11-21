@@ -1,68 +1,60 @@
+// app/OrderSuccess.tsx
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { useLocalSearchParams, router, useNavigation } from 'expo-router';
+import { useLocalSearchParams, router } from 'expo-router';
 import LottieView from 'lottie-react-native';
-import useServicePackages from '../hooks/useServicePackage';
+import useProducts from '../hooks/useProduct';
 import { useToast } from 'native-base';
 
 export const unstable_settings = {
-  headerShown: false, // Ẩn header hoàn toàn
+  headerShown: false, // Ẩn header
 };
 
-export default function ServicePackageSuccess() {
-  const { servicePackageId, orderCode, contractId, isCanceled } = useLocalSearchParams();
-  const { finalizePayment } = useServicePackages();
-  const navigation = useNavigation();
+export default function OrderSuccess() {
+  const { orderCode, id1, isCanceled } = useLocalSearchParams();
+  const { finalizeOrder } = useProducts();
   const toast = useToast();
 
   useEffect(() => {
-    // Ẩn header
-    navigation.setOptions({
-      headerShown: false,
-    });
-
     if (isCanceled === undefined) {
-      // Trường hợp thanh toán thành công
-      if (servicePackageId && orderCode && contractId) {
-        handleFinalizePayment(); // Gọi API hoàn tất thanh toán
+      if (orderCode && id1) {
+        handleFinalizeOrder();
       } else {
         toast.show({
-          description: 'Lỗi: Thiếu thông tin thanh toán!',
+          description: 'Thiếu thông tin đơn hàng.',
           placement: 'top',
           duration: 5000,
         });
-        navigateToHome(); // Chuyển hướng về trang chủ nếu thiếu thông tin
+        navigateToHome();
       }
     } else {
-      // Trường hợp thanh toán bị hủy
       toast.show({
         description: 'Thanh toán đã bị hủy!',
         placement: 'top',
         duration: 5000,
       });
-      setTimeout(navigateToHome, 5000); // 5 giây trước khi chuyển hướng
+      navigateToHome();
     }
-  }, [isCanceled, servicePackageId, orderCode, contractId]);
+  }, [orderCode, id1, isCanceled]);
 
-  const handleFinalizePayment = async () => {
+  const handleFinalizeOrder = async () => {
     try {
-      await finalizePayment({
-        servicePackageId: servicePackageId as string,
+      await finalizeOrder({
         orderCode: parseInt(orderCode as string, 10),
-        contractId: contractId as string,
+        id1: id1 as string,
       });
 
       toast.show({
-        description: 'Thanh toán thành công!',
+        description: 'Đơn hàng đã được hoàn tất!',
         placement: 'top',
         duration: 5000,
       });
 
-      setTimeout(navigateToHome, 5000); // 5 giây trước khi chuyển hướng
+      navigateToHome();
     } catch (error) {
-      console.error('Error finalizing payment:', error);
+      console.error('Error finalizing order:', error);
       toast.show({
-        description: 'Có lỗi khi hoàn tất thanh toán.',
+        description: 'Có lỗi khi hoàn tất đơn hàng.',
         placement: 'top',
         duration: 5000,
       });
@@ -70,7 +62,9 @@ export default function ServicePackageSuccess() {
   };
 
   const navigateToHome = () => {
-    router.replace('/(tabs)'); // Chuyển hướng về trang chủ
+    setTimeout(() => {
+      router.replace('/(tabs)');
+    }, 5000);
   };
 
   return (
@@ -87,7 +81,7 @@ export default function ServicePackageSuccess() {
         speed={0.5}
       />
       <Text style={styles.title}>
-        {isCanceled === undefined ? 'Thanh toán thành công' : 'Thanh toán bị hủy'}
+        {isCanceled === undefined ? 'Đơn hàng đã thanh toán' : 'Thanh toán bị hủy'}
       </Text>
     </View>
   );
