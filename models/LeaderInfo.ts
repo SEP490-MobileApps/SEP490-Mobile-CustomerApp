@@ -7,4 +7,5 @@ export interface Leader {
   phoneNumber: string,
   avatarUrl: string,
   dateOfBirth: Date,
+  leaderId: string,
 }

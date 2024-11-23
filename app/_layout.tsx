@@ -4,12 +4,14 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native
 import { useFonts } from "expo-font";
 import { Stack, useRouter } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { NativeBaseProvider, IconButton } from "native-base";
 import { useColorScheme } from "../components/useColorScheme";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { GlobalProvider } from "../contexts/GlobalProvider";
 import { FontAwesome as FontAwesomeIcon } from "@expo/vector-icons";
+import * as Notifications from "expo-notifications";
+import { registerForPushNotificationsAsync } from "@/utils/PushNotification";
 
 export { ErrorBoundary } from "expo-router";
 
@@ -20,6 +22,7 @@ export const unstable_settings = {
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+
   const [loaded, error] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
     ...FontAwesome.font,
@@ -49,6 +52,41 @@ export default function RootLayout() {
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
   const router = useRouter();
+
+  const notificationListener = useRef<Notifications.Subscription>();
+  const responseListener = useRef<Notifications.Subscription>();
+
+  const setupPushNotifications = async () => {
+    try {
+      const token = await registerForPushNotificationsAsync();
+      console.log("Current token: ", token);
+      notificationListener.current =
+        Notifications.addNotificationReceivedListener((notification) => {
+
+          console.log("Current notification: ", notification);
+        });
+
+      responseListener.current =
+        Notifications.addNotificationResponseReceivedListener((response) => {
+          console.log(response);
+        });
+    } catch (error) {
+    }
+  };
+  const detachPushNotifications = () => {
+    notificationListener.current &&
+      Notifications.removeNotificationSubscription(
+        notificationListener.current
+      );
+    responseListener.current &&
+      Notifications.removeNotificationSubscription(responseListener.current);
+  };
+  useEffect(() => {
+    setupPushNotifications();
+    return () => {
+      detachPushNotifications();
+    };
+  }, []);
 
   return (
     <GlobalProvider>

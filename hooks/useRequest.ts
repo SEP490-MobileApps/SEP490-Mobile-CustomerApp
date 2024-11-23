@@ -34,27 +34,34 @@ const useRequest = () => {
     }
   }, [fetchData]);
 
-  const fetchFeedbacks = useCallback(async (pageIndex: number = 1, pageSize: number = 8) => {
-    setLoading(true);
-    setApiError(null);
-    try {
-      const response = await fetchData({
-        url: `/feedback/1`,
-        method: 'GET',
-        params: { pageIndex, pageSize },
-      });
-      if (response) {
-        setFeedbacks(response.results || []);
-        setTotalPages(Math.ceil(response.count / pageSize)); // Giả sử API trả về tổng số feedbacks trong `count`
-        setCurrentPage(pageIndex);
+  const fetchFeedbacks = useCallback(
+    async (pageIndex: number = 1, pageSize: number = 8, sortByStarOrder?: string, status: number = 1) => {
+      setLoading(true);
+      setApiError(null);
+      try {
+        const params: any = { pageIndex, pageSize, status };
+        if (sortByStarOrder) params.sortByStarOrder = sortByStarOrder;
+
+        const response = await fetchData({
+          url: `/feedback/1`,
+          method: 'GET',
+          params,
+        });
+
+        if (response) {
+          setFeedbacks(response.results || []);
+          setTotalPages(Math.ceil(response.count / pageSize)); // Giả sử API trả về tổng số feedbacks trong `count`
+          setCurrentPage(pageIndex);
+        }
+      } catch (error: any) {
+        setApiError('Không thể tải dữ liệu đánh giá.');
+        console.error('Lỗi tải dữ liệu đánh giá:', error);
+      } finally {
+        setLoading(false);
       }
-    } catch (error: any) {
-      setApiError('Không thể tải dữ liệu đánh giá.');
-      console.error('Lỗi tải dữ liệu đánh giá:', error);
-    } finally {
-      setLoading(false);
-    }
-  }, [fetchData]);
+    },
+    [fetchData]
+  );
 
   const fetchAllRequests = useCallback(async (customerId: string, status?: number, startDate?: string) => {
     setLoading(true);

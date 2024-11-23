@@ -4,6 +4,11 @@ import { useLocalSearchParams, router, useNavigation } from 'expo-router';
 import LottieView from 'lottie-react-native';
 import useServicePackages from '../hooks/useServicePackage';
 import { useToast } from 'native-base';
+import { GetLatestPushNotificationRecordByLeaderId, InitializeFirestoreDb, sendPushNotification } from '@/utils/PushNotification';
+import { useFocusEffect } from '@react-navigation/native';
+import useUser from '@/hooks/useUser';
+import { Leader } from '@/models/LeaderInfo';
+import { User } from '@/models/User';
 
 export const unstable_settings = {
   headerShown: false, // Ẩn header hoàn toàn
@@ -11,9 +16,86 @@ export const unstable_settings = {
 
 export default function ServicePackageSuccess() {
   const { servicePackageId, orderCode, contractId, isCanceled } = useLocalSearchParams();
+  const { fetchUserAndLeader, leaderInfo, user } = useUser();
   const { finalizePayment } = useServicePackages();
   const navigation = useNavigation();
   const toast = useToast();
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchUserAndLeader();
+    }, [])
+  );
+
+  const db = InitializeFirestoreDb();
+
+  // const sendPushNotificationToLeader = async () => {
+  //   try {
+  //     // Lấy bản ghi mới nhất từ Firestore theo leaderId
+  //     const result = await GetLatestPushNotificationRecordByLeaderId(
+  //       db,
+  //       "L_0000000001"
+  //     );
+
+  //     // Log kết quả để kiểm tra dữ liệu
+  //     console.log("Latest Record:", result);
+
+  //     // Kiểm tra nếu dữ liệu tồn tại và chứa expoPushToken
+  //     if (result && result.exponentPushToken) {
+  //       const expoPushToken = result.exponentPushToken;
+
+  //       // Gọi hàm sendPushNotification với token
+  //       await sendPushNotification(expoPushToken);
+
+  //       console.log("Push notification sent successfully!");
+  //     } else {
+  //       console.log("No valid exponentPushToken found in the record.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error sending push notification:", error);
+  //   }
+  // };
+
+
+
+
+  const sendPushNotificationToLeader = async ({ leaderInfo, user }: { leaderInfo: Leader, user: User }) => {
+    try {
+      // Lấy bản ghi push notification mới nhất từ Firestore
+      const result = await GetLatestPushNotificationRecordByLeaderId(
+        db,
+        leaderInfo.accountId
+      );
+
+      console.log('result', result)
+
+      if (result && result.exponentPushToken) {
+        const expoPushToken = result.exponentPushToken;
+
+        // Lấy fullName của user và truyền cùng contractId
+        const fullName = user.fullName; // Lấy fullName từ user
+
+        // Gửi push notification
+        await sendPushNotification(expoPushToken, contractId as string, fullName);
+
+        console.log('Push notification sent successfully!');
+      } else {
+        console.error('Không tìm thấy expoPushToken trong bản ghi Firestore.');
+      }
+    } catch (error) {
+      console.error('Lỗi khi gửi push notification:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (servicePackageId && orderCode && contractId) {
+      console.log('log 1', servicePackageId)
+      if (leaderInfo && user) {
+        console.log('log 2', leaderInfo, user)
+        sendPushNotificationToLeader({ leaderInfo, user });
+      }
+    }
+  }, [servicePackageId, orderCode, contractId, leaderInfo, user])
 
   useEffect(() => {
     // Ẩn header
@@ -22,6 +104,7 @@ export default function ServicePackageSuccess() {
     });
 
     if (isCanceled === undefined) {
+      console.log('cc', isCanceled)
       // Trường hợp thanh toán thành công
       if (servicePackageId && orderCode && contractId) {
         handleFinalizePayment(); // Gọi API hoàn tất thanh toán

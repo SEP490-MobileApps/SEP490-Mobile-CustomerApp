@@ -20,7 +20,8 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.vuvohoang1823.ewmhcustomer"
+      "package": "com.vuvohoang1823.ewmhcustomer",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "bundler": "metro",

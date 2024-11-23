@@ -1,0 +1,67 @@
+{
+  "project_info": {
+    "project_number": "1044784712307",
+    "project_id": "sep490-mobile-pushnotification",
+    "storage_bucket": "sep490-mobile-pushnotification.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1044784712307:android:b60ef7e5171b425cddf806",
+        "android_client_info": {
+          "package_name": "com.thedestroyer058.SEP490MobileLeaderApp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqlAANcJhEjZv-NlqCujSz4rGIEaNt0IE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1044784712307:android:7a4a9c79e96384beddf806",
+        "android_client_info": {
+          "package_name": "com.vaodyssey.SEP490MobileWorkerApp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqlAANcJhEjZv-NlqCujSz4rGIEaNt0IE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1044784712307:android:4d945850a1ecfa70ddf806",
+        "android_client_info": {
+          "package_name": "com.vuvohoang1823.ewmhcustomer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqlAANcJhEjZv-NlqCujSz4rGIEaNt0IE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

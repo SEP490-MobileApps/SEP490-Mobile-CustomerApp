@@ -1,20 +1,22 @@
 // app/(tabs)/index.tsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Text, View, StyleSheet, ScrollView, Image } from 'react-native';
 import { Box, Icon, Badge } from 'native-base';
 import { MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import RecentRepairs from '../../components/home/RecentRepairs';
 import CustomerReviews from '../../components/home/CustomerReviews';
-import CustomerInUseContract from '../../components/home/CustomerInUseContract'; // Import component mới
+import CustomerInUseContract from '../../components/home/CustomerInUseContract';
 import FloatButton from '../../components/ui/FloatButton';
 import LeaderContactModal from '../../components/home/LeaderContactModal';
-import { useFocusEffect } from '@react-navigation/native'; // Import useFocusEffect
+import { useFocusEffect } from '@react-navigation/native';
 import useUser from '../../hooks/useUser';
 import useRequest from '../../hooks/useRequest';
-import useServicePackages from '../../hooks/useServicePackage'; // Import custom hook mới
+import useServicePackages from '../../hooks/useServicePackage';
 import { useGlobalState } from '@/contexts/GlobalProvider';
 import NoDataComponent from '@/components/ui/NoDataComponent';
-
+import { GetLatestPushNotificationRecordByLeaderId, InitializeFirestoreDb, sendPushNotification } from '@/utils/PushNotification';
+import { User } from '@/models/User';
+import { Leader } from '@/models/LeaderInfo';
 
 function HomeScreen(): React.JSX.Element {
   const { user, leaderInfo, fetchUserAndLeader, loading: userLoading } = useUser();
@@ -25,20 +27,17 @@ function HomeScreen(): React.JSX.Element {
 
   useFocusEffect(
     React.useCallback(() => {
-      // Fetch user and leader information
       fetchUserAndLeader();
-
-      // Fetch recent requests
       fetchRecentRequests(3);
 
-      // Fetch customer contracts if user accountId exists
       if (userInfo?.accountId) {
         fetchCustomerContracts(userInfo.accountId);
       }
 
-      fetchFeedbacks();
+      // Reset feedbacks to default state
+      fetchFeedbacks(); // Default without filters
 
-    }, []) // No dependencies
+    }, [userInfo])
   );
 
   const handleFloatButtonPress = () => {
@@ -49,10 +48,54 @@ function HomeScreen(): React.JSX.Element {
     setModalOpen(false);
   };
 
+  // const db = InitializeFirestoreDb();
+
+  // const sendPushNotificationToLeader = async ({ leaderInfo, user }: { leaderInfo: Leader, user: User }) => {
+  //   try {
+  //     // Đảm bảo dữ liệu leaderInfo và user được tải
+  //     // await fetchUserAndLeader().then(() => {
+  //     //   if (!leaderInfo || !user) {
+  //     //     console.error('LeaderInfo hoặc User không hợp lệ');
+  //     //     return;
+  //     //   }
+  //     // }
+  //     // );
+
+
+  //     // Lấy bản ghi push notification mới nhất từ Firestore
+  //     const result = await GetLatestPushNotificationRecordByLeaderId(
+  //       db,
+  //       leaderInfo.accountId
+  //     );
+
+  //     if (result && result.exponentPushToken) {
+  //       const expoPushToken = result.exponentPushToken;
+
+  //       // Lấy fullName của user và truyền cùng contractId
+  //       const mockContractId = 'CT_20241122012345'; // Contract ID mẫu
+  //       const fullName = user.fullName; // Lấy fullName từ user
+
+  //       // Gửi push notification
+  //       await sendPushNotification(expoPushToken, mockContractId, fullName);
+
+  //       console.log('Push notification sent successfully!');
+  //     } else {
+  //       console.error('Không tìm thấy expoPushToken trong bản ghi Firestore.');
+  //     }
+  //   } catch (error) {
+  //     console.error('Lỗi khi gửi push notification:', error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   if (leaderInfo && user) {
+  //     sendPushNotificationToLeader({ leaderInfo, user });// Gửi thông báo ngay khi vào màn hình
+  //   }
+  // }, [leaderInfo, user]);
+
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        {/* Khung chứa thông tin người dùng */}
         <Box style={styles.infoContainer}>
           <View style={styles.avatarContainer}>
             <Image
@@ -63,14 +106,12 @@ function HomeScreen(): React.JSX.Element {
           </View>
         </Box>
 
-        {/* Ảnh chính */}
         <Image
           source={require('../../assets/images/home.png')}
           style={styles.homeImage}
           resizeMode="cover"
         />
 
-        {/* Phần sửa chữa gần đây */}
         {requestLoading ? (
           <Text>Đang tải dữ liệu...</Text>
         ) : requests.length === 0 ? (
@@ -83,10 +124,8 @@ function HomeScreen(): React.JSX.Element {
           <RecentRepairs requests={requests} />
         )}
 
-        {/* Đường kẻ phân cách */}
         <View style={styles.divider} />
 
-        {/* Phần hợp đồng đang sử dụng */}
         <Text style={styles.title}>HỢP ĐỒNG ĐANG SỬ DỤNG</Text>
         {contractLoading ? (
           <Text>Đang tải dữ liệu hợp đồng...</Text>
@@ -104,10 +143,8 @@ function HomeScreen(): React.JSX.Element {
             ))
         )}
 
-        {/* Đường kẻ phân cách */}
         <View style={styles.divider} />
 
-        {/* Phần đánh giá từ khách hàng */}
         <Text style={styles.title}>ĐÁNH GIÁ TỪ KHÁCH HÀNG</Text>
         {feedbacks.length === 0 ? (
           <NoDataComponent
@@ -120,13 +157,11 @@ function HomeScreen(): React.JSX.Element {
         )}
       </ScrollView>
 
-      {/* Nút Float Button với icon tùy chỉnh */}
       <FloatButton
         onPress={handleFloatButtonPress}
         icon={<Icon as={FontAwesome5} name="phone" size="md" color="#DBE2EF" />}
       />
 
-      {/* Modal thông tin liên hệ */}
       {leaderInfo && (
         <LeaderContactModal
           isOpen={isModalOpen}
@@ -187,8 +222,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
     textAlign: 'center',
-    color: '#112D4E'
-  }
+    color: '#112D4E',
+  },
 });
 
 export default HomeScreen;

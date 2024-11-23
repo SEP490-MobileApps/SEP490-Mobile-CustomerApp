@@ -32,7 +32,9 @@ const useUser = () => {
           apartmentAvatarUrl: apartment.avatarUrl,
           apartmentName: apartment.name,
           apartmentAddress: apartment.address,
-          roomId: '113'
+          roomId: '113',
+          cmT_CCCD: '123456789',
+          areaId: 'XXX',
         });
       }
 
@@ -48,6 +50,7 @@ const useUser = () => {
           phoneNumber: leaderInfo.phoneNumber,
           avatarUrl: leaderInfo.avatarUrl,
           dateOfBirth: leaderInfo.dateOfBirth,
+          leaderId: leaderInfo.leaderId,
         });
       }
     } catch (error: any) {

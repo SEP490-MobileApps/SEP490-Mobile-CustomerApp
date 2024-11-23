@@ -66,7 +66,7 @@ const useRequestAxios = () => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      console.log("Response Data:", result.data);
+      // console.log("Response Data:", result.data);
       return result.data;
     } catch (error: any) {
       if (axios.isCancel(error)) {

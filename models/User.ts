@@ -13,5 +13,5 @@ export interface User {
   roomId: string;
   cmT_CCCD: string;
   areaId: string;
-  password: string;
+  password?: string;
 }

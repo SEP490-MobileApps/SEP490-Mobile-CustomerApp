@@ -50,10 +50,10 @@ const useSaleAxios = () => {
     const accessToken = await SecureStore.getItemAsync("accessToken");
 
     try {
-      console.log("Request URL:", url);
-      console.log("Request Data:", data);
-      console.log("Request Method:", method);
-      console.log("Request Params:", params);
+      // console.log("Request URL:", url);
+      // console.log("Request Data:", data);
+      // console.log("Request Method:", method);
+      // console.log("Request Params:", params);
 
       const result = await axiosInstance({
         url,
@@ -66,7 +66,7 @@ const useSaleAxios = () => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      console.log("Response Data:", result.data);
+      // console.log("Response Data:", result.data);
       return result.data;
     } catch (error: any) {
       if (axios.isCancel(error)) {

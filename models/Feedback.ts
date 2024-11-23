@@ -7,4 +7,6 @@ export interface Feedback {
   content: string,
   rate: number,
   status: boolean
+  averageRate: number;
+  count: number;
 }

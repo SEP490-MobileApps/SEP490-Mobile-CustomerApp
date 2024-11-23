@@ -1,5 +1,5 @@
 /// app/(auth)/index.tsx
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Keyboard } from "react-native";
 import { useRouter } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
@@ -7,6 +7,7 @@ import { Button, Checkbox, Spinner, HStack, Icon } from "native-base";
 import { useAuth } from "../../hooks/useAuth";
 import { useGlobalState } from "../../contexts/GlobalProvider";
 import { MaterialIcons } from "@expo/vector-icons";
+import { GetLatestPushNotificationRecordByLeaderId, InitializeFirestoreDb, sendPushNotification } from "@/utils/PushNotification";
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -30,6 +31,7 @@ export default function LoginScreen() {
       router.replace("/(tabs)");
     }
   };
+
 
   return (
     <View style={styles.container}>
