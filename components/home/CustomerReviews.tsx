@@ -73,10 +73,10 @@ function CustomerReviews({ feedbacks }: Props): React.JSX.Element {
                 onChange={(value) => setPendingSort(value === 'asc')}
               >
                 <Radio value="asc" _text={{ color: '#3F72AF' }} my={1}>
-                  Sao: Từ thấp đến cao
+                  Từ thấp đến cao
                 </Radio>
                 <Radio value="desc" _text={{ color: '#3F72AF' }} my={1}>
-                  Sao: Từ cao đến thấp
+                  Từ cao đến thấp
                 </Radio>
               </Radio.Group>
             </Actionsheet.Item>

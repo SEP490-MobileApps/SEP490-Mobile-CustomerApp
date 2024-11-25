@@ -9,8 +9,11 @@ import { formatDate } from "../utils/formatDate";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import useUser from "../hooks/useUser";
 import { useFocusEffect } from "@react-navigation/native";
+import { useAuth } from '@/hooks/useAuth';
+import Lottie from 'lottie-react-native';
 
 export default function ProfileDetailScreen() {
+  const { fetchApartments } = useAuth();
   const { isEdit } = useLocalSearchParams();
   const router = useRouter();
   const { user, fetchUserAndLeader, loading, updateUserInfo } = useUser();
@@ -24,6 +27,7 @@ export default function ProfileDetailScreen() {
   useFocusEffect(
     useCallback(() => {
       fetchUserAndLeader();
+      fetchApartments();
     }, [])
   );
 
@@ -57,7 +61,16 @@ export default function ProfileDetailScreen() {
   };
 
   if (loading || !user) {
-    return <Text>Đang tải...</Text>;
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F9F7F7' }}>
+        <Lottie
+          source={require('../assets/animations/loading.json')} // Đường dẫn tới file animation
+          autoPlay
+          loop
+          style={{ width: 150, height: 150 }}
+        />
+      </View>
+    );
   }
 
   return (
@@ -128,22 +141,22 @@ export default function ProfileDetailScreen() {
           <Text style={styles.label}>Chung cư</Text>
           <View style={styles.apartmentContainer}>
             <Image
-              source={{ uri: user.apartmentAvatarUrl || 'https://via.placeholder.com/100' }}
+              source={{ uri: user?.apartmentAvatarUrl || 'https://via.placeholder.com/100' }}
               style={styles.apartmentImage}
             />
             <View style={styles.apartmentInfo}>
-              <Text style={styles.apartmentName}>{user.apartmentName || "Không có thông tin"}</Text>
-              <Text style={styles.apartmentAddress}>{user.apartmentAddress || "Không có thông tin"}</Text>
+              <Text style={styles.apartmentName}>{user?.apartmentName || "Không có thông tin"}</Text>
+              <Text style={styles.apartmentAddress}>{user?.apartmentAddress || "Không có thông tin"}</Text>
             </View>
           </View>
         </View>
 
-        <View style={styles.fieldContainer}>
+        {/* <View style={styles.fieldContainer}>
           <Text style={styles.label}>Căn hộ</Text>
           <View style={styles.fieldView}>
             <Text style={styles.fieldValue}>Room 115</Text>
           </View>
-        </View>
+        </View> */}
 
         {isEditing && (
           <HStack justifyContent="space-between" mt={4}>

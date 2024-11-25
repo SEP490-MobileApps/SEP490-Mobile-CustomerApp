@@ -1,10 +1,11 @@
 // app/OrderSuccess.tsx
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { useLocalSearchParams, router } from 'expo-router';
+import { useLocalSearchParams, router, useNavigation } from 'expo-router';
 import LottieView from 'lottie-react-native';
 import useProducts from '../hooks/useProduct';
 import { useToast } from 'native-base';
+
 
 export const unstable_settings = {
   headerShown: false, // Ẩn header
@@ -14,10 +15,17 @@ export default function OrderSuccess() {
   const { orderCode, id1, isCanceled } = useLocalSearchParams();
   const { finalizeOrder } = useProducts();
   const toast = useToast();
+  const navigation = useNavigation();
 
   useEffect(() => {
+
+    navigation.setOptions({
+      headerShown: false,
+    });
+
     if (isCanceled === undefined) {
       if (orderCode && id1) {
+        console.log('thông tin:', orderCode, id1)
         handleFinalizeOrder();
       } else {
         toast.show({

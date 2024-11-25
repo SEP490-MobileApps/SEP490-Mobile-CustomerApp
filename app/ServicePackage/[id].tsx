@@ -5,6 +5,8 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Button } from 'native-base';
 import { FormatPriceToVnd } from '../../utils/PriceUtils';
 import useServicePackages from '../../hooks/useServicePackage';
+import HTMLView from 'react-native-htmlview'; // Import thư viện
+import Lottie from 'lottie-react-native';
 
 export default function ServicePackageDetail() {
   const { id } = useLocalSearchParams();
@@ -19,9 +21,14 @@ export default function ServicePackageDetail() {
 
   if (loading || !servicePackageDetail) {
     return (
-      <View style={styles.container}>
-        <Text>{loading ? 'Loading...' : 'Gói dịch vụ không tồn tại.'}</Text>
-      </View>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F9F7F7' }}>
+          <Lottie
+            source={require('../../assets/animations/loading.json')} // Đường dẫn tới file animation
+            autoPlay
+            loop
+            style={{ width: 150, height: 150 }}
+          />
+        </View>
     );
   }
 
@@ -43,7 +50,10 @@ export default function ServicePackageDetail() {
       <View style={styles.divider} />
 
       <Text style={styles.sectionTitle}>Mô tả gói:</Text>
-      <Text style={styles.sectionContent}>{servicePackageDetail.description}</Text>
+      <HTMLView
+        value={servicePackageDetail.description} // HTML content
+        stylesheet={htmlStyles} // Custom styles for HTML elements
+      />
 
       <Text style={styles.sectionTitle}>Chính sách:</Text>
       <Text style={styles.sectionContent}>{servicePackageDetail.policy}</Text>
@@ -54,6 +64,27 @@ export default function ServicePackageDetail() {
     </ScrollView>
   );
 }
+
+const htmlStyles = StyleSheet.create({
+  p: {
+    color: '#333',
+    fontSize: 16,
+    lineHeight: 24,
+    marginBottom: 10,
+  },
+  strong: {
+    fontWeight: 'bold',
+  },
+  ul: {
+    paddingLeft: 20,
+    marginBottom: 10,
+  },
+  li: {
+    color: '#333',
+    fontSize: 16,
+    marginBottom: 5,
+  },
+});
 
 const styles = StyleSheet.create({
   container: {
@@ -113,4 +144,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     width: '100%',
   },
+
+  
 });

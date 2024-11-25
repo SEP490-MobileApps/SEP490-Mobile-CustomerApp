@@ -25,11 +25,6 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
       <Divider my="2" bg="#112D4E" />
       <Text style={styles.name}>{getShortName(product.name)}</Text>
       <Text style={styles.price}>{FormatPriceToVnd(product.priceByDate)}</Text>
-      <Text style={styles.warranty}>
-        {product.warantyMonths >= 12
-          ? `${product.warantyMonths / 12} năm bảo hành`
-          : `${product.warantyMonths} tháng bảo hành`}
-      </Text>
     </TouchableOpacity>
   );
 };

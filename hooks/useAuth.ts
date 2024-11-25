@@ -75,5 +75,63 @@ export function useAuth() {
     }
   };
 
-  return { handleLogin, handleLogout };
+  const handleRegister = async (data: {
+    cmT_CCCD: string;
+    fullName: string;
+    email: string;
+    phoneNumber: string;
+    password: string;
+    dateOfBirth: string;
+    areaId: string;
+    roomIds: string[];
+  }) => {
+    try {
+      const response = await fetchData({
+        url: "/account/15",
+        method: "POST",
+        data,
+      });
+
+      return response ? true : false;
+    } catch (error) {
+      console.error("Registration error:", error);
+      return false;
+    }
+  };
+
+  const fetchApartments = async () => {
+    try {
+      const response = await fetchData({
+        url: "/apartment/5",
+        method: "GET",
+        params: { PageIndex: 1, PageSize: 8 },
+      });
+      return response[0];
+      
+    } catch (error) {
+      console.error("Fetch apartments error:", error);
+      return [];
+    }
+  };
+
+  const handleForgotPassword = async (email: string): Promise<boolean> => {
+    try {
+      const response = await fetchData({
+        url: '/account/8',
+        method: 'POST',
+        data: { email },
+      });
+  
+      if (response) {
+        return response.message || 'Yêu cầu đặt lại mật khẩu đã được gửi!';
+      }
+  
+      return false;
+    } catch (error) {
+      console.error('Forgot password error:', error);
+      return false;
+    }
+  };
+
+  return { handleLogin, handleLogout,handleRegister, fetchApartments,handleForgotPassword };
 }

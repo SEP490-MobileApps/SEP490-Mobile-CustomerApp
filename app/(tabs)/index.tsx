@@ -17,6 +17,7 @@ import NoDataComponent from '@/components/ui/NoDataComponent';
 import { GetLatestPushNotificationRecordByLeaderId, InitializeFirestoreDb, sendPushNotification } from '@/utils/PushNotification';
 import { User } from '@/models/User';
 import { Leader } from '@/models/LeaderInfo';
+import Lottie from 'lottie-react-native';
 
 function HomeScreen(): React.JSX.Element {
   const { user, leaderInfo, fetchUserAndLeader, loading: userLoading } = useUser();
@@ -111,9 +112,16 @@ function HomeScreen(): React.JSX.Element {
           style={styles.homeImage}
           resizeMode="cover"
         />
-
+ <Text style={styles.title}>NHỮNG LẦN SỬA CHỮA GẦN ĐÂY</Text>
         {requestLoading ? (
-          <Text>Đang tải dữ liệu...</Text>
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F9F7F7' }}>
+          <Lottie
+            source={require('../../assets/animations/loading.json')} // Đường dẫn tới file animation
+            autoPlay
+            loop
+            style={{ width: 150, height: 150 }}
+          />
+        </View>
         ) : requests.length === 0 ? (
           <NoDataComponent
             imageUrl={require('../../assets/images/no-request.png')}
@@ -128,7 +136,14 @@ function HomeScreen(): React.JSX.Element {
 
         <Text style={styles.title}>HỢP ĐỒNG ĐANG SỬ DỤNG</Text>
         {contractLoading ? (
-          <Text>Đang tải dữ liệu hợp đồng...</Text>
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F9F7F7' }}>
+          <Lottie
+            source={require('../../assets/animations/loading.json')} // Đường dẫn tới file animation
+            autoPlay
+            loop
+            style={{ width: 150, height: 150 }}
+          />
+        </View>
         ) : contracts.filter(contract => contract.remainingNumOfRequests > 0).length === 0 ? (
           <NoDataComponent
             imageUrl={require('../../assets/images/no-contract.png')}
@@ -146,7 +161,16 @@ function HomeScreen(): React.JSX.Element {
         <View style={styles.divider} />
 
         <Text style={styles.title}>ĐÁNH GIÁ TỪ KHÁCH HÀNG</Text>
-        {feedbacks.length === 0 ? (
+        {requestLoading ? (
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F9F7F7' }}>
+          <Lottie
+            source={require('../../assets/animations/loading.json')} // Đường dẫn tới file animation
+            autoPlay
+            loop
+            style={{ width: 150, height: 150 }}
+          />
+        </View>
+        ):feedbacks.length === 0 ? (
           <NoDataComponent
             imageUrl={require('../../assets/images/no-review.png')}
             title="Không có đánh giá"

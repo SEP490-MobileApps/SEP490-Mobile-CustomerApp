@@ -7,6 +7,7 @@ import ProductListItem from '../../components/store/ProductListItem';
 import NoDataComponent from '../../components/ui/NoDataComponent';
 import useProducts from '../../hooks/useProduct';
 import { useFocusEffect } from '@react-navigation/native';
+import Lottie from 'lottie-react-native';
 
 let searchTimeout: NodeJS.Timeout;
 
@@ -16,12 +17,13 @@ export default function StoreScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortAscending, setSortAscending] = useState<null | boolean>(null); // Default: no sort
   const [pendingSort, setPendingSort] = useState<null | boolean>(null); // Temp state for unapplied sort
-  const { products, totalCount, loading, fetchProducts } = useProducts();
+  const { products, totalCount, loading, fetchProducts, fetchCartItems} = useProducts();
 
   // Fetch products when pageIndex or searchQuery changes
   useFocusEffect(
     useCallback(() => {
       fetchProducts(pageIndex, 6, searchQuery, sortAscending);
+      fetchCartItems();
     }, [pageIndex, searchQuery, sortAscending])
   );
 
@@ -106,7 +108,14 @@ export default function StoreScreen() {
 
       {/* Product list */}
       {loading && pageIndex === 1 ? (
-        <ActivityIndicator size="large" color="#3F72AF" />
+         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F9F7F7' }}>
+         <Lottie
+           source={require('../../assets/animations/loading.json')} // Đường dẫn tới file animation
+           autoPlay
+           loop
+           style={{ width: 150, height: 150 }}
+         />
+       </View>
       ) : products.length > 0 ? (
         <FlatList
           data={products}
@@ -135,7 +144,7 @@ export default function StoreScreen() {
                 value={pendingSort === true ? 'asc' : pendingSort === false ? 'desc' : ''}
                 onChange={(value) => setPendingSort(value === 'asc')}
               >
-                <Radio value="asc" _text={{ color: '#3F72AF' }} my={1}>
+                <Radio value="asc" _text={{ color: '#3F72AF' }} my={5}>
                   Giá: Từ thấp đến cao
                 </Radio>
                 <Radio value="desc" _text={{ color: '#3F72AF' }} my={1}>
@@ -228,6 +237,7 @@ const styles = StyleSheet.create({
   },
   filterContainer: {
     padding: 10,
+    width: '100%', 
   },
   filterItem: {
     backgroundColor: '#DBE2EF',
@@ -240,6 +250,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   listContent: {
-    paddingBottom: 100,
+    // paddingBottom: 100,
+    paddingBottom: 0,
   },
 });

@@ -75,6 +75,8 @@ const useAuthAxios = () => {
       } else {
         setError(error.response ? error.response.data : error.message);
         console.error("Error Response:", error.response?.data || error.message);
+        // const result = await error.message.text(); 
+        // return result;
       }
       return null;
     }

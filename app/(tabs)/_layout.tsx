@@ -10,9 +10,10 @@ import { Tabs, useRouter } from "expo-router"; // Import useRouter
 import { StatusBar } from "expo-status-bar";
 import { View } from "react-native";
 import { Icon, IconButton, Badge } from "native-base";
+import { useGlobalState } from "@/contexts/GlobalProvider";
 
 export default function TabLayout() {
-  const cartItemCount = 3; // Giả sử đây là số lượng sản phẩm trong giỏ hàng
+  const { cartItemCount } = useGlobalState();
   const router = useRouter(); // Khởi tạo router để điều hướng
 
   return (

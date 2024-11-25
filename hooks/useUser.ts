@@ -32,9 +32,7 @@ const useUser = () => {
           apartmentAvatarUrl: apartment.avatarUrl,
           apartmentName: apartment.name,
           apartmentAddress: apartment.address,
-          roomId: '113',
-          cmT_CCCD: '123456789',
-          areaId: 'XXX',
+          areaId: apartment.avatarUrl,
         });
       }
 

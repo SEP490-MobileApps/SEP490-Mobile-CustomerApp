@@ -15,6 +15,8 @@ interface GlobalStateContextProps {
   setOrderStartDate: (date: Date | null) => void;
   orderEndDate: Date | null;
   setOrderEndDate: (date: Date | null) => void;
+  cartItemCount: number; // Add this state
+  setCartItemCount: (count: number) => void;
 }
 
 const GlobalStateContext = createContext<GlobalStateContextProps | undefined>(undefined);
@@ -26,6 +28,7 @@ export const GlobalProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const [serviceEndDate, setServiceEndDate] = useState<Date | null>(null);
   const [orderStartDate, setOrderStartDate] = useState<Date | null>(null);
   const [orderEndDate, setOrderEndDate] = useState<Date | null>(null);
+  const [cartItemCount, setCartItemCount] = useState(0);
 
   return (
     <GlobalStateContext.Provider
@@ -42,6 +45,8 @@ export const GlobalProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         setOrderStartDate,
         orderEndDate,
         setOrderEndDate,
+        cartItemCount, // Provide the cart count
+        setCartItemCount,
       }}
     >
       {children}

@@ -1,19 +1,62 @@
-// app/(auth)/ForgotPasswordScreen.tsx
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity } from 'react-native';
+import { StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, Button, VStack, Box, HStack, Icon, Toast } from 'native-base';
 import { useRouter } from 'expo-router';
+import { FontAwesome } from '@expo/vector-icons';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function ForgotPasswordScreen() {
   const router = useRouter();
+  const { handleForgotPassword } = useAuth(); // Sử dụng API trong useAuth
   const [email, setEmail] = useState('');
 
-  const handleResetPassword = () => {
-    if (email) {
-      // Giả lập việc gửi email reset mật khẩu
-      Alert.alert('Password Reset', 'A password reset link has been sent to your email.');
-      router.replace('/(auth)'); // Quay về màn hình đăng nhập sau khi gửi thành công
-    } else {
-      Alert.alert('Error', 'Please enter a valid email.');
+  const handleResetPassword = async () => {
+    if (!email || !/\S+@\S+\.\S+/.test(email)) {
+      // Hiển thị thông báo lỗi nếu email không hợp lệ
+      Toast.show({
+        render: () => (
+          <Box bg="red.500" px="4" py="3" rounded="md" shadow={2}>
+            <HStack space={2} alignItems="center">
+              <Icon as={FontAwesome} name="exclamation-circle" size="lg" color="white" />
+              <Text style={{ color: 'white', fontWeight: 'bold' }}>
+                Vui lòng nhập email hợp lệ!
+              </Text>
+            </HStack>
+          </Box>
+        ),
+        placement: 'top',
+      });
+      return;
+    }
+
+    try {
+      const responseMessage = await handleForgotPassword(email);
+      Toast.show({
+        render: () => (
+          <Box bg="green.500" px="4" py="3" rounded="md" shadow={2}>
+            <HStack space={2} alignItems="center">
+              <Icon as={FontAwesome} name="check-circle" size="lg" color="white" />
+              <Text style={{ color: 'white', fontWeight: 'bold' }}>{responseMessage}</Text>
+            </HStack>
+          </Box>
+        ),
+        placement: 'top',
+      });
+      router.replace('/(auth)'); // Quay lại trang đăng nhập sau khi gửi thành công
+    } catch (error) {
+      Toast.show({
+        render: () => (
+          <Box bg="red.500" px="4" py="3" rounded="md" shadow={2}>
+            <HStack space={2} alignItems="center">
+              <Icon as={FontAwesome} name="exclamation-circle" size="lg" color="white" />
+              <Text style={{ color: 'white', fontWeight: 'bold' }}>
+                Không thể gửi yêu cầu. Vui lòng thử lại!
+              </Text>
+            </HStack>
+          </Box>
+        ),
+        placement: 'top',
+      });
     }
   };
 
@@ -35,7 +78,9 @@ export default function ForgotPasswordScreen() {
         keyboardType="email-address"
         autoCapitalize="none"
       />
-      <Button title="Gửi Yêu Cầu" onPress={handleResetPassword} />
+      <Button onPress={handleResetPassword} style={styles.button} colorScheme="primary">
+        Gửi Yêu Cầu
+      </Button>
       <TouchableOpacity onPress={handleBackToLogin}>
         <Text style={styles.linkText}>Quay lại trang đăng nhập</Text>
       </TouchableOpacity>
@@ -71,6 +116,10 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     paddingHorizontal: 10,
     borderRadius: 5,
+  },
+  button: {
+    marginTop: 10,
+    width: '100%',
   },
   linkText: {
     color: '#3F72AF',

@@ -1,4 +1,3 @@
-// models/User.ts
 export interface User {
   accountId: string;
   fullName: string;
@@ -7,11 +6,9 @@ export interface User {
   phoneNumber: string;
   dateOfBirth: string;
   role: string;
-  apartmentAvatarUrl?: string;
+  password?: string;
+  apartmentAvatarUrl: string;
   apartmentName: string;
   apartmentAddress: string;
-  roomId: string;
-  cmT_CCCD: string;
   areaId: string;
-  password?: string;
 }

@@ -1,6 +1,6 @@
 // components/home/CompletedRequestAccordion.tsx
 import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Linking } from 'react-native';
 import { Badge, Pressable, Modal, Button } from 'native-base';
 import { RepairRequest } from '../../models/RepairRequest';
 import { COLORS } from '../../constants/Colors';
@@ -42,7 +42,7 @@ const CompletedRequestAccordion: React.FC<Props> = ({ request }) => {
           <View style={styles.divider} />
           <View style={styles.row}>
             <Text>Sản phẩm mua kèm:</Text>
-            <Pressable onPress={() => console.log('Xem sản phẩm')}>
+            <Pressable onPress={() => Linking.openURL(request.fileUrl)}>
               <Text style={styles.link}>Chi tiết</Text>
             </Pressable>
           </View>
@@ -105,8 +105,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.free,
   },
   link: {
-    color: COLORS.link,
-    textDecorationLine: 'underline',
+    color: COLORS.link
   },
   divider: {
     height: 1,

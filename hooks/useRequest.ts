@@ -63,30 +63,33 @@ const useRequest = () => {
     [fetchData]
   );
 
-  const fetchAllRequests = useCallback(async (customerId: string, status?: number, startDate?: string) => {
-    setLoading(true);
-    setApiError(null);
-    try {
-      const params: any = { customerId };
-      if (status !== undefined) params.status = status;
-      if (startDate) params.startDate = startDate;
-
-      const response = await fetchData({
-        url: `/request/8`,
-        method: 'GET',
-        params,
-      });
-
-      if (response) {
-        setAllRequests(response.map((item: any) => item.get)); // Lấy phần `get` từ response
+  const fetchAllRequests = useCallback(
+    async (customerId: string, status?: number) => {
+      setLoading(true);
+      setApiError(null);
+      try {
+        const params: any = { customerId };
+        if (status !== undefined) params.status = status; // Thêm trạng thái nếu được chỉ định
+  
+        const response = await fetchData({
+          url: `/request/8`,
+          method: 'GET',
+          params,
+        });
+  
+        if (response) {
+          setAllRequests(response.map((item: any) => item.get)); // Lấy phần `get` từ response
+        }
+      } catch (error: any) {
+        setApiError('Không thể tải dữ liệu yêu cầu.');
+        console.error('Lỗi tải dữ liệu yêu cầu:', error);
+      } finally {
+        setLoading(false);
       }
-    } catch (error: any) {
-      setApiError('Không thể tải dữ liệu yêu cầu.');
-      console.error('Lỗi tải dữ liệu yêu cầu:', error);
-    } finally {
-      setLoading(false);
-    }
-  }, [fetchData]);
+    },
+    [fetchData]
+  );
+  
 
   return { requests, feedbacks, fetchRecentRequests, fetchFeedbacks, loading, apiError, currentPage, totalPages, setCurrentPage, allRequests, fetchAllRequests };
 };

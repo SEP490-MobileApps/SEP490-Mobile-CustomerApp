@@ -4,6 +4,7 @@ import useSaleAxios from '../utils/useSaleAxios';
 import { Product } from '../models/Product';
 import { useToast } from 'native-base'; // Import Toast
 import { CartItem } from '@/models/CartItem';
+import { useGlobalState } from '@/contexts/GlobalProvider';
 
 const useProducts = () => {
   const { fetchData } = useSaleAxios();
@@ -17,6 +18,7 @@ const useProducts = () => {
   const [orders, setOrders] = useState([]);
   const [detailLoading, setDetailLoading] = useState<boolean>(false);
   const toast = useToast(); // Initialize Toast
+  const { setCartItemCount } = useGlobalState();
 
   // Fetch products with pagination and filters
   const fetchProducts = useCallback(async (pageIndex: number = 1, pageSize: number = 6, searchByName: string = '', increasingPrice: boolean | null = null) => {
@@ -128,6 +130,8 @@ const useProducts = () => {
         setCartItems(items);
         const totalPrice = response.find((item: any) => item.orderId)?.totalPrice || 0;
         setTotalAmount(totalPrice);
+        const totalProductCount = items.length;
+        setCartItemCount(totalProductCount); // Update global cart count
       }
     } catch (error) {
       setApiError('Không thể tải dữ liệu giỏ hàng.');
@@ -135,7 +139,7 @@ const useProducts = () => {
     } finally {
       setLoading(false);
     }
-  }, [fetchData]);
+  }, [fetchData, setCartItemCount]);
 
   const deleteCartItem = useCallback(async (productId: string) => {
     try {
@@ -209,25 +213,31 @@ const useProducts = () => {
     }
   }, [fetchData]);
 
-  const finalizeOrder = useCallback(async ({ orderCode, id1 }: { orderCode: number; id1: string }) => {
-    try {
-      // Gọi API /order/5 để hoàn tất đơn hàng
-      const response = await fetchData({
-        url: '/order/5',
-        method: 'POST',
-        data: {
-          orderCode: orderCode.toString(),
-          id1,
-        },
-        header: { 'Content-Type': 'application/json' },
-      });
-
-      return response;
-    } catch (error) {
-      console.error('Error in finalizeOrder:', error);
-      throw error;
-    }
-  }, [fetchData]);
+  const finalizeOrder = useCallback(
+    async ({ orderCode, id1 }: { orderCode: number; id1: string }) => {
+      try {
+        const formData = new FormData();
+        formData.append('orderCode', orderCode.toString());
+        formData.append('id1', id1);
+  
+        // Gọi API /order/5 để hoàn tất đơn hàng
+        const response = await fetchData({
+          url: '/order/5',
+          method: 'POST',
+          header: {
+            'Content-Type': 'multipart/form-data',
+          },
+          data: formData,
+        });
+  
+        return response;
+      } catch (error) {
+        console.error('Error in finalizeOrder:', error);
+        throw error;
+      }
+    },
+    [fetchData]
+  );
 
   return {
     products,

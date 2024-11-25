@@ -13,7 +13,7 @@ export interface RepairRequest {
   categoryRequest: number;
   purchaseTime?: string;
   totalPrice?: number;
-  fileUrl?: string;
+  fileUrl: string;
   orderCode?: number;
   isOnlinePayment: boolean;
 }

@@ -58,7 +58,6 @@ const RecentRepairs: React.FC<RecentRepairsProps> = ({ requests }) => {
 
   return (
     <View>
-      <Text style={styles.sectionTitle}>NHỮNG LẦN SỬA CHỮA GẦN ĐÂY</Text>
       {sortedRequests.map((request) => (
         <View key={request.requestId} style={styles.accordionContainer}>
           <TouchableOpacity onPress={() => toggleAccordion(request.requestId)} style={styles.header}>
