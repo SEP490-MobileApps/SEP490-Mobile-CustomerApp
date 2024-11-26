@@ -24,17 +24,13 @@ export default function LeaderDetailScreen() {
 
   if (!leaderInfo) {
     return (
-      <NoDataComponent
-        imageUrl={require("../assets/images/no-leader.png")}
-        title="Không có thông tin"
-        description="Hiện tại không có thông tin về leader."
-      />
+      <Text>Chưa có leader</Text>
     );
   }
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Image source={{ uri: leaderInfo.avatarUrl || require("../assets/images/no-leader.png") }} style={styles.avatar} />
+      <Image source={{ uri: leaderInfo.avatarUrl }} style={styles.avatar} />
 
       <View style={styles.fieldContainer}>
         <Text style={styles.label}>Tên đầy đủ</Text>

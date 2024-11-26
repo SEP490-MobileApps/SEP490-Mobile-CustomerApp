@@ -142,11 +142,7 @@ function HomeScreen(): React.JSX.Element {
             />
           </View>
         ) : contracts.filter(contract => contract.remainingNumOfRequests > 0).length === 0 ? (
-          <NoDataComponent
-            imageUrl={require('../../assets/images/no-contract.png')}
-            title="Không có hợp đồng"
-            description="Hiện tại bạn không có hợp đồng nào đang được sử dụng."
-          />
+          <Text>Không có hợp đồng</Text>
         ) : (
           contracts
             .filter(contract => contract.remainingNumOfRequests > 0)
@@ -168,11 +164,7 @@ function HomeScreen(): React.JSX.Element {
             />
           </View>
         ) : feedbacks.length === 0 ? (
-          <NoDataComponent
-            imageUrl={require('../../assets/images/no-review.png')}
-            title="Không có đánh giá"
-            description="Hiện tại chưa có đánh giá nào cho dịch vụ này."
-          />
+          <Text>Không có đánh giá</Text>
         ) : (
           <CustomerReviews feedbacks={feedbacks} />
         )}

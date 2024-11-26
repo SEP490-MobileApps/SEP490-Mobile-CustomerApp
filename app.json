@@ -21,7 +21,8 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.vuvohoang1823.ewmhcustomer",
-      "googleServicesFile": "./google-services.json"
+      "googleServicesFile": "./google-services.json",
+      "usesCleartextTraffic": true
     },
     "web": {
       "bundler": "metro",

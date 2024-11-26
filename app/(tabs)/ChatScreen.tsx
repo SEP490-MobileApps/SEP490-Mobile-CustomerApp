@@ -6,7 +6,28 @@ export default function ChatScreen() {
   return (
     <View style={styles.container}>
       <WebView
-        source={require('@/assets/tawk.html')}
+        source={{
+          html: `
+            <!DOCTYPE html>
+            <html>
+              <head>
+                <style>
+                  iframe {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    border: none;
+                  }
+                </style>
+              </head>
+              <body>
+                <iframe src="https://embed.tawk.to/67375a762480f5b4f59e9eb3/1ico3inpr"></iframe>
+              </body>
+            </html>
+          `,
+        }}
         javaScriptEnabled={true}
         domStorageEnabled={true}
         originWhitelist={['*']}

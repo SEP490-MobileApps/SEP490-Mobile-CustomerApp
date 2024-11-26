@@ -27,23 +27,19 @@ const ServiceTab: React.FC = () => {
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F9F7F7' }}>
-          <Lottie
-            source={require('../../../assets/animations/loading.json')} // Đường dẫn tới file animation
-            autoPlay
-            loop
-            style={{ width: 150, height: 150 }}
-          />
-        </View>
+        <Lottie
+          source={require('../../../assets/animations/loading.json')} // Đường dẫn tới file animation
+          autoPlay
+          loop
+          style={{ width: 150, height: 150 }}
+        />
+      </View>
     );
   }
 
   if (contracts.length === 0) {
     return (
-      <NoDataComponent
-      imageUrl={require('../../../assets/images/no-contract.png')}
-      title="Chưa có hợp đồng"
-      description="Hiện tại bạn chưa có hợp đồng nào."
-    />
+      <Text>Không có hợp đồng</Text>
     );
   }
 

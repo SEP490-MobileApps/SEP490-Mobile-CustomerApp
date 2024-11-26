@@ -10,4 +10,5 @@ export interface ServicePackage {
   policy: string,
   purchaseTime: string;
   isOnlinePayment: boolean;
+  servicesList: string;
 }

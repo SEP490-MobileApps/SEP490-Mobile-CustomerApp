@@ -71,11 +71,7 @@ export default function CartScreen() {
         </View>
       ) : cartItems.length === 0 ? (
         // Hiển thị khi không có dữ liệu
-        <NoDataComponent
-          imageUrl={require('../assets/images/empty-cart.png')}
-          title="Giỏ hàng trống"
-          description="Hãy thêm sản phẩm để tiếp tục nhé."
-        />
+        <Text>Không có đơn hàng</Text>
       ) : (
         // Hiển thị danh sách giỏ hàng khi có dữ liệu
         <ScrollView

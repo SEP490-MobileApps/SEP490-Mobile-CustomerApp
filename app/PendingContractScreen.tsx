@@ -32,11 +32,7 @@ export default function PendingContractScreen() {
             />
           </View>
         ) : customerContracts.length === 0 ? (
-          <NoDataComponent
-            imageUrl={require('../assets/images/no-contract.png')}
-            title="Không có hợp đồng"
-            description="Hiện tại bạn không có hợp đồng nào đang chờ xử lý."
-          />
+          <Text>Không có hợp đồng</Text>
         ) : (
           customerContracts.map((contract) => (
             <PendingContractCard key={contract.contractId} contract={contract} />

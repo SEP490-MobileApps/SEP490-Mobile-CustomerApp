@@ -3,7 +3,7 @@ import React from 'react';
 import { View, Text, Image, StyleSheet, Dimensions } from 'react-native';
 
 interface NoDataComponentProps {
-  imageUrl: any; // Để hỗ trợ require() hoặc URL từ Internet
+  imageUrl: any;
   title: string;
   description: string;
 }
