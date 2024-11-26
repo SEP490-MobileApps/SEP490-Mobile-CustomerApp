@@ -19,6 +19,7 @@ const useProducts = () => {
   const [detailLoading, setDetailLoading] = useState<boolean>(false);
   const toast = useToast(); // Initialize Toast
   const { setCartItemCount } = useGlobalState();
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
 
   // Fetch products with pagination and filters
   const fetchProducts = useCallback(async (pageIndex: number = 1, pageSize: number = 6, searchByName: string = '', increasingPrice: boolean | null = null) => {
@@ -219,7 +220,7 @@ const useProducts = () => {
         const formData = new FormData();
         formData.append('orderCode', orderCode.toString());
         formData.append('id1', id1);
-  
+
         // Gọi API /order/5 để hoàn tất đơn hàng
         const response = await fetchData({
           url: '/order/5',
@@ -229,7 +230,7 @@ const useProducts = () => {
           },
           data: formData,
         });
-  
+
         return response;
       } catch (error) {
         console.error('Error in finalizeOrder:', error);
@@ -247,6 +248,8 @@ const useProducts = () => {
     fetchProductDetail,
     fetchCartItems,
     addToCart,
+    setIsAddingToCart,
+    isAddingToCart,
     loading,
     detailLoading,
     apiError,

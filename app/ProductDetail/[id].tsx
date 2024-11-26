@@ -9,7 +9,7 @@ import { WebView } from 'react-native-webview'; // Import WebView
 
 export default function ProductDetailScreen() {
   const { id } = useLocalSearchParams();
-  const { fetchProductDetail, productDetail, detailLoading, addToCart } = useProducts();
+  const { fetchProductDetail, productDetail, detailLoading, addToCart, setIsAddingToCart, isAddingToCart } = useProducts();
   const [quantity, setQuantity] = useState(1);
 
   const handleIncrease = () => setQuantity(quantity + 1);
@@ -17,9 +17,16 @@ export default function ProductDetailScreen() {
     if (quantity > 1) setQuantity(quantity - 1);
   };
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (id && typeof id === 'string') {
-      addToCart(id, quantity);
+      setIsAddingToCart(true); // Bắt đầu loading
+      try {
+        await addToCart(id, quantity);
+      } catch (error) {
+        console.error('Lỗi khi thêm sản phẩm vào giỏ hàng:', error);
+      } finally {
+        setIsAddingToCart(false); // Kết thúc loading
+      }
     }
   };
 
@@ -81,8 +88,12 @@ export default function ProductDetailScreen() {
           <Text style={styles.quantityButtonText}>+</Text>
         </TouchableOpacity>
       </View>
-      <Button style={styles.addToCartButton} onPress={handleAddToCart}>
-        Thêm vào giỏ hàng
+      <Button style={styles.addToCartButton} onPress={handleAddToCart} isDisabled={isAddingToCart}>
+        {isAddingToCart ? (
+          <ActivityIndicator size="small" color="#FFF" />
+        ) : (
+          <Text style={styles.addToCartButtonText}>Thêm vào giỏ hàng</Text>
+        )}
       </Button>
     </ScrollView>
   );
@@ -91,8 +102,14 @@ export default function ProductDetailScreen() {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    backgroundColor: '#F9F7F7',
+    backgroundColor: '#fff',
     flex: 1,
+  },
+  addToCartButtonText: {
+    color: '#FFF',
+    fontWeight: 'bold',
+    fontSize: 16,
+    textAlign: 'center',
   },
   image: {
     width: '100%',

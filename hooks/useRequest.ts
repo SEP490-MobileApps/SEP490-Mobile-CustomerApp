@@ -3,6 +3,7 @@ import { useCallback, useState } from 'react';
 import useRequestAxios from '../utils/useRequestAxios';
 import { RepairRequest } from '../models/RepairRequest';
 import { Feedback } from '../models/Feedback';
+import { Toast } from 'native-base';
 
 const useRequest = () => {
   const { fetchData } = useRequestAxios();
@@ -70,13 +71,13 @@ const useRequest = () => {
       try {
         const params: any = { customerId };
         if (status !== undefined) params.status = status; // Thêm trạng thái nếu được chỉ định
-  
+
         const response = await fetchData({
           url: `/request/8`,
           method: 'GET',
           params,
         });
-  
+
         if (response) {
           setAllRequests(response.map((item: any) => item.get)); // Lấy phần `get` từ response
         }
@@ -89,9 +90,38 @@ const useRequest = () => {
     },
     [fetchData]
   );
-  
 
-  return { requests, feedbacks, fetchRecentRequests, fetchFeedbacks, loading, apiError, currentPage, totalPages, setCurrentPage, allRequests, fetchAllRequests };
+  const submitFeedback = useCallback(async (requestId: string, content: string, rate: number) => {
+    try {
+      const response = await fetchData({
+        url: '/feedback/3',
+        method: 'POST',
+        data: { requestId, content, rate },
+      });
+
+      setRequests((prev) =>
+        prev.map((req) =>
+          req.requestId === requestId
+            ? { ...req, feedbacks: [...(req.feedbacks || []), { content, rate }] }
+            : req
+        )
+      );
+
+      Toast.show({
+        description: 'Đã gửi đánh giá thành công!',
+        bg: 'green.500',
+      });
+    } catch (error) {
+      console.error('Lỗi gửi đánh giá:', error);
+      Toast.show({
+        description: 'Không thể gửi đánh giá.',
+        bg: 'red.500',
+      });
+    }
+  }, [fetchData]);
+
+
+  return { requests, feedbacks, fetchRecentRequests, fetchFeedbacks, loading, apiError, currentPage, totalPages, setCurrentPage, allRequests, fetchAllRequests, submitFeedback };
 };
 
 export default useRequest;

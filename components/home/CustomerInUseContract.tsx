@@ -2,6 +2,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Linking } from 'react-native';
 import { Box } from 'native-base';
+import { formatDate } from "../../utils/formatDate";
 
 interface Props {
   contract: {
@@ -29,7 +30,7 @@ const CustomerInUseContract: React.FC<Props> = ({ contract }) => {
           <Text style={styles.name}>{contract.name}</Text>
           <Text style={styles.price}>Giá: {contract.priceByDate} VND</Text>
           <Text style={styles.purchaseTime}>
-            Ngày đăng ký: {new Date(contract.purchaseTime).toLocaleDateString()}
+            Ngày đăng ký: {formatDate(contract.purchaseTime)}
           </Text>
           <TouchableOpacity onPress={handleViewContract} style={styles.button}>
             <Text style={styles.buttonText} onPress={() => Linking.openURL(contract.fileUrl)}>Xem hợp đồng</Text>

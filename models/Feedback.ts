@@ -9,4 +9,5 @@ export interface Feedback {
   status: boolean
   averageRate: number;
   count: number;
+  requestId: string;
 }

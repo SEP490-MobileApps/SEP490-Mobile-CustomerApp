@@ -1,12 +1,13 @@
 // app/CartScreen.tsx
 import React, { useCallback, useState, useRef } from 'react';
-import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, Linking } from 'react-native';
+import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, Linking, ScrollView } from 'react-native';
 import { Button, Icon, AlertDialog, Toast } from 'native-base';
 import { FontAwesome } from '@expo/vector-icons';
 import { FormatPriceToVnd } from '../utils/PriceUtils';
 import NoDataComponent from '../components/ui/NoDataComponent';
 import useProducts from '../hooks/useProduct'; // Import hook useProducts
 import { useFocusEffect } from '@react-navigation/native';
+import Lottie from 'lottie-react-native';
 
 export default function CartScreen() {
   const { cartItems, totalAmount, fetchCartItems, deleteCartItem, handleOrderPayment } = useProducts(); // Add deleteCartItem function from hook
@@ -14,6 +15,7 @@ export default function CartScreen() {
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const onClose = () => setIsOpen(false);
   const cancelRef = useRef(null); // Ref for least destructive action
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleCheckout = async () => {
     try {
@@ -33,7 +35,13 @@ export default function CartScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      fetchCartItems(); // Fetch cart items when screen is focused
+      const loadCartItems = async () => {
+        setIsLoading(true); // Bắt đầu tải
+        await fetchCartItems(); // Tải dữ liệu
+        setIsLoading(false); // Kết thúc tải
+      };
+
+      loadCartItems();
     }, [])
   );
 
@@ -51,56 +59,60 @@ export default function CartScreen() {
 
   return (
     <View style={styles.container}>
-      {cartItems.length === 0 ? (
+      {isLoading ? (
+        // Hiển thị khi đang tải
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F9F7F7' }}>
+          <Lottie
+            source={require('../assets/animations/loading.json')} // Đường dẫn tới file animation
+            autoPlay
+            loop
+            style={{ width: 150, height: 150 }}
+          />
+        </View>
+      ) : cartItems.length === 0 ? (
+        // Hiển thị khi không có dữ liệu
         <NoDataComponent
           imageUrl={require('../assets/images/empty-cart.png')}
           title="Giỏ hàng trống"
-          description="Hãy thêm sản phẩm để tiếp tục mua sắm nhé."
+          description="Hãy thêm sản phẩm để tiếp tục nhé."
         />
       ) : (
-        <>
-          <FlatList
-            data={cartItems}
-            keyExtractor={(item) => item.productId}
-            renderItem={({ item }) => (
-              <View style={styles.itemContainer}>
-                <Image source={{ uri: item.imageUrl }} style={styles.image} />
-                <View style={styles.detailsContainer}>
-                  <Text style={styles.name}>{item.name}</Text>
-                  <Text style={styles.price}>{FormatPriceToVnd(item.priceByDate)}</Text>
-                  <View style={styles.quantityContainer}>
-                    <TouchableOpacity onPress={() => updateQuantity(item.productId, 'decrease')}>
-                      <Text style={styles.quantityButton}>−</Text>
-                    </TouchableOpacity>
-                    <View style={styles.quantityBox}>
-                      <Text style={styles.quantity}>{item.quantity}</Text>
-                    </View>
-                    <TouchableOpacity onPress={() => updateQuantity(item.productId, 'increase')}>
-                      <Text style={styles.quantityButton}>+</Text>
-                    </TouchableOpacity>
+        // Hiển thị danh sách giỏ hàng khi có dữ liệu
+        <ScrollView
+          showsVerticalScrollIndicator={false} // Ẩn thanh scroll
+          contentContainerStyle={styles.scrollContent}
+        >
+          {cartItems.map((item) => (
+            <View key={item.productId} style={styles.itemContainer}>
+              <Image source={{ uri: item.imageUrl }} style={styles.image} />
+              <View style={styles.detailsContainer}>
+                <Text style={styles.name}>{item.name}</Text>
+                <Text style={styles.price}>{FormatPriceToVnd(item.priceByDate)}</Text>
+                <View style={styles.quantityContainer}>
+
+                  <View style={styles.quantityBox}>
+                    <Text style={styles.quantity}>số lượng: {item.quantity}</Text>
                   </View>
                 </View>
-                <TouchableOpacity
-                  onPress={() => {
-                    setSelectedProductId(item.productId);
-                    setIsOpen(true); // Open AlertDialog
-                  }}
-                >
-                  <FontAwesome name="remove" size={24} color="red" />
-                </TouchableOpacity>
               </View>
-            )}
-            ListFooterComponent={() => (
-              <View style={styles.footer}>
-                <Text style={styles.totalText}>Tổng cộng</Text>
-                <Text style={styles.totalAmount}>{FormatPriceToVnd(totalAmount)}</Text>
-              </View>
-            )}
-          />
+              <TouchableOpacity
+                onPress={() => {
+                  setSelectedProductId(item.productId);
+                  setIsOpen(true); // Open AlertDialog
+                }}
+              >
+                <FontAwesome name="remove" size={24} color="red" />
+              </TouchableOpacity>
+            </View>
+          ))}
+          <View style={styles.footer}>
+            <Text style={styles.totalText}>Tổng cộng</Text>
+            <Text style={styles.totalAmount}>{FormatPriceToVnd(totalAmount)}</Text>
+          </View>
           <Button style={styles.checkoutButton} onPress={handleCheckout}>
             <Text style={styles.checkoutText}>THANH TOÁN</Text>
           </Button>
-        </>
+        </ScrollView>
       )}
 
       {/* AlertDialog for delete confirmation */}
@@ -126,7 +138,6 @@ export default function CartScreen() {
           </AlertDialog.Footer>
         </AlertDialog.Content>
       </AlertDialog>
-
     </View>
   );
 }
@@ -136,6 +147,9 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     backgroundColor: '#F9F7F7',
+  },
+  scrollContent: {
+    paddingBottom: 16,
   },
   itemContainer: {
     flexDirection: 'row',

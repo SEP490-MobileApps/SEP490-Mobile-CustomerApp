@@ -2,6 +2,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Linking } from 'react-native';
 import { Box } from 'native-base';
+import { formatDate } from '@/utils/formatDate';
 
 interface Props {
   contract: {
@@ -31,7 +32,7 @@ const PendingContractCard: React.FC<Props> = ({ contract }) => {
           <Text style={styles.name}>{contract.servicePackage.name}</Text>
           <Text style={styles.price}>Giá: {contract.servicePackage.price} VND</Text>
           <Text style={styles.purchaseTime}>
-            Ngày đăng ký: {new Date(contract.purchaseTime).toLocaleDateString()}
+            Ngày đăng ký: {formatDate(contract.purchaseTime)}
           </Text>
           <Text style={styles.remainingRequests}>
             Số yêu cầu còn lại: {contract.remainingNumOfRequests}

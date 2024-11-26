@@ -73,7 +73,7 @@ export default function RegisterScreen() {
   });
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const router = useRouter(); 
+  const router = useRouter();
 
   const resetForm = () => {
     setEmail('');
@@ -102,7 +102,7 @@ export default function RegisterScreen() {
       roomIds: '',
     });
   };
-  
+
 
   useEffect(() => {
     resetForm();
@@ -167,6 +167,20 @@ export default function RegisterScreen() {
     setDatePickerVisible(false);
   };
 
+  const handleCancelApartment = () => {
+    setSelectedApartment(null); // Xóa thông tin chung cư đã chọn
+    setAreaId(''); // Xóa AreaId để nút "Chọn căn hộ" ẩn đi
+    setRooms([]); // Xóa danh sách phòng
+    setRoomIds([]); // Xóa các căn hộ đã chọn
+    setApartmentModalVisible(false); // Đóng modal
+  };
+
+
+  const handleCancelRooms = () => {
+    setRoomIds([]); // Xóa lựa chọn căn hộ
+    setRoomModalVisible(false); // Đóng modal
+  };
+
   const validateFields = (): boolean => {
     let valid = true;
     const newErrors: any = {};
@@ -198,7 +212,7 @@ export default function RegisterScreen() {
       newErrors.password = 'Mật khẩu phải có ít nhất 6 ký tự.';
       valid = false;
     }
-    
+
     if (!confirmPassword) {
       newErrors.confirmPassword = 'Vui lòng nhập xác nhận mật khẩu.';
       valid = false;
@@ -228,7 +242,7 @@ export default function RegisterScreen() {
 
   const validateAndSubmit = async () => {
     if (!validateFields()) return;
-  
+
     const success = await handleRegister({
       cmT_CCCD,
       fullName,
@@ -239,7 +253,7 @@ export default function RegisterScreen() {
       areaId,
       roomIds,
     });
-  
+
     if (success) {
       Toast.show({
         render: () => (
@@ -304,7 +318,7 @@ export default function RegisterScreen() {
       )}
 
       <VStack space={4}>
-        <Text>Tên đầy đủ</Text>
+        <Text>Tên đầy đủ (*)</Text>
         <Input
           value={fullName}
           onChangeText={setFullName}
@@ -313,7 +327,7 @@ export default function RegisterScreen() {
         />
         {!!errors.fullName && <Text style={styles.errorText}>{errors.fullName}</Text>}
 
-        <Text>Email</Text>
+        <Text>Email (*)</Text>
         <Input
           value={email}
           onChangeText={setEmail}
@@ -324,7 +338,7 @@ export default function RegisterScreen() {
         />
         {!!errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
 
-        <Text>Số điện thoại</Text>
+        <Text>Số điện thoại (*)</Text>
         <Input
           value={phoneNumber}
           onChangeText={setPhoneNumber}
@@ -334,7 +348,7 @@ export default function RegisterScreen() {
         />
         {!!errors.phoneNumber && <Text style={styles.errorText}>{errors.phoneNumber}</Text>}
 
-        <Text>Số CMT/CCCD</Text>
+        <Text>Số CMT/CCCD (*)</Text>
         <Input
           value={cmT_CCCD}
           onChangeText={setCmT_CCCD}
@@ -343,7 +357,7 @@ export default function RegisterScreen() {
         />
         {!!errors.cmT_CCCD && <Text style={styles.errorText}>{errors.cmT_CCCD}</Text>}
 
-        <Text>Mật khẩu</Text>
+        <Text>Mật khẩu (*)</Text>
         <Input
           value={password}
           onChangeText={setPassword}
@@ -353,19 +367,19 @@ export default function RegisterScreen() {
         />
         {!!errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
 
-        <Text>Xác nhận mật khẩu</Text>
-<Input
-  value={confirmPassword}
-  onChangeText={setConfirmPassword}
-  secureTextEntry
-  isInvalid={!!errors.confirmPassword}
-  placeholder="Nhập lại mật khẩu"
-/>
-{!!errors.confirmPassword && (
-  <Text style={styles.errorText}>{errors.confirmPassword}</Text>
-)}
+        <Text>Xác nhận mật khẩu (*)</Text>
+        <Input
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+          secureTextEntry
+          isInvalid={!!errors.confirmPassword}
+          placeholder="Nhập lại mật khẩu"
+        />
+        {!!errors.confirmPassword && (
+          <Text style={styles.errorText}>{errors.confirmPassword}</Text>
+        )}
 
-        <Text>Ngày sinh</Text>
+        <Text>Ngày sinh (*)</Text>
         <View style={styles.dateContainer}>
           <View style={styles.dateDisplay}>
             <Text>{formattedDob || 'Chọn ngày sinh'}</Text>
@@ -383,22 +397,22 @@ export default function RegisterScreen() {
 
         {/* Nút chọn chung cư */}
         <Button
-  onPress={() => setApartmentModalVisible(true)} // Luôn mở modal chọn chung cư
-  colorScheme="primary" // Màu nút xanh
->
-  Chọn chung cư
-</Button>
+          onPress={() => setApartmentModalVisible(true)} // Luôn mở modal chọn chung cư
+          style={styles.button_register}
+        >
+          Chọn chung cư (*)
+        </Button>
 
-{/* Hiển thị thông tin chung cư đã chọn */}
-{selectedApartment && (
-  <Box style={styles.selectedApartmentInfo}>
-    <Image source={{ uri: selectedApartment.avatarUrl }} style={styles.apartmentImageLarge} />
-    <View style={{ marginLeft: 10 }}>
-      <Text style={styles.selectedApartmentName}>{selectedApartment.name}</Text>
-      <Text style={styles.selectedApartmentAddress}>{selectedApartment.address}</Text>
-    </View>
-  </Box>
-)}
+        {/* Hiển thị thông tin chung cư đã chọn */}
+        {selectedApartment && (
+          <Box style={styles.selectedApartmentInfo}>
+            <Image source={{ uri: selectedApartment.avatarUrl }} style={styles.apartmentImageLarge} />
+            <View style={{ marginLeft: 10 }}>
+              <Text style={styles.selectedApartmentName}>{selectedApartment.name}</Text>
+              <Text style={styles.selectedApartmentAddress}>{selectedApartment.address}</Text>
+            </View>
+          </Box>
+        )}
 
 
         {/* Modal chọn chung cư */}
@@ -430,24 +444,24 @@ export default function RegisterScreen() {
               )}
             />
             <View style={styles.modalActions}>
-              <Button onPress={() => setApartmentModalVisible(false)}>Hủy</Button>
-              <Button onPress={handleConfirmApartment}>Xác nhận</Button>
+              <Button style={styles.button_delete} onPress={handleCancelApartment}>Hủy</Button>
+              <Button style={styles.button_confirm} onPress={handleConfirmApartment}>Xác nhận</Button>
             </View>
           </View>
         </Modal>
 
         {/* Nút chọn căn hộ */}
         <Button
-  onPress={() => {
-    if (areaId) {
-      setRoomModalVisible(true);
-    }
-  }}
-  isDisabled={!areaId} // Disable khi chưa chọn chung cư
-  backgroundColor={!areaId ? '#ccc' : '#3F72AF'} // Màu xám khi không khả dụng
->
-  {roomIds.length > 0 ? `Đã chọn ${roomIds.length} căn hộ` : 'Chọn căn hộ'}
-</Button>
+          onPress={() => {
+            if (areaId) {
+              setRoomModalVisible(true);
+            }
+          }}
+          isDisabled={!areaId} // Disable khi chưa chọn chung cư
+          backgroundColor={!areaId ? '#ccc' : '#3F72AF'} // Màu xám khi không khả dụng
+        >
+          {roomIds.length > 0 ? `Đã chọn ${roomIds.length} căn hộ` : 'Chọn căn hộ (*)'}
+        </Button>
 
         {/* Modal chọn căn hộ */}
         <Modal visible={isRoomModalVisible} animationType="slide">
@@ -474,8 +488,8 @@ export default function RegisterScreen() {
               )}
             />
             <View style={styles.modalActions}>
-              <Button onPress={() => setRoomModalVisible(false)}>Hủy</Button>
-              <Button onPress={handleConfirmRooms}>Xác nhận</Button>
+              <Button style={styles.button_delete} onPress={handleCancelRooms}>Hủy</Button>
+              <Button style={styles.button_confirm} onPress={handleConfirmRooms}>Xác nhận</Button>
             </View>
           </View>
         </Modal>
@@ -489,7 +503,7 @@ export default function RegisterScreen() {
           ))}
         </Box>
 
-        <Button onPress={validateAndSubmit} colorScheme="primary">
+        <Button onPress={validateAndSubmit} style={styles.button_register}>
           Đăng ký
         </Button>
       </VStack>
@@ -498,6 +512,20 @@ export default function RegisterScreen() {
 }
 
 const styles = StyleSheet.create({
+  button_register: {
+    marginTop: 10,
+    backgroundColor: '#3F72AF'
+  },
+  button_delete: {
+    marginTop: 10,
+    width: '48%',
+    backgroundColor: '#d9534f'
+  },
+  button_confirm: {
+    marginTop: 10,
+    width: '48%',
+    backgroundColor: '#3F72AF'
+  },
   container: { flexGrow: 1, padding: 16, backgroundColor: '#F9F7F7' },
   logo: { width: 100, height: 100, alignSelf: 'center', borderRadius: 50, marginBottom: 10 },
   introText: { textAlign: 'center', fontSize: 16, color: '#6c757d', marginBottom: 20 },
@@ -511,14 +539,14 @@ const styles = StyleSheet.create({
   apartmentImage: { width: 50, height: 50, marginRight: 10, borderRadius: 4 },
   apartmentName: { fontWeight: 'bold' },
   apartmentAddress: { color: '#6c757d' },
-  modalActions: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 16 },
+  modalActions: { width: '100%', flexDirection: 'row', justifyContent: 'space-between', marginTop: 16 },
   roomItem: {
     padding: 10,
     borderBottomWidth: 1,
     borderColor: '#eee',
     backgroundColor: '#fff',
   },
-  
+
   selectedRoomItem: {
     backgroundColor: '#e6f7ff', // Màu nền cho mục được chọn
     borderLeftWidth: 4, // Đường viền bên trái để nổi bật

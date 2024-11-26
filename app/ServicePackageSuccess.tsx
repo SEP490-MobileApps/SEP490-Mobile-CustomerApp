@@ -141,7 +141,7 @@ export default function ServicePackageSuccess() {
         duration: 5000,
       });
 
-      setTimeout(navigateToHome, 5000); // 5 giây trước khi chuyển hướng
+      setTimeout(navigateToHistory, 5000); // 5 giây trước khi chuyển hướng
     } catch (error) {
       console.error('Error finalizing payment:', error);
       toast.show({
@@ -154,6 +154,10 @@ export default function ServicePackageSuccess() {
 
   const navigateToHome = () => {
     router.replace('/(tabs)'); // Chuyển hướng về trang chủ
+  };
+
+  const navigateToHistory = () => {
+    router.replace('/PendingContractScreen'); // Chuyển hướng về trang chủ
   };
 
   return (

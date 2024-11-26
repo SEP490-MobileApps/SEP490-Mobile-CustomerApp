@@ -55,12 +55,12 @@ function CustomerReviews({ feedbacks }: Props): React.JSX.Element {
 
   return (
     <View>
-      <Button
+      {/* <Button
         onPress={() => setIsActionSheetOpen(true)}
         style={{ marginVertical: 10, backgroundColor: '#3F72AF' }}
       >
         Chọn bộ lọc sao
-      </Button>
+      </Button> */}
 
       {/* ActionSheet for Filter */}
       <Actionsheet isOpen={isActionSheetOpen} onClose={() => setIsActionSheetOpen(false)}>

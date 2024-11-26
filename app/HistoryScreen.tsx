@@ -7,9 +7,13 @@ import OrderTab from "../components/profile/history/OrderTab";
 import DateRangePicker from "../components/profile/history/DateRangePicker";
 import { useDisclose } from "native-base";
 import { useGlobalState } from "../contexts/GlobalProvider";
+import { useLocalSearchParams } from 'expo-router';
 
 export default function HistoryScreen() {
-  const [selectedTab, setSelectedTab] = useState<"service" | "order">("service");
+  const { selectedTab: initialTab } = useLocalSearchParams(); // Lấy params từ điều hướng
+  const [selectedTab, setSelectedTab] = useState<"service" | "order">(
+    initialTab === "order" ? "order" : "service" // Xác định tab mặc định
+  );
   const { isOpen, onOpen, onClose } = useDisclose();
   const { userInfo, setServiceStartDate, setServiceEndDate, setOrderStartDate, setOrderEndDate } =
     useGlobalState();

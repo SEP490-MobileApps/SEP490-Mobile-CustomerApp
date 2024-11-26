@@ -58,7 +58,7 @@ export default function OrderSuccess() {
         duration: 5000,
       });
 
-      navigateToHome();
+      navigateToHistory();
     } catch (error) {
       console.error('Error finalizing order:', error);
       toast.show({
@@ -72,6 +72,15 @@ export default function OrderSuccess() {
   const navigateToHome = () => {
     setTimeout(() => {
       router.replace('/(tabs)');
+    }, 5000);
+  };
+
+  const navigateToHistory = () => {
+    setTimeout(() => {
+      router.replace({
+        pathname: '/HistoryScreen',
+        params: { selectedTab: 'order' }, // Chọn tab "order" khi điều hướng
+      });
     }, 5000);
   };
 

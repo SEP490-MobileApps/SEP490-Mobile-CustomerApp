@@ -1,4 +1,6 @@
 // models/RepairRequest.ts
+
+import { Feedback } from './Feedback';
 export interface RepairRequest {
   requestId: string;
   leaderId: string;
@@ -16,4 +18,5 @@ export interface RepairRequest {
   fileUrl: string;
   orderCode?: number;
   isOnlinePayment: boolean;
+  feedbacks?: Feedback[]; // Mảng feedback với nội dung và đánh giá
 }

@@ -17,7 +17,7 @@ export default function StoreScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortAscending, setSortAscending] = useState<null | boolean>(null); // Default: no sort
   const [pendingSort, setPendingSort] = useState<null | boolean>(null); // Temp state for unapplied sort
-  const { products, totalCount, loading, fetchProducts, fetchCartItems} = useProducts();
+  const { products, totalCount, loading, fetchProducts, fetchCartItems } = useProducts();
 
   // Fetch products when pageIndex or searchQuery changes
   useFocusEffect(
@@ -108,14 +108,14 @@ export default function StoreScreen() {
 
       {/* Product list */}
       {loading && pageIndex === 1 ? (
-         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F9F7F7' }}>
-         <Lottie
-           source={require('../../assets/animations/loading.json')} // Đường dẫn tới file animation
-           autoPlay
-           loop
-           style={{ width: 150, height: 150 }}
-         />
-       </View>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F9F7F7' }}>
+          <Lottie
+            source={require('../../assets/animations/loading.json')} // Đường dẫn tới file animation
+            autoPlay
+            loop
+            style={{ width: 150, height: 150 }}
+          />
+        </View>
       ) : products.length > 0 ? (
         <FlatList
           data={products}
@@ -127,11 +127,7 @@ export default function StoreScreen() {
           contentContainerStyle={styles.listContent}
         />
       ) : (
-        <NoDataComponent
-          imageUrl={require('../../assets/images/no-product.png')}
-          title="Không có sản phẩm"
-          description="Hiện tại không có sản phẩm nào để hiển thị."
-        />
+        <Text>Không có sản phẩm </Text>
       )}
 
       {/* ActionSheet for Filter */}
@@ -237,7 +233,7 @@ const styles = StyleSheet.create({
   },
   filterContainer: {
     padding: 10,
-    width: '100%', 
+    width: '100%',
   },
   filterItem: {
     backgroundColor: '#DBE2EF',
