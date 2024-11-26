@@ -13,6 +13,7 @@ const useServicePackages = () => {
   const [apiError, setApiError] = useState<string | null>(null);
   const [draftContract, setDraftContract] = useState<any | null>(null); // Thêm state để lưu hợp đồng nháp
   const servicePackageCache = new Map(); // Cache for service package details to avoid redundant calls
+  const [pendingContracts, setPendingContracts] = useState<any[]>([]);
 
   // Fetch list of service packages
   const fetchPackages = useCallback(async (pageIndex: number = 1, pageSize: number = 8, searchByName: string = '') => {
@@ -217,6 +218,28 @@ const useServicePackages = () => {
     [fetchData]
   );
 
+  const fetchPendingContracts = useCallback(async () => {
+    setLoading(true);
+    setApiError(null);
+
+    try {
+      const response = await fetchData({
+        url: '/service-package/17',
+        method: 'GET',
+      });
+
+      if (response) {
+        setPendingContracts(response);
+        return response;
+      }
+    } catch (error) {
+      setApiError('Không thể tải dữ liệu hợp đồng đang chờ xử lý.');
+      console.error('Lỗi tải dữ liệu:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [fetchData]);
+
   return {
     packages,
     totalCount,
@@ -229,6 +252,8 @@ const useServicePackages = () => {
     createDraftContract,
     handlePaymentMethod,
     finalizePayment,
+    fetchPendingContracts,
+    pendingContracts,
     loading,
     apiError
   };

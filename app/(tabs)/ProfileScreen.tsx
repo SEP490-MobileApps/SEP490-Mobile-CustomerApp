@@ -1,7 +1,7 @@
 // app/(tabs)/ProfileScreen.tsx
 import React, { useState, useCallback } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Modal } from 'react-native';
-import { FontAwesome, MaterialIcons, Fontisto } from '@expo/vector-icons';
+import { FontAwesome, MaterialIcons, Fontisto,FontAwesome5 } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Divider, useToast } from 'native-base';
 import { useRouter } from 'expo-router';
@@ -111,9 +111,16 @@ export default function ProfileScreen() {
           </TouchableOpacity>
           {/* Contract requests */}
           <TouchableOpacity style={styles.optionContainer} onPress={() => router.push("/RequestListScreen")}>
-            <FontAwesome name="file-text" size={24} color="#112D4E" />
+          <MaterialIcons name="home-repair-service" size={24} color="#112D4E" />
             <Divider orientation="vertical" bg="#112D4E" mx={2} />
             <Text style={styles.optionText}>Các lần yêu cầu</Text>
+            <MaterialIcons name="navigate-next" size={24} color="#112D4E" />
+          </TouchableOpacity>
+          {/* Pending contracts */}
+          <TouchableOpacity style={styles.optionContainer} onPress={() => router.push("/PendingContractScreen")}>
+          <FontAwesome5 name="file-contract" size={24} color="#112D4E" />
+            <Divider orientation="vertical" bg="#112D4E" mx={2} />
+            <Text style={styles.optionText}>Hợp đồng chờ duyệt</Text>
             <MaterialIcons name="navigate-next" size={24} color="#112D4E" />
           </TouchableOpacity>
         </View>

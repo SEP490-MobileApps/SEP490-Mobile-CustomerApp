@@ -175,6 +175,15 @@ function RootLayoutNav() {
                   headerTitleAlign: "center",
                 }}
               />
+              <Stack.Screen
+                name="PendingContractScreen"
+                options={{
+                  title: "Hợp đồng chờ duyệt",
+                  headerStyle: { backgroundColor: "#3F72AF" },
+                  headerTintColor: "#FFF",
+                  headerTitleAlign: "center",
+                }}
+              />
             </Stack>
           </GestureHandlerRootView>
         </ThemeProvider>

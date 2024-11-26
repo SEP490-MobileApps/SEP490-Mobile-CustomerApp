@@ -5,6 +5,8 @@ import { useFocusEffect } from '@react-navigation/native';
 import { useGlobalState } from '@/contexts/GlobalProvider';
 import useServicePackages from '@/hooks/useServicePackage';
 import { formatDate } from '@/utils/formatDate';
+import Lottie from 'lottie-react-native';
+import NoDataComponent from '@/components/ui/NoDataComponent';
 
 const ServiceTab: React.FC = () => {
   const { fetchCustomerContracts, contracts, loading } = useServicePackages();
@@ -23,14 +25,25 @@ const ServiceTab: React.FC = () => {
   );
 
   if (loading) {
-    return <Text style={styles.loadingText}>Đang tải dữ liệu hợp đồng...</Text>;
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F9F7F7' }}>
+          <Lottie
+            source={require('../../../assets/animations/loading.json')} // Đường dẫn tới file animation
+            autoPlay
+            loop
+            style={{ width: 150, height: 150 }}
+          />
+        </View>
+    );
   }
 
   if (contracts.length === 0) {
     return (
-      <View style={styles.noDataContainer}>
-        <Text style={styles.noDataText}>Không có hợp đồng nào.</Text>
-      </View>
+      <NoDataComponent
+      imageUrl={require('../../../assets/images/no-contract.png')}
+      title="Chưa có hợp đồng"
+      description="Hiện tại bạn chưa có hợp đồng nào."
+    />
     );
   }
 

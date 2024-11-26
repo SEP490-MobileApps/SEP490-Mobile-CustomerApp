@@ -8,6 +8,8 @@ import useProduct from "../../../hooks/useProduct";
 import { Divider } from "native-base";
 import { Order } from "../../../models/Order"; // Import model
 import { Linking } from "react-native"; // Import Linking from react-native
+import Lottie from 'lottie-react-native';
+import NoDataComponent from "@/components/ui/NoDataComponent";
 
 export default function OrderTab() {
   const { orderStartDate, orderEndDate, userInfo } = useGlobalState();
@@ -25,11 +27,25 @@ export default function OrderTab() {
   const flatOrders = Array.isArray(orders) && Array.isArray(orders[0]) ? orders[0] : orders;
 
   if (loading) {
-    return <Text>Đang tải đơn hàng...</Text>;
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F9F7F7' }}>
+          <Lottie
+            source={require('../../../assets/animations/loading.json')} // Đường dẫn tới file animation
+            autoPlay
+            loop
+            style={{ width: 150, height: 150 }}
+          />
+        </View>
+    );
   }
 
   if (!flatOrders || flatOrders.length === 0) {
-    return <Text>Không có đơn hàng nào.</Text>;
+    return (
+      <NoDataComponent
+      imageUrl={require('../../../assets/images/no-product.png')}
+      title="Không có đơn hàng"
+      description="Hiện tại bạn chưa có đơn hàng nào."
+    />)
   }
 
   return (
