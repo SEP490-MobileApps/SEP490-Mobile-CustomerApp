@@ -20,9 +20,9 @@ const CanceledRequestAccordion: React.FC<Props> = ({ request }) => {
         <Text>{formatDate(request.end || '')}</Text>
       </View>
       <View style={styles.divider} />
-      <View style={styles.row}>
+      <View style={styles.row1}>
         <Text>Lý do hủy:</Text>
-        <Button size="xs" variant="link" onPress={() => setConclusionModalOpen(true)}>Xem chi tiết</Button>
+        <Button variant="link" onPress={() => setConclusionModalOpen(true)}>Chi tiết</Button>
       </View>
 
       {/* Modal hiện thông tin kết luận */}
@@ -30,8 +30,8 @@ const CanceledRequestAccordion: React.FC<Props> = ({ request }) => {
         <Modal.Content>
           <Modal.CloseButton />
           <Modal.Header>Chi tiết lý do hủy</Modal.Header>
-          <Modal.Body>
-            <Text>{request.conclusion || 'Không có lý do'}</Text>
+          <Modal.Body style={styles.modalBody}>
+            <Text>{request.customerProblem}</Text>
           </Modal.Body>
         </Modal.Content>
       </Modal>
@@ -45,19 +45,28 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.newRequest,
     borderRadius: 8,
   },
+  row1: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 5,
+    alignItems: 'center',
+    marginVertical: 10,
   },
   link: {
     color: COLORS.link,
-    textDecorationLine: 'underline',
+    paddingHorizontal: 10,
   },
   divider: {
     height: 1,
     backgroundColor: COLORS.divider,
     marginVertical: 5,
+  },
+  modalBody: {
+    backgroundColor: '#DBE2EF',
   },
 });
 

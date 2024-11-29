@@ -1,11 +1,10 @@
-// app/ProductDetail/[id].tsx
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
-import { FormatPriceToVnd } from '../../utils/PriceUtils';
-import useProducts from '../../hooks/useProduct'; // Import useProducts
+import { FormatPriceToVnd } from '@/utils/PriceUtils';
+import useProducts from '@/hooks/useProduct';
 import { Button, Divider } from 'native-base';
-import { WebView } from 'react-native-webview'; // Import WebView
+import { WebView } from 'react-native-webview';
 
 export default function ProductDetailScreen() {
   const { id } = useLocalSearchParams();
@@ -19,20 +18,20 @@ export default function ProductDetailScreen() {
 
   const handleAddToCart = async () => {
     if (id && typeof id === 'string') {
-      setIsAddingToCart(true); // Bắt đầu loading
+      setIsAddingToCart(true);
       try {
         await addToCart(id, quantity);
       } catch (error) {
         console.error('Lỗi khi thêm sản phẩm vào giỏ hàng:', error);
       } finally {
-        setIsAddingToCart(false); // Kết thúc loading
+        setIsAddingToCart(false);
       }
     }
   };
 
   useEffect(() => {
     if (id) {
-      fetchProductDetail(id as string); // Gọi API lấy chi tiết sản phẩm
+      fetchProductDetail(id as string);
     }
   }, [id]);
 
@@ -62,7 +61,6 @@ export default function ProductDetailScreen() {
         <Text style={styles.stockText}>Còn hàng: {productDetail.inOfStock}</Text>
       </View>
 
-      {/* Hiển thị mô tả sản phẩm bằng WebView */}
       <Text style={styles.descriptionTitle}>Mô tả sản phẩm:</Text>
       <View style={styles.webViewContainer}>
         <WebView
@@ -138,7 +136,7 @@ const styles = StyleSheet.create({
     color: '#3A9B7A',
   },
   webViewContainer: {
-    height: 200, // Chiều cao của WebView, điều chỉnh theo nhu cầu
+    height: 200,
     marginBottom: 16,
   },
   webView: {

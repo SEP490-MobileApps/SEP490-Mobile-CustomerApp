@@ -1,9 +1,9 @@
 // hooks/useUser.ts
 import { useCallback, useState } from 'react';
-import useAuthAxios from '../utils/useAuthAxios';
-import { User } from '../models/User';
-import { Leader } from '../models/LeaderInfo';
-import { Toast, useToast } from 'native-base';
+import useAuthAxios from '@/utils/useAuthAxios';
+import { User } from '@/models/User';
+import { Leader } from '@/models/LeaderInfo';
+import { useToast } from 'native-base';
 
 const useUser = () => {
   const { fetchData } = useAuthAxios();
@@ -20,7 +20,7 @@ const useUser = () => {
       // Fetch user data
       const userResponse = await fetchData({ url: '/account/3', method: 'GET' });
       if (userResponse) {
-        const { customer, apartment } = userResponse.response;
+        const { customer, apartment, rooms } = userResponse.response;
         setUser({
           accountId: customer.accountId,
           fullName: customer.fullName,
@@ -33,6 +33,7 @@ const useUser = () => {
           apartmentName: apartment.name,
           apartmentAddress: apartment.address,
           areaId: apartment.avatarUrl,
+          rooms: rooms
         });
       }
 

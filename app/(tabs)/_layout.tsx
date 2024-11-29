@@ -1,4 +1,3 @@
-// app/(tabs)/_layout.tsx
 import {
   Entypo,
   Feather,
@@ -24,8 +23,8 @@ export default function TabLayout() {
           tabBarActiveTintColor: "#3F72AF",
           tabBarInactiveTintColor: "#6C757D",
           tabBarStyle: { height: 60, backgroundColor: "#DBE2EF" },
-          headerStyle: { backgroundColor: "#4072AF" },
-          headerTintColor: "white",
+          headerStyle: { backgroundColor: "#3F72AF" },
+          headerTintColor: "#F9F7F7",
           headerTitleAlign: "center",
         }}
       >
@@ -40,7 +39,7 @@ export default function TabLayout() {
               ) : (
                 <MaterialCommunityIcons
                   name="home-outline"
-                  size={20}
+                  size={24}
                   color={color}
                 />
               ),

@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Text } from 'native-base';
 import Lottie from 'lottie-react-native';
-import NoDataComponent from '@/components/ui/NoDataComponent';
 import useServicePackages from '@/hooks/useServicePackage';
 import PendingContractCard from '@/components/home/PendingContractCard';
 
@@ -32,7 +31,15 @@ export default function PendingContractScreen() {
             />
           </View>
         ) : customerContracts.length === 0 ? (
-          <Text>Không có hợp đồng</Text>
+          <View style={styles.loadingContainer}>
+           <Lottie
+  source={require('../assets/animations/no-data.json')}
+  autoPlay
+  loop
+  style={styles.loadingAnimation}
+/>
+
+          </View>
         ) : (
           customerContracts.map((contract) => (
             <PendingContractCard key={contract.contractId} contract={contract} />

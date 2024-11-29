@@ -11,4 +11,5 @@ export interface User {
   apartmentName: string;
   apartmentAddress: string;
   areaId: string;
+  rooms: string[];
 }

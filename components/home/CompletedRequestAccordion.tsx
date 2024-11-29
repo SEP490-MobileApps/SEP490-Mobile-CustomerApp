@@ -16,9 +16,9 @@ const CompletedRequestAccordion: React.FC<Props> = ({ request }) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.row}>
+      <View style={styles.row1}>
         <Text>Vấn đề:</Text>
-        <Button size="xs" variant="link" onPress={() => setProblemModalOpen(true)}>Chi tiết</Button>
+        <Button variant="link" onPress={() => setProblemModalOpen(true)}>Chi tiết</Button>
       </View>
       <View style={styles.divider} />
       <View style={styles.row}>
@@ -37,6 +37,13 @@ const CompletedRequestAccordion: React.FC<Props> = ({ request }) => {
           {request.categoryRequest === 1 ? 'SỬA CHỮA' : 'BẢO HÀNH'}
         </Badge>
       </View>
+      <View style={styles.divider} />
+      <View style={styles.row}>
+        <Text>Chi phí:</Text>
+        <Badge style={[styles.badge, request.contractId ? styles.free : styles.pay]}>
+          {request.contractId ? 'MIỄN PHÍ' : 'TRẢ PHÍ'}
+        </Badge>
+      </View>
       {request.fileUrl && (
         <>
           <View style={styles.divider} />
@@ -51,9 +58,9 @@ const CompletedRequestAccordion: React.FC<Props> = ({ request }) => {
       {request.conclusion && (
         <>
           <View style={styles.divider} />
-          <View style={styles.row}>
+          <View style={styles.row1}>
             <Text>Kết luận:</Text>
-            <Button size="xs" variant="link" onPress={() => setConclusionModalOpen(true)}>Xem chi tiết</Button>
+            <Button variant="link" onPress={() => setConclusionModalOpen(true)}>Chi tiết</Button>
           </View>
         </>
       )}
@@ -63,7 +70,7 @@ const CompletedRequestAccordion: React.FC<Props> = ({ request }) => {
         <Modal.Content>
           <Modal.CloseButton />
           <Modal.Header>Chi tiết vấn đề</Modal.Header>
-          <Modal.Body>
+          <Modal.Body style={styles.modalBody}>
             <Text>{request.customerProblem}</Text>
           </Modal.Body>
         </Modal.Content>
@@ -74,7 +81,7 @@ const CompletedRequestAccordion: React.FC<Props> = ({ request }) => {
         <Modal.Content>
           <Modal.CloseButton />
           <Modal.Header>Chi tiết kết luận</Modal.Header>
-          <Modal.Body>
+          <Modal.Body style={styles.modalBody}>
             <Text>{request.conclusion}</Text>
           </Modal.Body>
         </Modal.Content>
@@ -89,10 +96,16 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.newRequest,
     borderRadius: 8,
   },
+  row1: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 5,
+    alignItems: 'center',
+    marginVertical: 10,
   },
   badge: {
     padding: 5,
@@ -105,12 +118,16 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.free,
   },
   link: {
-    color: COLORS.link
+    color: COLORS.link,
+    paddingHorizontal: 10,
   },
   divider: {
     height: 1,
     backgroundColor: COLORS.divider,
     marginVertical: 5,
+  },
+  modalBody: {
+    backgroundColor: '#DBE2EF',
   },
 });
 

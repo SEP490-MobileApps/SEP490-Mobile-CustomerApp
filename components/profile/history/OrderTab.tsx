@@ -9,7 +9,6 @@ import { Divider } from "native-base";
 import { Order } from "../../../models/Order"; // Import model
 import { Linking } from "react-native"; // Import Linking from react-native
 import Lottie from 'lottie-react-native';
-import NoDataComponent from "@/components/ui/NoDataComponent";
 
 export default function OrderTab() {
   const { orderStartDate, orderEndDate, userInfo } = useGlobalState();

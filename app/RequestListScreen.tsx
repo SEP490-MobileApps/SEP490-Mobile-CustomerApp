@@ -10,7 +10,6 @@ import CompletedRequestAccordion from '../components/home/CompletedRequestAccord
 import CanceledRequestAccordion from '../components/home/CanceledRequestAccordion';
 import { RepairRequest } from '../models/RepairRequest';
 import Lottie from 'lottie-react-native';
-import NoDataComponent from '@/components/ui/NoDataComponent';
 
 const TABS = [
   { label: 'Yêu Cầu Mới', status: 0, color: '#DBE2EF' },
@@ -112,7 +111,12 @@ const RequestListScreen = () => {
   }
 
   if (!allRequests || allRequests.length === 0) {
-    return <Text>Không có yêu cầu</Text>;
+    <Lottie
+  source={require('../assets/animations/no-data.json')}
+  autoPlay
+  loop={false}  // Tắt vòng lặp
+  // style={styles.loadingAnimation}
+/>
   }
 
   return (
@@ -205,6 +209,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     color: '#000', // Màu chữ mặc định
+  },
+  loadingAnimation: {
+    width: 150,
+    height: 150,
   },
 });
 

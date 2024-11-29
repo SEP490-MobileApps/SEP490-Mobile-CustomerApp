@@ -1,26 +1,23 @@
-// app/(tabs)/index.tsx
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Text, View, StyleSheet, ScrollView, Image } from 'react-native';
-import { Box, Icon, Badge } from 'native-base';
-import { MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
-import RecentRepairs from '../../components/home/RecentRepairs';
-import CustomerReviews from '../../components/home/CustomerReviews';
-import CustomerInUseContract from '../../components/home/CustomerInUseContract';
-import FloatButton from '../../components/ui/FloatButton';
-import LeaderContactModal from '../../components/home/LeaderContactModal';
+import { Icon } from 'native-base';
+import { FontAwesome5 } from '@expo/vector-icons';
+import RecentRepairs from '@/components/home/RecentRepairs';
+import CustomerReviews from '@/components/home/CustomerReviews';
+import CustomerInUseContract from '@/components/home/CustomerInUseContract';
+import FloatButton from '@/components/ui/FloatButton';
+import LeaderContactModal from '@/components/home/LeaderContactModal';
 import { useFocusEffect } from '@react-navigation/native';
-import useUser from '../../hooks/useUser';
-import useRequest from '../../hooks/useRequest';
-import useServicePackages from '../../hooks/useServicePackage';
+import useUser from '@/hooks/useUser';
+import useRequest from '@/hooks/useRequest';
+import useServicePackages from '@/hooks/useServicePackage';
 import { useGlobalState } from '@/contexts/GlobalProvider';
-import NoDataComponent from '@/components/ui/NoDataComponent';
-import { GetLatestPushNotificationRecordByLeaderId, InitializeFirestoreDb, sendPushNotification } from '@/utils/PushNotification';
-import { User } from '@/models/User';
-import { Leader } from '@/models/LeaderInfo';
-import Lottie from 'lottie-react-native';
+import LottieView from 'lottie-react-native';
+import NoData from '@/components/ui/NoData';
+import { SCREEN_WIDTH } from '@/constants/Device';
 
 function HomeScreen(): React.JSX.Element {
-  const { user, leaderInfo, fetchUserAndLeader, loading: userLoading } = useUser();
+  const { user, leaderInfo, fetchUserAndLeader } = useUser();
   const { requests, feedbacks, fetchRecentRequests, fetchFeedbacks, loading: requestLoading } = useRequest();
   const { contracts, fetchCustomerContracts, loading: contractLoading } = useServicePackages();
   const [isModalOpen, setModalOpen] = useState(false);
@@ -31,14 +28,10 @@ function HomeScreen(): React.JSX.Element {
     React.useCallback(() => {
       fetchUserAndLeader();
       fetchRecentRequests(3);
-
       if (userInfo?.accountId) {
         fetchCustomerContracts(userInfo.accountId);
       }
-
-      // Reset feedbacks to default state
-      fetchFeedbacks(); // Default without filters
-
+      fetchFeedbacks();
     }, [userInfo])
   );
 
@@ -50,81 +43,40 @@ function HomeScreen(): React.JSX.Element {
     setModalOpen(false);
   };
 
-  // const db = InitializeFirestoreDb();
-
-  // const sendPushNotificationToLeader = async ({ leaderInfo, user }: { leaderInfo: Leader, user: User }) => {
-  //   try {
-  //     // Đảm bảo dữ liệu leaderInfo và user được tải
-  //     // await fetchUserAndLeader().then(() => {
-  //     //   if (!leaderInfo || !user) {
-  //     //     console.error('LeaderInfo hoặc User không hợp lệ');
-  //     //     return;
-  //     //   }
-  //     // }
-  //     // );
-
-
-  //     // Lấy bản ghi push notification mới nhất từ Firestore
-  //     const result = await GetLatestPushNotificationRecordByLeaderId(
-  //       db,
-  //       leaderInfo.accountId
-  //     );
-
-  //     if (result && result.exponentPushToken) {
-  //       const expoPushToken = result.exponentPushToken;
-
-  //       // Lấy fullName của user và truyền cùng contractId
-  //       const mockContractId = 'CT_20241122012345'; // Contract ID mẫu
-  //       const fullName = user.fullName; // Lấy fullName từ user
-
-  //       // Gửi push notification
-  //       await sendPushNotification(expoPushToken, mockContractId, fullName);
-
-  //       console.log('Push notification sent successfully!');
-  //     } else {
-  //       console.error('Không tìm thấy expoPushToken trong bản ghi Firestore.');
-  //     }
-  //   } catch (error) {
-  //     console.error('Lỗi khi gửi push notification:', error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   if (leaderInfo && user) {
-  //     sendPushNotificationToLeader({ leaderInfo, user });// Gửi thông báo ngay khi vào màn hình
-  //   }
-  // }, [leaderInfo, user]);
-
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        <Box style={styles.infoContainer}>
+        <View style={styles.infoContainer}>
+          <View style={styles.leftContainer}>
+            <Text style={styles.welcomeText}>Chào mừng bạn quay lại,</Text>
+            <Text style={styles.userName}>{user?.fullName || 'Đang tải...'}</Text>
+          </View>
           <View style={styles.avatarContainer}>
             <Image
-              source={{ uri: user?.avatarUrl || 'https://via.placeholder.com/50' }}
+              source={{ uri: user?.avatarUrl || 'https://png.pngtree.com/png-clipart/20220726/original/pngtree-3d-loading-logo-png-image_8413023.png' }}
               style={styles.avatar}
             />
-            <Text style={styles.userName}>{user?.fullName || 'Người dùng chưa xác định'}</Text>
           </View>
-        </Box>
+        </View>
 
         <Image
-          source={require('../../assets/images/home.png')}
+          source={require('@/assets/images/home.png')}
           style={styles.homeImage}
           resizeMode="cover"
         />
+
         <Text style={styles.title}>NHỮNG LẦN SỬA CHỮA GẦN ĐÂY</Text>
         {requestLoading ? (
           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F9F7F7' }}>
-            <Lottie
-              source={require('../../assets/animations/loading.json')} // Đường dẫn tới file animation
+            <LottieView
+              source={require('@/assets/animations/loading.json')} // Đường dẫn tới file animation
               autoPlay
               loop
               style={{ width: 150, height: 150 }}
             />
           </View>
         ) : requests.length === 0 ? (
-          <Text>Không có yêu cầu</Text>
+          <NoData />
         ) : (
           <RecentRepairs requests={requests} />
         )}
@@ -134,7 +86,7 @@ function HomeScreen(): React.JSX.Element {
         <Text style={styles.title}>HỢP ĐỒNG ĐANG SỬ DỤNG</Text>
         {contractLoading ? (
           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F9F7F7' }}>
-            <Lottie
+            <LottieView
               source={require('../../assets/animations/loading.json')} // Đường dẫn tới file animation
               autoPlay
               loop
@@ -142,7 +94,7 @@ function HomeScreen(): React.JSX.Element {
             />
           </View>
         ) : contracts.filter(contract => contract.remainingNumOfRequests > 0).length === 0 ? (
-          <Text>Không có hợp đồng</Text>
+          <NoData />
         ) : (
           contracts
             .filter(contract => contract.remainingNumOfRequests > 0)
@@ -156,7 +108,7 @@ function HomeScreen(): React.JSX.Element {
         <Text style={styles.title}>ĐÁNH GIÁ TỪ KHÁCH HÀNG</Text>
         {requestLoading ? (
           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F9F7F7' }}>
-            <Lottie
+            <LottieView
               source={require('../../assets/animations/loading.json')} // Đường dẫn tới file animation
               autoPlay
               loop
@@ -164,7 +116,7 @@ function HomeScreen(): React.JSX.Element {
             />
           </View>
         ) : feedbacks.length === 0 ? (
-          <Text>Không có đánh giá</Text>
+          <NoData />
         ) : (
           <CustomerReviews feedbacks={feedbacks} />
         )}
@@ -197,46 +149,55 @@ const styles = StyleSheet.create({
     backgroundColor: '#F9F7F7',
   },
   infoContainer: {
-    backgroundColor: '#DBE2EF',
-    padding: 10,
     borderRadius: 12,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
-  },
-  avatarContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  avatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    marginBottom: 16,
   },
   userName: {
-    marginLeft: 10,
-    fontSize: 18,
+    fontSize: 24,
     fontWeight: 'bold',
   },
   homeImage: {
-    width: '100%',
-    height: 150,
-    borderRadius: 10,
-    marginBottom: 20,
+    width: SCREEN_WIDTH,
+    height: 230,
+    marginLeft: -16,
+    marginBottom: 16,
   },
   divider: {
-    height: 1,
+    height: 2,
     backgroundColor: '#112D4E',
     marginVertical: 20,
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 16,
     textAlign: 'center',
     color: '#112D4E',
   },
+  leftContainer: {
+    flex: 1,
+    gap: 3,
+    justifyContent: 'center',
+  },
+  welcomeText: {
+    fontSize: 14,
+    color: '#A1A1A1',
+  },
+  avatarContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  avatar: {
+    width: 68,
+    height: 68,
+    borderRadius: 34,
+    borderColor: "#3F72AF",
+    borderWidth: 3,
+  },
+
 });
 
 export default HomeScreen;

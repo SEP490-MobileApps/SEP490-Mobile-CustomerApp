@@ -1,10 +1,9 @@
-// app/ServicePackage/[id].tsx
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Button } from 'native-base';
-import { FormatPriceToVnd } from '../../utils/PriceUtils';
-import useServicePackages from '../../hooks/useServicePackage';
+import { FormatPriceToVnd } from '@/utils/PriceUtils';
+import useServicePackages from '@/hooks/useServicePackage';
 import HTMLView from 'react-native-htmlview'; // Import thư viện
 import Lottie from 'lottie-react-native';
 
@@ -22,13 +21,13 @@ export default function ServicePackageDetail() {
   if (loading || !servicePackageDetail) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F9F7F7' }}>
-          <Lottie
-            source={require('../../assets/animations/loading.json')} // Đường dẫn tới file animation
-            autoPlay
-            loop
-            style={{ width: 150, height: 150 }}
-          />
-        </View>
+        <Lottie
+          source={require('@/assets/animations/loading.json')}
+          autoPlay
+          loop
+          style={{ width: 150, height: 150 }}
+        />
+      </View>
     );
   }
 
@@ -51,8 +50,8 @@ export default function ServicePackageDetail() {
 
       <Text style={styles.sectionTitle}>Mô tả gói:</Text>
       <HTMLView
-        value={servicePackageDetail.description} // HTML content
-        stylesheet={htmlStyles} // Custom styles for HTML elements
+        value={servicePackageDetail.description}
+        stylesheet={htmlStyles}
       />
 
       <Text style={styles.sectionTitle}>Chính sách:</Text>
@@ -145,5 +144,5 @@ const styles = StyleSheet.create({
     width: '100%',
   },
 
-  
+
 });

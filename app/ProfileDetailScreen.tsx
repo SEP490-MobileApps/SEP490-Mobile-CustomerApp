@@ -1,7 +1,7 @@
 // ProfileDetailScreen.tsx
 import React, { useState, useEffect, useCallback } from "react";
 import { View, Text, StyleSheet, Image, ScrollView, Platform } from "react-native";
-import { Input, Button, HStack, IconButton } from "native-base";
+import { Input, Button, HStack, IconButton, Badge } from "native-base";
 import { FontAwesome } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import ConfirmModal from "../components/profile/ConfirmModal";
@@ -86,7 +86,7 @@ export default function ProfileDetailScreen() {
 
         {/* Personal Info Fields */}
         <View style={styles.fieldContainer}>
-          <Text style={styles.label}>Tên đầy đủ</Text>
+          <Text style={styles.label}>Tên đầy đủ:</Text>
           {isEditing ? (
             <Input value={name} onChangeText={setName} variant="outline" bg="#DBE2EF" />
           ) : (
@@ -97,7 +97,7 @@ export default function ProfileDetailScreen() {
         </View>
 
         <View style={styles.fieldContainer}>
-          <Text style={styles.label}>Email</Text>
+          <Text style={styles.label}>Email:</Text>
           {isEditing ? (
             <Input value={email} onChangeText={setEmail} variant="outline" bg="#DBE2EF" keyboardType="email-address" />
           ) : (
@@ -108,7 +108,7 @@ export default function ProfileDetailScreen() {
         </View>
 
         <View style={isEditing ? styles.dateFieldContainer : styles.fieldContainer}>
-          <Text style={styles.label}>Ngày sinh</Text>
+          <Text style={styles.label}>Ngày sinh:</Text>
           {isEditing ? (
             <HStack alignItems="center" space={2}>
               <Input
@@ -138,7 +138,7 @@ export default function ProfileDetailScreen() {
         </View>
 
         <View style={styles.fieldContainer}>
-          <Text style={styles.label}>Chung cư</Text>
+          <Text style={styles.label}>Chung cư:</Text>
           <View style={styles.apartmentContainer}>
             <Image
               source={{ uri: user?.apartmentAvatarUrl || 'https://via.placeholder.com/100' }}
@@ -151,12 +151,16 @@ export default function ProfileDetailScreen() {
           </View>
         </View>
 
-        {/* <View style={styles.fieldContainer}>
-          <Text style={styles.label}>Căn hộ</Text>
-          <View style={styles.fieldView}>
-            <Text style={styles.fieldValue}>Room 115</Text>
+        <View style={styles.fieldContainer}>
+          <Text style={styles.label}>Căn hộ:</Text>
+          <View style={styles.fieldView1}>
+            {user.rooms && user.rooms.map((room, index) => (
+              <Badge key={index} style={styles.badge}>
+                <Text style={styles.badgeText}>{room}</Text>
+              </Badge>
+            ))}
           </View>
-        </View> */}
+        </View>
 
         {isEditing && (
           <HStack justifyContent="space-between" mt={4}>
@@ -191,13 +195,13 @@ const styles = StyleSheet.create({
   imageContainer: { alignItems: "center", marginBottom: 20 },
   profileImage: { width: 100, height: 100, borderRadius: 50 },
   fieldContainer: { width: "100%", marginVertical: 10 },
-  label: { fontSize: 16, fontWeight: "bold", color: "#112D4E", marginBottom: 4 },
+  label: { fontSize: 16, fontWeight: "bold", color: "#112D4E", marginBottom: 10 },
   fieldView: {
     padding: 10,
     backgroundColor: "#DBE2EF",
     borderRadius: 8,
   },
-  fieldValue: { fontSize: 16, color: "#333" },
+  fieldValue: { fontSize: 16, color: "#112D4E" },
   apartmentContainer: { flexDirection: "row", alignItems: "center", marginVertical: 10 },
   apartmentImage: { width: 50, height: 50, borderRadius: 8, marginRight: 10 },
   apartmentInfo: { flex: 1 },
@@ -205,8 +209,27 @@ const styles = StyleSheet.create({
   apartmentAddress: { fontSize: 14, color: "#6C757D" },
   saveButton: { backgroundColor: "#3F72AF" },
   dateFieldContainer: {
-    width: "88%", // Điều chỉnh kích thước theo nhu cầu của bạn
+    width: "88%",
     marginVertical: 10,
+  },
+  fieldView1: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'flex-start',
+  },
+  badge: {
+    margin: 5,
+    backgroundColor: '#DBE2EF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 12,
+    width: '20%'
+  },
+  badgeText: {
+    color: '#112D4E',
+    fontSize: 16,
+    padding: 8,
+    fontWeight: 'bold'
   },
 });
 

@@ -7,8 +7,7 @@ import NewRequestAccordion from './NewRequestAccordion';
 import InProgressAccordion from './InProgressAccordion';
 import CompletedRequestAccordion from './CompletedRequestAccordion';
 import CanceledRequestAccordion from './CanceledRequestAccordion';
-import { RepairRequest } from '../../models/RepairRequest';
-import { formatDate } from '../../utils/formatDate';
+import { RepairRequest } from '@/models/RepairRequest';
 
 interface RecentRepairsProps {
   requests: RepairRequest[];
@@ -85,7 +84,7 @@ const styles = StyleSheet.create({
     color: '#112D4E'
   },
   accordionContainer: {
-    marginBottom: 10,
+    marginBottom: 12,
   },
   header: {
     flexDirection: 'row',
@@ -94,6 +93,12 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: '#3F72AF',
     borderRadius: 8,
+    // Thêm hiệu ứng bóng cho header
+    shadowColor: '#000', // Màu bóng (đen)
+    shadowOffset: { width: 0, height: 3 }, // Độ đậm của bóng
+    shadowOpacity: 0.1, // Độ mờ của bóng
+    shadowRadius: 4, // Bán kính bóng
+    elevation: 5, // Chỉ áp dụng cho Android
   },
   rowContainer: {
     flexDirection: 'row',

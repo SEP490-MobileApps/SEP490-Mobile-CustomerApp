@@ -1,12 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Linking } from 'react-native';
-import { Box } from 'native-base';
+import { Box, Divider } from 'native-base';
 import { useFocusEffect } from '@react-navigation/native';
 import { useGlobalState } from '@/contexts/GlobalProvider';
 import useServicePackages from '@/hooks/useServicePackage';
 import { formatDate } from '@/utils/formatDate';
 import Lottie from 'lottie-react-native';
-import NoDataComponent from '@/components/ui/NoDataComponent';
 
 const ServiceTab: React.FC = () => {
   const { fetchCustomerContracts, contracts, loading } = useServicePackages();
@@ -49,6 +48,7 @@ const ServiceTab: React.FC = () => {
         <Box key={contract.contractId} style={styles.cardContainer}>
           <View style={styles.row}>
             <Image source={{ uri: contract.imageUrl }} style={styles.image} />
+            <Divider bg="#3F72AF" thickness="2" mx="3" orientation="vertical" />
             <View style={styles.contentContainer}>
               <Text style={styles.name}>{contract.name}</Text>
               <Text style={styles.price}>Giá: {contract.priceByDate} VND</Text>
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     padding: 10,
     borderRadius: 8,
-    backgroundColor: '#FFF',
+    backgroundColor: '#DBE2EF',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.3,
@@ -87,10 +87,13 @@ const styles = StyleSheet.create({
   },
   row: { flexDirection: 'row', alignItems: 'center' },
   image: { width: 100, height: 100, borderRadius: 8, marginRight: 10 },
-  contentContainer: { flex: 1 },
+  contentContainer: { flex: 1, gap: 3 },
   name: { fontSize: 16, fontWeight: 'bold' },
-  price: { fontSize: 14, color: '#888' },
-  purchaseTime: { fontSize: 12, marginBottom: 5 },
+  price: {
+    fontSize: 14,
+    color: '#3F72AF',
+  },
+  purchaseTime: { marginBottom: 5 },
   button: {
     marginTop: 5,
     backgroundColor: '#3F72AF',

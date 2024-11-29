@@ -6,9 +6,9 @@ import { Stack, useRouter } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useCallback, useEffect, useRef } from "react";
 import { NativeBaseProvider, IconButton } from "native-base";
-import { useColorScheme } from "../components/useColorScheme";
+import { useColorScheme } from "@/components/useColorScheme";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { GlobalProvider } from "../contexts/GlobalProvider";
+import { GlobalProvider } from "@/contexts/GlobalProvider";
 import { FontAwesome as FontAwesomeIcon } from "@expo/vector-icons";
 import * as Notifications from "expo-notifications";
 import { registerForPushNotificationsAsync } from "@/utils/PushNotification";
@@ -108,6 +108,7 @@ function RootLayoutNav() {
                   title: "Chi tiết gói dịch vụ",
                   headerStyle: { backgroundColor: "#3F72AF" },
                   headerTintColor: "#FFF",
+                  headerTitleAlign: "center",
                 }}
               />
               <Stack.Screen
@@ -116,6 +117,7 @@ function RootLayoutNav() {
                   title: "Chi tiết hợp đồng",
                   headerStyle: { backgroundColor: "#3F72AF" },
                   headerTintColor: "#FFF",
+                  headerTitleAlign: "center",
                 }}
               />
               <Stack.Screen
@@ -124,6 +126,7 @@ function RootLayoutNav() {
                   title: "Chi tiết sản phẩm",
                   headerStyle: { backgroundColor: "#3F72AF" },
                   headerTintColor: "#FFF",
+                  headerTitleAlign: "center",
                 }}
               />
               <Stack.Screen
@@ -141,6 +144,7 @@ function RootLayoutNav() {
                   title: "Thông tin cá nhân chi tiết",
                   headerStyle: { backgroundColor: "#3F72AF" },
                   headerTintColor: "#FFF",
+                  headerTitleAlign: "center",
                   headerRight: () => (
                     <IconButton
                       icon={<FontAwesomeIcon name="edit" size={24} color="white" />}
@@ -155,6 +159,7 @@ function RootLayoutNav() {
                   title: "Chi tiết Leader",
                   headerStyle: { backgroundColor: "#3F72AF" },
                   headerTintColor: "#FFF",
+                  headerTitleAlign: "center",
                 }}
               />
               <Stack.Screen

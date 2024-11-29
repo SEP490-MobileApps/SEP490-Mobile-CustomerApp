@@ -1,13 +1,12 @@
-// app/(tabs)/StoreScreen.tsx
 import React, { useState, useCallback } from 'react';
-import { Text, View, TextInput, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
-import { IconButton, Actionsheet, useDisclose, Button, Radio, Box } from 'native-base';
+import { Text, View, TextInput, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { IconButton, Actionsheet, useDisclose, Button, Radio } from 'native-base';
 import { FontAwesome5 } from '@expo/vector-icons';
-import ProductListItem from '../../components/store/ProductListItem';
-import NoDataComponent from '../../components/ui/NoDataComponent';
-import useProducts from '../../hooks/useProduct';
+import ProductListItem from '@/components/store/ProductListItem';
+import useProducts from '@/hooks/useProduct';
 import { useFocusEffect } from '@react-navigation/native';
-import Lottie from 'lottie-react-native';
+import LottieView from 'lottie-react-native';
+import NoData from '@/components/ui/NoData';
 
 let searchTimeout: NodeJS.Timeout;
 
@@ -15,11 +14,10 @@ export default function StoreScreen() {
   const { isOpen, onOpen, onClose } = useDisclose();
   const [pageIndex, setPageIndex] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortAscending, setSortAscending] = useState<null | boolean>(null); // Default: no sort
-  const [pendingSort, setPendingSort] = useState<null | boolean>(null); // Temp state for unapplied sort
+  const [sortAscending, setSortAscending] = useState<null | boolean>(null);
+  const [pendingSort, setPendingSort] = useState<null | boolean>(null);
   const { products, totalCount, loading, fetchProducts, fetchCartItems } = useProducts();
 
-  // Fetch products when pageIndex or searchQuery changes
   useFocusEffect(
     useCallback(() => {
       fetchProducts(pageIndex, 6, searchQuery, sortAscending);
@@ -27,7 +25,6 @@ export default function StoreScreen() {
     }, [pageIndex, searchQuery, sortAscending])
   );
 
-  // Handle search with debounce
   const handleSearchChange = (text: string) => {
     setSearchQuery(text);
     clearTimeout(searchTimeout);
@@ -36,14 +33,12 @@ export default function StoreScreen() {
     }, 2000);
   };
 
-  // Handle sorting application
   const handleApplySort = () => {
     setSortAscending(pendingSort);
     setPageIndex(1);
-    onClose(); // Close the actionsheet
+    onClose();
   };
 
-  // Handle clearing filters
   const handleClearFilters = () => {
     setSortAscending(null);
     setSearchQuery('');
@@ -51,7 +46,6 @@ export default function StoreScreen() {
     onClose();
   };
 
-  // Pagination logic
   const handlePrevPage = () => {
     if (pageIndex > 1) {
       setPageIndex((prev) => prev - 1);
@@ -67,7 +61,6 @@ export default function StoreScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Search and Filter */}
       <View style={styles.searchContainer}>
         <View style={styles.searchInputContainer}>
           <FontAwesome5 name="search" size={20} color="#112D4E" style={styles.searchIcon} />
@@ -91,26 +84,28 @@ export default function StoreScreen() {
         />
       </View>
 
-      {/* Pagination controls */}
       <View style={styles.paginationContainer}>
-        <TouchableOpacity onPress={handlePrevPage} disabled={pageIndex === 1} style={styles.pageButton}>
+        <TouchableOpacity
+          onPress={handlePrevPage}
+          disabled={pageIndex === 1}
+          style={[styles.pageButton, pageIndex === 1 && styles.disabledButton]}
+        >
           <Text style={styles.pageButtonText}>◀</Text>
         </TouchableOpacity>
-        <Text style={styles.pageIndicator}>{`Trang ${pageIndex}`}</Text>
+        <Text style={styles.pageIndicator}>{`${pageIndex} / ${Math.ceil(totalCount / 6)}`}</Text>
         <TouchableOpacity
           onPress={handleNextPage}
-          disabled={products.length === 0 || products.length < 6}
-          style={styles.pageButton}
+          disabled={pageIndex === Math.ceil(totalCount / 6)}
+          style={[styles.pageButton, pageIndex === Math.ceil(totalCount / 6) && styles.disabledButton]}
         >
           <Text style={styles.pageButtonText}>▶</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Product list */}
       {loading && pageIndex === 1 ? (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F9F7F7' }}>
-          <Lottie
-            source={require('../../assets/animations/loading.json')} // Đường dẫn tới file animation
+          <LottieView
+            source={require('@/assets/animations/loading.json')} // Đường dẫn tới file animation
             autoPlay
             loop
             style={{ width: 150, height: 150 }}
@@ -127,10 +122,9 @@ export default function StoreScreen() {
           contentContainerStyle={styles.listContent}
         />
       ) : (
-        <Text>Không có sản phẩm </Text>
+        <NoData />
       )}
 
-      {/* ActionSheet for Filter */}
       <Actionsheet isOpen={isOpen} onClose={onClose}>
         <Actionsheet.Content style={styles.actionSheetContent}>
           <View style={styles.filterContainer}>
@@ -203,28 +197,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginLeft: 8,
   },
-  paginationContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  pageButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    marginHorizontal: 4,
-    backgroundColor: '#3F72AF',
-    borderRadius: 5,
-  },
-  pageButtonText: {
-    color: '#FFF',
-    fontSize: 16,
-  },
-  pageIndicator: {
-    fontSize: 16,
-    marginHorizontal: 10,
-    color: '#3F72AF',
-  },
   columnWrapper: {
     justifyContent: 'space-between',
   },
@@ -246,7 +218,31 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   listContent: {
-    // paddingBottom: 100,
     paddingBottom: 0,
+  },
+  paginationContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 8,
+    marginBottom: 20
+  },
+  pageButton: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    marginHorizontal: 5,
+    backgroundColor: '#3F72AF',
+    borderRadius: 5,
+  },
+  disabledButton: {
+    backgroundColor: '#CCC',
+  },
+  pageButtonText: {
+    color: '#FFF',
+    fontSize: 16,
+  },
+  pageIndicator: {
+    fontSize: 16,
+    color: '#3F72AF',
   },
 });

@@ -3,7 +3,6 @@ import React, { useCallback } from "react";
 import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
 import { Input, Icon } from "native-base";
 import { FontAwesome } from "@expo/vector-icons";
-import NoDataComponent from "../components/ui/NoDataComponent";
 import { useFocusEffect } from "@react-navigation/native";
 import useUser from "../hooks/useUser";
 

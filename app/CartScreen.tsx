@@ -1,27 +1,26 @@
-// app/CartScreen.tsx
 import React, { useCallback, useState, useRef } from 'react';
-import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, Linking, ScrollView } from 'react-native';
-import { Button, Icon, AlertDialog, Toast } from 'native-base';
+import { View, Text, Image, StyleSheet, TouchableOpacity, Linking, ScrollView } from 'react-native';
+import { Button, AlertDialog, Toast } from 'native-base';
 import { FontAwesome } from '@expo/vector-icons';
-import { FormatPriceToVnd } from '../utils/PriceUtils';
-import NoDataComponent from '../components/ui/NoDataComponent';
-import useProducts from '../hooks/useProduct'; // Import hook useProducts
+import { FormatPriceToVnd } from '@/utils/PriceUtils';
+import useProducts from '@/hooks/useProduct';
 import { useFocusEffect } from '@react-navigation/native';
 import Lottie from 'lottie-react-native';
+import NoProduct from '@/components/ui/NoProduct';
 
 export default function CartScreen() {
-  const { cartItems, totalAmount, fetchCartItems, deleteCartItem, handleOrderPayment } = useProducts(); // Add deleteCartItem function from hook
-  const [isOpen, setIsOpen] = useState(false); // State for AlertDialog
+  const { cartItems, totalAmount, fetchCartItems, deleteCartItem, handleOrderPayment } = useProducts();
+  const [isOpen, setIsOpen] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const onClose = () => setIsOpen(false);
-  const cancelRef = useRef(null); // Ref for least destructive action
+  const cancelRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleCheckout = async () => {
     try {
       const result = await handleOrderPayment();
       if (result.type === 'link') {
-        Linking.openURL(result.data); // Mở link thanh toán
+        Linking.openURL(result.data);
       }
     } catch (error) {
       Toast.show({
@@ -36,9 +35,9 @@ export default function CartScreen() {
   useFocusEffect(
     useCallback(() => {
       const loadCartItems = async () => {
-        setIsLoading(true); // Bắt đầu tải
-        await fetchCartItems(); // Tải dữ liệu
-        setIsLoading(false); // Kết thúc tải
+        setIsLoading(true);
+        await fetchCartItems();
+        setIsLoading(false);
       };
 
       loadCartItems();
@@ -47,35 +46,28 @@ export default function CartScreen() {
 
   const handleDeleteItem = async () => {
     if (selectedProductId) {
-      await deleteCartItem(selectedProductId); // Call API to delete product
-      fetchCartItems(); // Refresh the cart items
-      onClose(); // Close the AlertDialog
+      await deleteCartItem(selectedProductId);
+      fetchCartItems();
+      onClose();
     }
-  };
-
-  const updateQuantity = (id: string, action: 'increase' | 'decrease') => {
-    // Logic to update product quantity (if necessary)
   };
 
   return (
     <View style={styles.container}>
       {isLoading ? (
-        // Hiển thị khi đang tải
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F9F7F7' }}>
           <Lottie
-            source={require('../assets/animations/loading.json')} // Đường dẫn tới file animation
+            source={require('../assets/animations/loading.json')}
             autoPlay
             loop
             style={{ width: 150, height: 150 }}
           />
         </View>
       ) : cartItems.length === 0 ? (
-        // Hiển thị khi không có dữ liệu
-        <Text>Không có đơn hàng</Text>
+        <NoProduct />
       ) : (
-        // Hiển thị danh sách giỏ hàng khi có dữ liệu
         <ScrollView
-          showsVerticalScrollIndicator={false} // Ẩn thanh scroll
+          showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
         >
           {cartItems.map((item) => (
@@ -94,7 +86,7 @@ export default function CartScreen() {
               <TouchableOpacity
                 onPress={() => {
                   setSelectedProductId(item.productId);
-                  setIsOpen(true); // Open AlertDialog
+                  setIsOpen(true);
                 }}
               >
                 <FontAwesome name="remove" size={24} color="red" />
@@ -111,12 +103,11 @@ export default function CartScreen() {
         </ScrollView>
       )}
 
-      {/* AlertDialog for delete confirmation */}
       <AlertDialog
         leastDestructiveRef={cancelRef}
         isOpen={isOpen}
         onClose={onClose}
-        closeOnOverlayClick={false} // Đảm bảo việc bấm ra ngoài sẽ không đóng dialog
+        closeOnOverlayClick={false}
       >
         <AlertDialog.Content>
           <AlertDialog.CloseButton />

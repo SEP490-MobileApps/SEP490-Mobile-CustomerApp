@@ -1,7 +1,7 @@
 // components/home/PendingContractCard.tsx
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Linking } from 'react-native';
-import { Box } from 'native-base';
+import { Box, Divider } from 'native-base';
 import { formatDate } from '@/utils/formatDate';
 
 interface Props {
@@ -28,14 +28,12 @@ const PendingContractCard: React.FC<Props> = ({ contract }) => {
     <Box style={styles.cardContainer}>
       <View style={styles.row}>
         <Image source={{ uri: contract.servicePackage.imageUrl }} style={styles.image} />
+        <Divider bg="#3F72AF" thickness="2" mx="3" orientation="vertical" />
         <View style={styles.contentContainer}>
           <Text style={styles.name}>{contract.servicePackage.name}</Text>
           <Text style={styles.price}>Giá: {contract.servicePackage.price} VND</Text>
           <Text style={styles.purchaseTime}>
             Ngày đăng ký: {formatDate(contract.purchaseTime)}
-          </Text>
-          <Text style={styles.remainingRequests}>
-            Số yêu cầu còn lại: {contract.remainingNumOfRequests}
           </Text>
           <TouchableOpacity onPress={handleViewContract} style={styles.button}>
             <Text style={styles.buttonText}>Xem hợp đồng</Text>
@@ -51,7 +49,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     padding: 10,
     borderRadius: 8,
-    backgroundColor: '#FFF',
+    backgroundColor: '#DBE2EF',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.3,
@@ -77,10 +75,9 @@ const styles = StyleSheet.create({
   },
   price: {
     fontSize: 14,
-    color: '#888',
+    color: '#3F72AF',
   },
   purchaseTime: {
-    fontSize: 12,
     marginBottom: 5,
   },
   remainingRequests: {

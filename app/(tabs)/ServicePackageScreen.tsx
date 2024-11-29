@@ -1,25 +1,24 @@
-// app/(tabs)/ServicePackageScreen.tsx
-import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { View, Text, ActivityIndicator, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
-import useServicePackages from '../../hooks/useServicePackage'; // Import custom hook
-import ServicePackageItem from '../../components/home/ServicePackageItem'; // Import item component
+import React, { useState, useCallback } from 'react';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import useServicePackages from '@/hooks/useServicePackage'; // Import custom hook
+import ServicePackageItem from '@/components/home/ServicePackageItem'; // Import item component
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
+import LottieView from 'lottie-react-native';
+import NoData from '@/components/ui/NoData';
 
 export default function ServicePackageScreen() {
   const [pageIndex, setPageIndex] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const { packages, totalCount, loading, fetchPackages } = useServicePackages();
 
-  // Fetch packages when pageIndex or searchQuery changes
   useFocusEffect(
     useCallback(() => {
-      fetchPackages(pageIndex, 6, searchQuery); // Adjusted to 6 items per page
+      fetchPackages(pageIndex, 6, searchQuery);
     }, [pageIndex, searchQuery])
   );
 
-  // Calculate total pages
-  const totalPages = Math.ceil(totalCount / 8);
+  const totalPages = Math.ceil(totalCount / 6);
 
   const handleSearchChange = (text: string) => {
     setSearchQuery(text);
@@ -45,7 +44,6 @@ export default function ServicePackageScreen() {
 
   return (
     <View style={{ flex: 1, padding: 16, backgroundColor: '#F9F7F7' }}>
-      {/* Search Bar */}
       <View style={styles.searchContainer}>
         <View style={styles.searchInputContainer}>
           <FontAwesome5 name="search" size={20} color="#112D4E" style={styles.searchIcon} />
@@ -62,8 +60,6 @@ export default function ServicePackageScreen() {
             </TouchableOpacity>
           ) : null}
         </View>
-
-        {/* Pagination Controls (Moved here) */}
         <View style={styles.paginationContainer}>
           <TouchableOpacity
             onPress={handlePrevPage}
@@ -84,13 +80,20 @@ export default function ServicePackageScreen() {
       </View>
 
       {loading ? (
-        <ActivityIndicator size="large" color="#3F72AF" />
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F9F7F7' }}>
+          <LottieView
+            source={require('@/assets/animations/loading.json')} // Đường dẫn tới file animation
+            autoPlay
+            loop
+            style={{ width: 150, height: 150 }}
+          />
+        </View>
       ) : packages.length > 0 ? (
         packages.map((packageItem) => (
           <ServicePackageItem key={packageItem.servicePackageId} packageItem={packageItem} />
         ))
       ) : (
-        <Text>Không có dữ liệu</Text>
+        <NoData />
       )}
     </View>
   );
@@ -123,7 +126,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: 26,
   },
   pageButton: {
     paddingHorizontal: 10,

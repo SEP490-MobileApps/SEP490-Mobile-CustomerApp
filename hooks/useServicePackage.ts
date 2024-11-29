@@ -15,7 +15,6 @@ const useServicePackages = () => {
   const servicePackageCache = new Map(); // Cache for service package details to avoid redundant calls
   const [pendingContracts, setPendingContracts] = useState<any[]>([]);
 
-  // Fetch list of service packages
   const fetchPackages = useCallback(async (pageIndex: number = 1, pageSize: number = 8, searchByName: string = '') => {
     setLoading(true);
     setApiError(null);

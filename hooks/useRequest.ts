@@ -91,37 +91,37 @@ const useRequest = () => {
     [fetchData]
   );
 
-  const submitFeedback = useCallback(async (requestId: string, content: string, rate: number) => {
-    try {
-      const response = await fetchData({
-        url: '/feedback/3',
-        method: 'POST',
-        data: { requestId, content, rate },
-      });
+  // const submitFeedback = useCallback(async (requestId: string, content: string, rate: number) => {
+  //   try {
+  //     const response = await fetchData({
+  //       url: '/feedback/3',
+  //       method: 'POST',
+  //       data: { requestId, content, rate },
+  //     });
 
-      setRequests((prev) =>
-        prev.map((req) =>
-          req.requestId === requestId
-            ? { ...req, feedbacks: [...(req.feedbacks || []), { content, rate }] }
-            : req
-        )
-      );
+  //     setRequests((prev) =>
+  //       prev.map((req) =>
+  //         req.requestId === requestId
+  //           ? { ...req, feedbacks: [...(req.feedbacks || []), { content, rate }] }
+  //           : req
+  //       )
+  //     );
 
-      Toast.show({
-        description: 'Đã gửi đánh giá thành công!',
-        bg: 'green.500',
-      });
-    } catch (error) {
-      console.error('Lỗi gửi đánh giá:', error);
-      Toast.show({
-        description: 'Không thể gửi đánh giá.',
-        bg: 'red.500',
-      });
-    }
-  }, [fetchData]);
+  //     Toast.show({
+  //       description: 'Đã gửi đánh giá thành công!',
+  //       bg: 'green.500',
+  //     });
+  //   } catch (error) {
+  //     console.error('Lỗi gửi đánh giá:', error);
+  //     Toast.show({
+  //       description: 'Không thể gửi đánh giá.',
+  //       bg: 'red.500',
+  //     });
+  //   }
+  // }, [fetchData]);
 
 
-  return { requests, feedbacks, fetchRecentRequests, fetchFeedbacks, loading, apiError, currentPage, totalPages, setCurrentPage, allRequests, fetchAllRequests, submitFeedback };
+  return { requests, feedbacks, fetchRecentRequests, fetchFeedbacks, loading, apiError, currentPage, totalPages, setCurrentPage, allRequests, fetchAllRequests };
 };
 
 export default useRequest;

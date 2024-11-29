@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Linking } from 'react-native';
 import { Button, useDisclose, useToast } from 'native-base';
 import { useLocalSearchParams } from 'expo-router';
-import useServicePackages from '../hooks/useServicePackage';
-import PaymentMethodModal from '../components/home/PaymentMethodModal';
+import useServicePackages from '@/hooks/useServicePackage';
+import PaymentMethodModal from '@/components/home/PaymentMethodModal';
 import { useRouter } from 'expo-router';
 import Lottie from 'lottie-react-native';
 
@@ -17,7 +17,6 @@ export default function ServicePackageContract() {
   const toast = useToast();
   const router = useRouter();
 
-  // Lấy dữ liệu từ packageItem và tạo hợp đồng nháp
   useEffect(() => {
     if (packageItem) {
       const parsedPackageData = JSON.parse(packageItem as string);
@@ -26,7 +25,6 @@ export default function ServicePackageContract() {
     }
   }, [packageItem]);
 
-  // Xử lý thanh toán
   const handlePayment = async () => {
     if (!packageData?.servicePackageId) {
       console.error('Missing servicePackageId in packageData');
@@ -41,12 +39,12 @@ export default function ServicePackageContract() {
 
       if (result.type === 'link') {
         onClose();
-        Linking.openURL(result.data); // Mở link thanh toán
+        Linking.openURL(result.data);
       } else if (result.type === 'message') {
         onClose();
         router.replace("/(tabs)");
         toast.show({
-          description: result.data, // Hiển thị thông báo từ API
+          description: result.data,
           placement: 'top',
           duration: 5000,
         });
@@ -65,7 +63,7 @@ export default function ServicePackageContract() {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F9F7F7' }}>
         <Lottie
-          source={require('../assets/animations/loading.json')} // Đường dẫn tới file animation
+          source={require('@/assets/animations/loading.json')} // Đường dẫn tới file animation
           autoPlay
           loop
           style={{ width: 150, height: 150 }}
@@ -79,7 +77,6 @@ export default function ServicePackageContract() {
       <Text style={styles.header}>{draftContract.header}</Text>
       <Text style={styles.date}>{draftContract.date}</Text>
 
-      {/* Hiển thị thông tin bên A */}
       <View style={styles.section}>
         <Text style={styles.text}>{draftContract.side_A.a}</Text>
         <Text style={styles.text}>{draftContract.side_A.businessName}</Text>
@@ -89,7 +86,6 @@ export default function ServicePackageContract() {
         <Text style={styles.text}>{draftContract.side_A.role}</Text>
       </View>
 
-      {/* Hiển thị thông tin bên B */}
       <View style={styles.section}>
         <Text style={styles.text}>{draftContract.side_B.b}</Text>
         <Text style={styles.text}>{draftContract.side_B.userName}</Text>
@@ -98,7 +94,6 @@ export default function ServicePackageContract() {
         <Text style={styles.text}>{draftContract.side_B.role}</Text>
       </View>
 
-      {/* Hiển thị các điều khoản */}
       <View style={styles.section}>
         <Text style={styles.text}>{draftContract.clause1.title1}</Text>
         <Text style={styles.text}>{`Dịch vụ: ${draftContract.clause1.name}`}</Text>
@@ -122,28 +117,27 @@ export default function ServicePackageContract() {
         <Text style={styles.text}>{draftContract.clause4.generalTerms}</Text>
       </View>
 
-      {/* Chữ ký của hai bên */}
-      <View style={styles.section}>
-        <Text style={styles.text}>{draftContract.signature_A.a}</Text>
-        <Text style={styles.text}>{draftContract.signature_A.sign}</Text>
-      </View>
-      <View style={styles.section}>
-        <Text style={styles.text}>{draftContract.signature_B.b}</Text>
-        <Text style={styles.text}>{draftContract.signature_B.sign}</Text>
+      <View style={styles.section1}>
+        <View >
+          <Text style={styles.text}>{draftContract.signature_A.a}</Text>
+          <Text style={styles.text}>{draftContract.signature_A.sign}</Text>
+        </View>
+        <View >
+          <Text style={styles.text}>{draftContract.signature_B.b}</Text>
+          <Text style={styles.text}>{draftContract.signature_B.sign}</Text>
+        </View>
       </View>
 
-      {/* Nút đăng ký hợp đồng và chọn phương thức thanh toán */}
       <Button style={styles.registerButton} onPress={onOpen}>
-        ĐĂNG KÝ
+        XÁC NHẬN THANH TOÁN
       </Button>
 
-      {/* Modal chọn phương thức thanh toán */}
       <PaymentMethodModal
         isOpen={isOpen}
         onClose={onClose}
         selectedMethod={paymentMethod}
         setSelectedMethod={setPaymentMethod}
-        handleConfirm={handlePayment} // Đảm bảo truyền đúng prop này
+        handleConfirm={handlePayment}
       />
     </ScrollView>
   );
@@ -159,7 +153,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 8,
     textAlign: 'center',
-    lineHeight: 30, // Tăng khoảng cách dòng
+    lineHeight: 30
   },
   date: {
     fontSize: 14,
@@ -169,16 +163,17 @@ const styles = StyleSheet.create({
   section: {
     marginBottom: 24,
     paddingHorizontal: 16,
-    backgroundColor: '#FFFFFF',
     borderRadius: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+  },
+  section1: {
+    marginBottom: 24,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   text: {
-    fontSize: 16,
+    fontSize: 14,
     lineHeight: 24,
     color: '#333',
     textAlign: 'justify',

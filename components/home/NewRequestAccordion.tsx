@@ -2,8 +2,8 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Badge, Box, Modal, Button } from 'native-base';
-import { RepairRequest } from '../../models/RepairRequest';
-import { COLORS } from '../../constants/Colors';
+import { RepairRequest } from '@/models/RepairRequest';
+import { COLORS } from '@/constants/Colors';
 
 interface Props {
   request: RepairRequest;
@@ -14,9 +14,9 @@ const NewRequestAccordion: React.FC<Props> = ({ request }) => {
 
   return (
     <Box style={styles.container}>
-      <View style={styles.row}>
+      <View style={styles.row1}>
         <Text>Vấn đề:</Text>
-        <Button size="xs" variant="link" onPress={() => setModalOpen(true)}>Chi tiết</Button>
+        <Button variant="link" onPress={() => setModalOpen(true)}>Chi tiết</Button>
       </View>
       <View style={styles.divider} />
       <View style={styles.row}>
@@ -25,13 +25,19 @@ const NewRequestAccordion: React.FC<Props> = ({ request }) => {
           {request.categoryRequest === 1 ? 'SỬA CHỮA' : 'BẢO HÀNH'}
         </Badge>
       </View>
+      <View style={styles.divider} />
+      <View style={styles.row}>
+        <Text>Chi phí:</Text>
+        <Badge style={[styles.badge, request.contractId ? styles.free : styles.pay]}>
+          {request.contractId ? 'MIỄN PHÍ' : 'TRẢ PHÍ'}
+        </Badge>
+      </View>
 
-      {/* Modal hiện thông tin chi tiết */}
       <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
         <Modal.Content>
           <Modal.CloseButton />
           <Modal.Header>Chi tiết vấn đề</Modal.Header>
-          <Modal.Body>
+          <Modal.Body style={styles.modalBody}>
             <Text>{request.customerProblem}</Text>
           </Modal.Body>
         </Modal.Content>
@@ -46,10 +52,16 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.newRequest,
     borderRadius: 8,
   },
+  row1: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 5,
+    alignItems: 'center',
+    marginVertical: 10,
   },
   badge: {
     padding: 5,
@@ -65,6 +77,9 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: COLORS.divider,
     marginVertical: 5,
+  },
+  modalBody: {
+    backgroundColor: '#DBE2EF',
   },
 });
 
