@@ -189,6 +189,15 @@ function RootLayoutNav() {
                   headerTitleAlign: "center",
                 }}
               />
+              <Stack.Screen
+                name="OrderDetailScreen"
+                options={{
+                  title: "Chi tiết đơn hàng",
+                  headerStyle: { backgroundColor: "#3F72AF" },
+                  headerTintColor: "#FFF",
+                  headerTitleAlign: "center",
+                }}
+              />
             </Stack>
           </GestureHandlerRootView>
         </ThemeProvider>

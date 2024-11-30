@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { ScrollView, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { useGlobalState } from '../contexts/GlobalProvider';
-import useRequest from '../hooks/useRequest';
+import { useGlobalState } from '@/contexts/GlobalProvider';
+import useRequest from '@/hooks/useRequest';
 import Collapsible from 'react-native-collapsible';
 import { MaterialIcons } from '@expo/vector-icons';
-import NewRequestAccordion from '../components/home/NewRequestAccordion';
-import InProgressAccordion from '../components/home/InProgressAccordion';
-import CompletedRequestAccordion from '../components/home/CompletedRequestAccordion';
-import CanceledRequestAccordion from '../components/home/CanceledRequestAccordion';
-import { RepairRequest } from '../models/RepairRequest';
+import NewRequestAccordion from '@/components/home/NewRequestAccordion';
+import InProgressAccordion from '@/components/home/InProgressAccordion';
+import CompletedRequestAccordion from '@/components/home/CompletedRequestAccordion';
+import CanceledRequestAccordion from '@/components/home/CanceledRequestAccordion';
+import { RepairRequest } from '@/models/RepairRequest';
 import Lottie from 'lottie-react-native';
+import NoData from '@/components/ui/NoData';
 
 const TABS = [
   { label: 'Yêu Cầu Mới', status: 0, color: '#DBE2EF' },
@@ -22,11 +23,11 @@ const RequestListScreen = () => {
   const { allRequests, fetchAllRequests, loading } = useRequest();
   const { userInfo } = useGlobalState();
   const [expandedRequestId, setExpandedRequestId] = useState<string | null>(null);
-  const [selectedTab, setSelectedTab] = useState<number>(0); // Tab mặc định là 'Yêu Cầu Mới'
+  const [selectedTab, setSelectedTab] = useState<number>(0);
 
   React.useEffect(() => {
     if (userInfo?.accountId) {
-      fetchAllRequests(userInfo.accountId, selectedTab); // Lấy danh sách yêu cầu theo trạng thái
+      fetchAllRequests(userInfo.accountId, selectedTab);
     }
   }, [userInfo?.accountId, selectedTab]);
 
@@ -36,13 +37,13 @@ const RequestListScreen = () => {
 
   const renderAccordionContent = (request: RepairRequest) => {
     switch (request.status) {
-      case 0: // New
+      case 0:
         return <NewRequestAccordion request={request} />;
-      case 1: // In Progress
+      case 1:
         return <InProgressAccordion request={request} />;
-      case 2: // Completed
+      case 2:
         return <CompletedRequestAccordion request={request} />;
-      case 3: // Canceled
+      case 3:
         return <CanceledRequestAccordion request={request} />;
       default:
         return null;
@@ -86,9 +87,11 @@ const RequestListScreen = () => {
         <TouchableOpacity
           key={tab.status}
           onPress={() => setSelectedTab(tab.status)}
-          style={[styles.badgeContainer, selectedTab === tab.status && { backgroundColor: tab.color }]}
+          style={[styles.badgeContainer, selectedTab === tab.status && {
+            backgroundColor: tab.color, borderWidth: 3, borderColor: '#112D4E'
+          }]}
         >
-          <Text style={[styles.badgeText, selectedTab === tab.status && { color: '#FFF' }]}>
+          <Text style={[styles.badgeText, selectedTab === tab.status && { color: '#112D4E' }]}>
             {tab.label}
           </Text>
         </TouchableOpacity>
@@ -101,7 +104,7 @@ const RequestListScreen = () => {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F9F7F7' }}>
         <Lottie
-          source={require('../assets/animations/loading.json')} // Đường dẫn tới file animation
+          source={require('@/assets/animations/loading.json')}
           autoPlay
           loop
           style={{ width: 150, height: 150 }}
@@ -111,20 +114,16 @@ const RequestListScreen = () => {
   }
 
   if (!allRequests || allRequests.length === 0) {
-    <Lottie
-  source={require('../assets/animations/no-data.json')}
-  autoPlay
-  loop={false}  // Tắt vòng lặp
-  // style={styles.loadingAnimation}
-/>
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F9F7F7' }}>
+        <NoData />
+      </View>
+    );
   }
 
   return (
     <View style={styles.container}>
-      {/* Tabs */}
       <View style={styles.tabContainer}>{renderTabs()}</View>
-
-      {/* Danh sách yêu cầu */}
       <ScrollView showsVerticalScrollIndicator={false}>
         {allRequests.map((request) => (
           <View key={request.requestId} style={styles.accordionContainer}>
@@ -175,7 +174,7 @@ const styles = StyleSheet.create({
   tabText: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#FFF',
+    color: '#112D4E',
   },
   accordionContainer: { marginBottom: 10 },
   header: {
@@ -195,7 +194,7 @@ const styles = StyleSheet.create({
   canceledBadge: { backgroundColor: '#E57373' },
   arrowIcon: { marginLeft: 2 },
   tabScrollContainer: {
-    marginVertical: 10,
+    marginBottom: 16,
     flexDirection: 'row',
   },
   badgeContainer: {
@@ -203,12 +202,12 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 20,
-    backgroundColor: '#E0E0E0', // Màu mặc định
+    backgroundColor: '#E0E0E0',
   },
   badgeText: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#000', // Màu chữ mặc định
+    color: '#112D4E',
   },
   loadingAnimation: {
     width: 150,

@@ -1,24 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { Button } from "native-base";
 import { FontAwesome } from "@expo/vector-icons";
-import ServiceTab from "../components/profile/history/ServiceTab";
-import OrderTab from "../components/profile/history/OrderTab";
-import DateRangePicker from "../components/profile/history/DateRangePicker";
+import ServiceTab from "@/components/profile/history/ServiceTab";
+import OrderTab from "@/components/profile/history/OrderTab";
+import DateRangePicker from "@/components/profile/history/DateRangePicker";
 import { useDisclose } from "native-base";
-import { useGlobalState } from "../contexts/GlobalProvider";
+import { useGlobalState } from "@/contexts/GlobalProvider";
 import { useLocalSearchParams } from 'expo-router';
 
 export default function HistoryScreen() {
-  const { selectedTab: initialTab } = useLocalSearchParams(); // Lấy params từ điều hướng
+  const { selectedTab: initialTab } = useLocalSearchParams();
   const [selectedTab, setSelectedTab] = useState<"service" | "order">(
-    initialTab === "order" ? "order" : "service" // Xác định tab mặc định
+    initialTab === "order" ? "order" : "service"
   );
   const { isOpen, onOpen, onClose } = useDisclose();
   const { userInfo, setServiceStartDate, setServiceEndDate, setOrderStartDate, setOrderEndDate } =
     useGlobalState();
 
-  // Xóa bộ lọc khi rời khỏi trang
   useEffect(() => {
     return () => {
       setServiceStartDate(null);
@@ -30,7 +28,6 @@ export default function HistoryScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Tab Header */}
       <View style={styles.tabContainer}>
         <TouchableOpacity
           style={[styles.tab, selectedTab === "service" && styles.selectedTab]}
@@ -50,16 +47,13 @@ export default function HistoryScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Filter Button */}
       <TouchableOpacity onPress={onOpen} style={styles.filterButton}>
         <FontAwesome name="filter" size={20} color="#FFF" style={styles.filterIcon} />
         <Text style={styles.filterButtonText}>Bộ Lọc</Text>
       </TouchableOpacity>
 
-      {/* Date Range Picker */}
       <DateRangePicker isOpen={isOpen} onClose={onClose} selectedTab={selectedTab} />
 
-      {/* Tab Content */}
       {selectedTab === "service" ? (
         <ServiceTab />
       ) : (
@@ -74,8 +68,8 @@ const styles = StyleSheet.create({
   tabContainer: { flexDirection: "row", marginBottom: 16 },
   tab: { flex: 1, padding: 12, backgroundColor: "#DBE2EF", alignItems: "center" },
   selectedTab: { backgroundColor: "#3F72AF" },
-  tabText: { color: "#112D4E" },
-  selectedTabText: { color: "#FFF" },
+  tabText: { color: "#112D4E", fontWeight: "bold" },
+  selectedTabText: { color: "#F9F7F7", fontWeight: "bold" },
   filterButton: {
     alignSelf: "flex-end",
     backgroundColor: "#3F72AF",

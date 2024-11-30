@@ -1,4 +1,3 @@
-// app/(tabs)/ProfileScreen.tsx
 import React, { useState, useCallback } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Modal } from 'react-native';
 import { FontAwesome, MaterialIcons, Fontisto, FontAwesome5 } from '@expo/vector-icons';
@@ -6,9 +5,9 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Divider, useToast } from 'native-base';
 import { useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
-import SignOutModal from '../../components/profile/SignOutModal';
-import { useAuth } from '../../hooks/useAuth';
-import useUser from '../../hooks/useUser';
+import SignOutModal from '@/components/profile/SignOutModal';
+import { useAuth } from '@/hooks/useAuth';
+import useUser from '@/hooks/useUser';
 import { useFocusEffect } from '@react-navigation/native';
 
 export default function ProfileScreen() {
@@ -49,24 +48,23 @@ export default function ProfileScreen() {
 
     if (!result.canceled && result.assets && result.assets.length > 0) {
       const selectedImageUri = result.assets[0].uri;
-      await updateUserAvatar(selectedImageUri); // Call the update API
-      await fetchUserAndLeader(); // Refresh the user data to reflect the updated avatar
+      await updateUserAvatar(selectedImageUri);
+      await fetchUserAndLeader();
     }
   };
 
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* Header Section with Cover Image */}
         <View style={styles.coverContainer}>
           <Image
-            source={require('../../assets/images/home.png')}
+            source={require('@/assets/images/home.png')}
             style={styles.coverImage}
           />
           <View style={styles.avatarContainer}>
             <TouchableOpacity onPress={() => setIsImageModalOpen(true)}>
               <Image
-                source={user?.avatarUrl ? { uri: user.avatarUrl } : require('../../assets/images/no-image.png')}
+                source={{ uri: user?.avatarUrl || 'https://png.pngtree.com/png-clipart/20220726/original/pngtree-3d-loading-logo-png-image_8413023.png' }}
                 style={styles.profileImage}
               />
             </TouchableOpacity>
@@ -80,53 +78,47 @@ export default function ProfileScreen() {
           </View>
         </View>
 
-        {/* Personal Info */}
         <View style={styles.personalInfoContainer}>
-          <Text style={styles.profileName}>{user?.fullName || "Chưa có tên"}</Text>
-          <Text style={styles.profileEmail}>{user?.email || "Chưa có email"}</Text>
+          <Text style={styles.profileName}>{user?.fullName || "Đang tải..."}</Text>
+          <Text style={styles.profileEmail}>{user?.email || "Đang tải..."}</Text>
         </View>
 
-        {/* Other sections omitted for brevity */}
+
+
         <View style={styles.sectionContainer}>
-          {/* Profile detail navigation */}
+
           <TouchableOpacity style={styles.optionContainer} onPress={() => router.push("/ProfileDetailScreen")}>
             <FontAwesome name="user" size={24} color="#112D4E" />
-            <Divider orientation="vertical" bg="#112D4E" mx={2} />
             <Text style={styles.optionText}>Thông tin cá nhân chi tiết</Text>
             <MaterialIcons name="navigate-next" size={24} color="#112D4E" />
           </TouchableOpacity>
-          {/* History */}
+
           <TouchableOpacity style={styles.optionContainer} onPress={() => router.push("/HistoryScreen")}>
             <FontAwesome name="history" size={24} color="#112D4E" />
-            <Divider orientation="vertical" bg="#112D4E" mx={2} />
             <Text style={styles.optionText}>Lịch sử</Text>
             <MaterialIcons name="navigate-next" size={24} color="#112D4E" />
           </TouchableOpacity>
-          {/* Leader info */}
+
           <TouchableOpacity style={styles.optionContainer} onPress={() => router.push("/LeaderDetailScreen")}>
             <Fontisto name="person" size={24} color="#112D4E" />
-            <Divider orientation="vertical" bg="#112D4E" mx={2} />
             <Text style={styles.optionText}>Coi thông tin Leader</Text>
             <MaterialIcons name="navigate-next" size={24} color="#112D4E" />
           </TouchableOpacity>
-          {/* Contract requests */}
+
           <TouchableOpacity style={styles.optionContainer} onPress={() => router.push("/RequestListScreen")}>
             <MaterialIcons name="home-repair-service" size={24} color="#112D4E" />
-            <Divider orientation="vertical" bg="#112D4E" mx={2} />
             <Text style={styles.optionText}>Các lần yêu cầu</Text>
             <MaterialIcons name="navigate-next" size={24} color="#112D4E" />
           </TouchableOpacity>
-          {/* Pending contracts */}
+
           <TouchableOpacity style={styles.optionContainer} onPress={() => router.push("/PendingContractScreen")}>
             <FontAwesome5 name="file-contract" size={24} color="#112D4E" />
-            <Divider orientation="vertical" bg="#112D4E" mx={2} />
             <Text style={styles.optionText}>Hợp đồng chờ duyệt</Text>
             <MaterialIcons name="navigate-next" size={24} color="#112D4E" />
           </TouchableOpacity>
         </View>
       </ScrollView>
 
-      {/* Image Modal for Viewing Full Image */}
       <Modal visible={isImageModalOpen} transparent={true}>
         <View style={styles.modalContainer}>
           <Image
@@ -139,7 +131,6 @@ export default function ProfileScreen() {
         </View>
       </Modal>
 
-      {/* Logout Button */}
       <TouchableOpacity onPress={() => setIsSignOutModalOpen(true)} style={styles.logoutButton}>
         <Text style={styles.logoutButtonText}>ĐĂNG XUẤT</Text>
       </TouchableOpacity>

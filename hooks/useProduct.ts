@@ -4,6 +4,7 @@ import useSaleAxios from '../utils/useSaleAxios';
 import { Product } from '../models/Product';
 import { useToast } from 'native-base'; // Import Toast
 import { CartItem } from '@/models/CartItem';
+import { OrderDetail } from '@/models/OrderDetail';
 import { useGlobalState } from '@/contexts/GlobalProvider';
 
 const useProducts = () => {
@@ -16,10 +17,12 @@ const useProducts = () => {
   const [apiError, setApiError] = useState<string | null>(null);
   const [productDetail, setProductDetail] = useState<Product | null>(null);
   const [orders, setOrders] = useState([]);
+  const [orderDetail, setOrderDetail] = useState<OrderDetail | null>(null);
   const [detailLoading, setDetailLoading] = useState<boolean>(false);
   const toast = useToast(); // Initialize Toast
   const { setCartItemCount } = useGlobalState();
   const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Fetch products with pagination and filters
   const fetchProducts = useCallback(async (pageIndex: number = 1, pageSize: number = 6, searchByName: string = '', increasingPrice: boolean | null = null) => {
@@ -195,6 +198,35 @@ const useProducts = () => {
     }
   }, [fetchData]);
 
+  const fetchOrderDetail = useCallback(async (orderId: string) => {
+    setLoading(true);
+    setApiError(null);
+    try {
+      console.log('Fetching order detail for orderId:', orderId);
+
+      const response = await fetchData({
+        url: '/order/8',
+        method: 'GET',
+        params: { OrderId: orderId },
+      });
+
+      console.log('Order Detail Response:', JSON.stringify(response, null, 2));
+
+      if (response) {
+        setOrderDetail(response.order);
+      } else {
+        console.warn('No order detail found for this order ID');
+        setOrderDetail(null);
+      }
+    } catch (error) {
+      console.error('Error fetching order detail:', error);
+      setApiError('Không thể tải chi tiết đơn hàng.');
+      setOrderDetail(null);
+    } finally {
+      setLoading(false);
+    }
+  }, [fetchData]);
+
   const handleOrderPayment = useCallback(async () => {
     try {
       // Gọi API /order/4 để lấy link thanh toán
@@ -249,6 +281,9 @@ const useProducts = () => {
     fetchCartItems,
     addToCart,
     setIsAddingToCart,
+    orderDetail,
+    fetchOrderDetail,
+    error,
     isAddingToCart,
     loading,
     detailLoading,

@@ -4,10 +4,10 @@ import { View, Text, StyleSheet, Image, ScrollView, Platform } from "react-nativ
 import { Input, Button, HStack, IconButton, Badge } from "native-base";
 import { FontAwesome } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import ConfirmModal from "../components/profile/ConfirmModal";
-import { formatDate } from "../utils/formatDate";
+import ConfirmModal from "@/components/profile/ConfirmModal";
+import { formatDate } from "@/utils/formatDate";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import useUser from "../hooks/useUser";
+import useUser from "@/hooks/useUser";
 import { useFocusEffect } from "@react-navigation/native";
 import { useAuth } from '@/hooks/useAuth';
 import Lottie from 'lottie-react-native';
@@ -15,7 +15,6 @@ import Lottie from 'lottie-react-native';
 export default function ProfileDetailScreen() {
   const { fetchApartments } = useAuth();
   const { isEdit } = useLocalSearchParams();
-  const router = useRouter();
   const { user, fetchUserAndLeader, loading, updateUserInfo } = useUser();
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState("");

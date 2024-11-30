@@ -6,6 +6,7 @@ import { useGlobalState } from '@/contexts/GlobalProvider';
 import useServicePackages from '@/hooks/useServicePackage';
 import { formatDate } from '@/utils/formatDate';
 import Lottie from 'lottie-react-native';
+import NoData from '@/components/ui/NoData';
 
 const ServiceTab: React.FC = () => {
   const { fetchCustomerContracts, contracts, loading } = useServicePackages();
@@ -27,7 +28,7 @@ const ServiceTab: React.FC = () => {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F9F7F7' }}>
         <Lottie
-          source={require('../../../assets/animations/loading.json')} // Đường dẫn tới file animation
+          source={require('@/assets/animations/loading.json')}
           autoPlay
           loop
           style={{ width: 150, height: 150 }}
@@ -38,7 +39,7 @@ const ServiceTab: React.FC = () => {
 
   if (contracts.length === 0) {
     return (
-      <Text>Không có hợp đồng</Text>
+      <NoData />
     );
   }
 

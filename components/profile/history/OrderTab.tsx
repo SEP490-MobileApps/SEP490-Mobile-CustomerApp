@@ -1,14 +1,16 @@
 import React from "react";
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
-import { useGlobalState } from "../../../contexts/GlobalProvider";
+import { useGlobalState } from "@/contexts/GlobalProvider";
 import { formatDate } from "@/utils/formatDate";
 import { useFocusEffect } from "@react-navigation/native";
-import useProduct from "../../../hooks/useProduct";
+import useProduct from "@/hooks/useProduct";
 import { Divider } from "native-base";
-import { Order } from "../../../models/Order"; // Import model
+import { Order } from "@/models/Order"; // Import model
 import { Linking } from "react-native"; // Import Linking from react-native
 import Lottie from 'lottie-react-native';
+import NoData from "@/components/ui/NoData";
+import { router } from "expo-router";
 
 export default function OrderTab() {
   const { orderStartDate, orderEndDate, userInfo } = useGlobalState();
@@ -22,14 +24,13 @@ export default function OrderTab() {
     }, [orderStartDate, orderEndDate, userInfo?.accountId])
   );
 
-  // Ensure orders data is correctly unwrapped if nested
   const flatOrders = Array.isArray(orders) && Array.isArray(orders[0]) ? orders[0] : orders;
 
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F9F7F7' }}>
         <Lottie
-          source={require('../../../assets/animations/loading.json')} // Đường dẫn tới file animation
+          source={require('@/assets/animations/loading.json')} // Đường dẫn tới file animation
           autoPlay
           loop
           style={{ width: 150, height: 150 }}
@@ -40,7 +41,8 @@ export default function OrderTab() {
 
   if (!flatOrders || flatOrders.length === 0) {
     return (
-      <Text>Không có sản phẩm</Text>)
+      <NoData />
+    )
   }
 
   return (
@@ -61,6 +63,15 @@ export default function OrderTab() {
             <TouchableOpacity onPress={() => Linking.openURL(order.fileUrl)}>
               <Text style={styles.viewInvoice}>Xem chi tiết hóa đơn</Text>
             </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => router.push({
+                pathname: '/OrderDetailScreen',
+                params: { orderId: order.orderId }
+              })}
+            >
+              <Text style={styles.viewInvoice}>Xem chi tiết đơn hàng</Text>
+            </TouchableOpacity>
+
           </View>
         </View>
       ))}

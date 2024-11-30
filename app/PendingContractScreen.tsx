@@ -1,17 +1,15 @@
-// app/PendingContractScreen.tsx
 import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { Text } from 'native-base';
 import Lottie from 'lottie-react-native';
 import useServicePackages from '@/hooks/useServicePackage';
 import PendingContractCard from '@/components/home/PendingContractCard';
+import NoData from '@/components/ui/NoData';
 
 export default function PendingContractScreen() {
   const { fetchPendingContracts, pendingContracts, loading } = useServicePackages();
   const [customerContracts, setCustomerContracts] = useState<any[]>([]);
 
   useEffect(() => {
-    // Fetch pending contracts from API
     fetchPendingContracts()
       .then((contracts) => setCustomerContracts(contracts))
       .catch((err) => console.error('Failed to fetch contracts', err));
@@ -24,22 +22,14 @@ export default function PendingContractScreen() {
         {loading ? (
           <View style={styles.loadingContainer}>
             <Lottie
-              source={require('../assets/animations/loading.json')} // Đường dẫn tới animation
+              source={require('@/assets/animations/loading.json')}
               autoPlay
               loop
               style={styles.loadingAnimation}
             />
           </View>
         ) : customerContracts.length === 0 ? (
-          <View style={styles.loadingContainer}>
-           <Lottie
-  source={require('../assets/animations/no-data.json')}
-  autoPlay
-  loop
-  style={styles.loadingAnimation}
-/>
-
-          </View>
+          <NoData />
         ) : (
           customerContracts.map((contract) => (
             <PendingContractCard key={contract.contractId} contract={contract} />
@@ -72,7 +62,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   loadingAnimation: {
-    width: 150,
-    height: 150,
+    width: 300,
+    height: 300,
   },
 });
