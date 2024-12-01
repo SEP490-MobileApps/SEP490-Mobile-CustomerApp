@@ -1,4 +1,3 @@
-// models/Feedback.ts
 export interface Feedback {
   feedbackId: string,
   customerName: string,

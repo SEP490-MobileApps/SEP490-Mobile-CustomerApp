@@ -3,7 +3,7 @@ import { ImageSourcePropType } from 'react-native';
 export interface Review {
   id: string;
   userName: string;
-  avatarUrl: ImageSourcePropType; // Định kiểu cho ảnh
+  avatarUrl: ImageSourcePropType;
   rating: number;
   comment: string;
 }

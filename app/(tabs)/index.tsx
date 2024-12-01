@@ -87,7 +87,7 @@ function HomeScreen(): React.JSX.Element {
         {contractLoading ? (
           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F9F7F7' }}>
             <LottieView
-              source={require('../../assets/animations/loading.json')} // Đường dẫn tới file animation
+              source={require('@/assets/animations/loading.json')} // Đường dẫn tới file animation
               autoPlay
               loop
               style={{ width: 150, height: 150 }}
@@ -109,7 +109,7 @@ function HomeScreen(): React.JSX.Element {
         {requestLoading ? (
           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F9F7F7' }}>
             <LottieView
-              source={require('../../assets/animations/loading.json')} // Đường dẫn tới file animation
+              source={require('@/assets/animations/loading.json')} // Đường dẫn tới file animation
               autoPlay
               loop
               style={{ width: 150, height: 150 }}

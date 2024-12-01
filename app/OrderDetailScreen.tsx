@@ -3,9 +3,9 @@ import { View, Text, Image, ScrollView, TouchableOpacity, ActivityIndicator } fr
 import { useLocalSearchParams } from 'expo-router';
 import { Divider, Modal } from 'native-base';
 import useProduct from '@/hooks/useProduct';
-import { OrderDetail } from '@/models/OrderDetail';
+import LottieView from 'lottie-react-native';
+import NoData from '@/components/ui/NoData';
 
-// Type definition for Warranty Card
 type WarrantyCard = {
   warrantyCardId: string;
   customerId: string;
@@ -21,7 +21,6 @@ const OrderDetailScreen = () => {
   const [selectedWarrantyCard, setSelectedWarrantyCard] = useState<WarrantyCard | null>(null);
 
   React.useEffect(() => {
-    console.log('OrderDetailScreen - OrderId:', orderId);
     if (orderId) {
       fetchOrderDetail(orderId as string);
     }
@@ -41,9 +40,13 @@ const OrderDetailScreen = () => {
 
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color="#3F72AF" />
-        <Text>Đang tải chi tiết đơn hàng...</Text>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F9F7F7' }}>
+        <LottieView
+          source={require('@/assets/animations/loading.json')}
+          autoPlay
+          loop
+          style={{ width: 150, height: 150 }}
+        />
       </View>
     );
   }
@@ -58,9 +61,7 @@ const OrderDetailScreen = () => {
 
   if (!orderDetail || !orderDetail.result || orderDetail.result.length === 0) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 16 }}>
-        <Text style={{ textAlign: 'center' }}>Không tìm thấy chi tiết đơn hàng</Text>
-      </View>
+      <NoData />
     );
   }
 
@@ -114,22 +115,26 @@ const OrderDetailScreen = () => {
       >
         <Modal.Content>
           <Modal.Header>Chi tiết thẻ bảo hành</Modal.Header>
-          <Modal.Body>
+          <Modal.Body style={{ backgroundColor: '#DBE2EF' }}>
             {selectedWarrantyCard && (
               <>
                 <Text>Tên sản phẩm: {orderDetail.result.find(item =>
                   item.orderDetail.warrantyCards.getWarrantyCards.includes(selectedWarrantyCard)
                 )?.product.name}</Text>
+                <Divider orientation="horizontal" bg="#888" thickness={1} style={{ marginVertical: 8 }} />
                 <Text>Mã bảo hành: {selectedWarrantyCard.warrantyCardId}</Text>
+                <Divider orientation="horizontal" bg="#888" thickness={1} style={{ marginVertical: 8 }} />
                 <Text>Ngày bắt đầu: {new Date(selectedWarrantyCard.startDate).toLocaleDateString()}</Text>
+                <Divider orientation="horizontal" bg="#888" thickness={1} style={{ marginVertical: 8 }} />
                 <Text>Ngày hết hạn: {new Date(selectedWarrantyCard.expireDate).toLocaleDateString()}</Text>
+                <Divider orientation="horizontal" bg="#888" thickness={1} style={{ marginVertical: 8 }} />
                 <Text>Còn lại: {calculateRemainingDays(selectedWarrantyCard.expireDate)} ngày</Text>
               </>
             )}
           </Modal.Body>
         </Modal.Content>
       </Modal>
-    </ScrollView>
+    </ScrollView >
   );
 };
 

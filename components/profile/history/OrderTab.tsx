@@ -6,8 +6,8 @@ import { formatDate } from "@/utils/formatDate";
 import { useFocusEffect } from "@react-navigation/native";
 import useProduct from "@/hooks/useProduct";
 import { Divider } from "native-base";
-import { Order } from "@/models/Order"; // Import model
-import { Linking } from "react-native"; // Import Linking from react-native
+import { Order } from "@/models/Order";
+import { Linking } from "react-native";
 import Lottie from 'lottie-react-native';
 import NoData from "@/components/ui/NoData";
 import { router } from "expo-router";
@@ -30,7 +30,7 @@ export default function OrderTab() {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F9F7F7' }}>
         <Lottie
-          source={require('@/assets/animations/loading.json')} // Đường dẫn tới file animation
+          source={require('@/assets/animations/loading.json')}
           autoPlay
           loop
           style={{ width: 150, height: 150 }}

@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react';
 import useRequestAxios from '../utils/useRequestAxios';
 import { RepairRequest } from '../models/RepairRequest';
 import { Feedback } from '../models/Feedback';
-import { Toast } from 'native-base';
+import { useToast } from 'native-base';
 
 const useRequest = () => {
   const { fetchData } = useRequestAxios();
@@ -14,6 +14,7 @@ const useRequest = () => {
   const [totalPages, setTotalPages] = useState(1); // Theo dõi tổng số trang
   const [loading, setLoading] = useState<boolean>(false);
   const [apiError, setApiError] = useState<string | null>(null);
+  const toast = useToast();
 
   const fetchRecentRequests = useCallback(async (quantity: number = 3) => {
     setLoading(true);
@@ -64,13 +65,45 @@ const useRequest = () => {
     [fetchData]
   );
 
+  const submitFeedback = useCallback(
+    async (requestId: string, content: string, rate: number) => {
+      setLoading(true);
+      setApiError(null);
+      try {
+        const response = await fetchData({
+          url: '/feedback/3',
+          method: 'POST',
+          data: {
+            requestId,
+            content,
+            rate,
+          },
+        });
+
+        if (response) {
+          toast.show({
+            description: 'Đã tạo phản hồi thành công.',
+            duration: 3000,
+            bg: 'green.500',
+          });
+        }
+      } catch (error: any) {
+        setApiError('Không thể gửi phản hồi.');
+        console.error('Lỗi gửi phản hồi:', error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [fetchData]
+  );
+
   const fetchAllRequests = useCallback(
     async (customerId: string, status?: number) => {
       setLoading(true);
       setApiError(null);
       try {
         const params: any = { customerId };
-        if (status !== undefined) params.status = status; // Thêm trạng thái nếu được chỉ định
+        if (status !== undefined) params.status = status;
 
         const response = await fetchData({
           url: `/request/8`,
@@ -79,7 +112,7 @@ const useRequest = () => {
         });
 
         if (response) {
-          setAllRequests(response.map((item: any) => item.get)); // Lấy phần `get` từ response
+          setAllRequests(response.map((item: any) => item.get));
         }
       } catch (error: any) {
         setApiError('Không thể tải dữ liệu yêu cầu.');
@@ -91,37 +124,7 @@ const useRequest = () => {
     [fetchData]
   );
 
-  // const submitFeedback = useCallback(async (requestId: string, content: string, rate: number) => {
-  //   try {
-  //     const response = await fetchData({
-  //       url: '/feedback/3',
-  //       method: 'POST',
-  //       data: { requestId, content, rate },
-  //     });
-
-  //     setRequests((prev) =>
-  //       prev.map((req) =>
-  //         req.requestId === requestId
-  //           ? { ...req, feedbacks: [...(req.feedbacks || []), { content, rate }] }
-  //           : req
-  //       )
-  //     );
-
-  //     Toast.show({
-  //       description: 'Đã gửi đánh giá thành công!',
-  //       bg: 'green.500',
-  //     });
-  //   } catch (error) {
-  //     console.error('Lỗi gửi đánh giá:', error);
-  //     Toast.show({
-  //       description: 'Không thể gửi đánh giá.',
-  //       bg: 'red.500',
-  //     });
-  //   }
-  // }, [fetchData]);
-
-
-  return { requests, feedbacks, fetchRecentRequests, fetchFeedbacks, loading, apiError, currentPage, totalPages, setCurrentPage, allRequests, fetchAllRequests };
+  return { requests, feedbacks, fetchRecentRequests, fetchFeedbacks, loading, apiError, currentPage, totalPages, setCurrentPage, allRequests, fetchAllRequests, submitFeedback };
 };
 
 export default useRequest;

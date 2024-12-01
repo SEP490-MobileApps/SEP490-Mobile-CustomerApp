@@ -210,12 +210,10 @@ const useProducts = () => {
         params: { OrderId: orderId },
       });
 
-      console.log('Order Detail Response:', JSON.stringify(response, null, 2));
-
       if (response) {
         setOrderDetail(response.order);
       } else {
-        console.warn('No order detail found for this order ID');
+        console.warn('Không có chi tiết đơn hàng nào');
         setOrderDetail(null);
       }
     } catch (error) {
