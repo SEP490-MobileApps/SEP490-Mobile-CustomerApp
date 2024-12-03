@@ -1,10 +1,10 @@
-// src/components/profile/history/DateRangePicker.tsx
 import React, { useState, useEffect } from "react";
 import { Text, StyleSheet, View } from "react-native";
-import { Actionsheet, Button } from "native-base";
+import { Actionsheet, Box, Button, useToast } from "native-base";
 import { Calendar } from "react-native-calendars";
-import { useGlobalState } from "../../../contexts/GlobalProvider";
-import { SCREEN_WIDTH } from "../../../constants/Device";
+import { useGlobalState } from "@/contexts/GlobalProvider";
+import { SCREEN_WIDTH } from "@/constants/Device";
+import LottieView from "lottie-react-native";
 
 const DateRangePicker = ({ isOpen, onClose, selectedTab }: { isOpen: boolean; onClose: () => void; selectedTab: "service" | "order" }) => {
   const {
@@ -17,8 +17,8 @@ const DateRangePicker = ({ isOpen, onClose, selectedTab }: { isOpen: boolean; on
   const [tempStartDate, setTempStartDate] = useState<string | null>(null);
   const [tempEndDate, setTempEndDate] = useState<string | null>(null);
   const [initialMonth, setInitialMonth] = useState<string | undefined>(undefined);
+  const toast = useToast();
 
-  // Khởi tạo khi mở bộ lọc, đảm bảo tính nhất quán của ngày bắt đầu và ngày kết thúc
   useEffect(() => {
     if (selectedTab === "service") {
       setTempStartDate(serviceStartDate ? serviceStartDate.toISOString().split("T")[0] : null);
@@ -30,7 +30,6 @@ const DateRangePicker = ({ isOpen, onClose, selectedTab }: { isOpen: boolean; on
       setInitialMonth(orderStartDate ? orderStartDate.toISOString().split("T")[0] : undefined);
     }
 
-    // Đảm bảo tempEndDate là null nếu chỉ có ngày bắt đầu
     if ((selectedTab === "service" && serviceStartDate && !serviceEndDate) ||
       (selectedTab === "order" && orderStartDate && !orderEndDate)) {
       setTempEndDate(null);
@@ -40,7 +39,7 @@ const DateRangePicker = ({ isOpen, onClose, selectedTab }: { isOpen: boolean; on
   const onDayPress = (day: any) => {
     if (!tempStartDate || (tempStartDate && tempEndDate)) {
       setTempStartDate(day.dateString);
-      setTempEndDate(null); // Reset ngày kết thúc nếu đã có
+      setTempEndDate(null);
     } else {
       const start = new Date(tempStartDate);
       const end = new Date(day.dateString);
@@ -55,13 +54,57 @@ const DateRangePicker = ({ isOpen, onClose, selectedTab }: { isOpen: boolean; on
   };
 
   const applyDateFilter = () => {
+    const formatDateString = (date: string | null) => {
+      return date ? new Date(date).toISOString().split("T")[0] : null;
+    };
+
     if (selectedTab === "service") {
-      setServiceStartDate(tempStartDate ? new Date(tempStartDate) : null);
-      setServiceEndDate(tempEndDate ? new Date(tempEndDate) : tempStartDate ? new Date(tempStartDate) : null);
+      setServiceStartDate(tempStartDate ? formatDateString(tempStartDate) : null);
+      setServiceEndDate(tempEndDate ? formatDateString(tempEndDate) : tempStartDate ? formatDateString(tempStartDate) : null);
     } else {
-      setOrderStartDate(tempStartDate ? new Date(tempStartDate) : null);
-      setOrderEndDate(tempEndDate ? new Date(tempEndDate) : tempStartDate ? new Date(tempStartDate) : null);
+      setOrderStartDate(tempStartDate ? formatDateString(tempStartDate) : null);
+      setOrderEndDate(tempEndDate ? formatDateString(tempEndDate) : tempStartDate ? formatDateString(tempStartDate) : null);
     }
+    toast.show({
+      duration: 2300,
+      placement: 'top',
+      render: () => {
+        return <Box
+          borderTopColor='#16a34a'
+          borderTopWidth={5} bg="#bbf7d0"
+          alignSelf='center'
+          px="2"
+          py="1"
+          rounded="sm"
+          mb={5}
+          style={{ flexDirection: 'column', width: '98%', justifyContent: 'center' }}
+        >
+          <View style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: '#bbf7d0',
+            marginHorizontal: 30,
+            flexDirection: 'row'
+          }}>
+            <LottieView
+              source={require('@/assets/animations/success.json')} // Đường dẫn tới file animation
+              autoPlay
+              loop
+              style={{ width: 52, height: 52 }}
+            />
+            <Text
+              style={{
+                fontSize: 18,
+                color: '#112D4E',
+                textAlign: 'center',
+                fontWeight: 'bold'
+              }}>
+              Áp dụng bộ lọc thành công!
+            </Text>
+          </View>
+        </Box>;
+      }
+    });
     onClose();
   };
 
@@ -75,9 +118,49 @@ const DateRangePicker = ({ isOpen, onClose, selectedTab }: { isOpen: boolean; on
       setOrderStartDate(null);
       setOrderEndDate(null);
     }
+    toast.show({
+      duration: 2300,
+      placement: 'top',
+      render: () => {
+        return <Box
+          borderTopColor='#16a34a'
+          borderTopWidth={5} bg="#bbf7d0"
+          alignSelf='center'
+          px="2"
+          py="1"
+          rounded="sm"
+          mb={5}
+          style={{ flexDirection: 'column', width: '98%', justifyContent: 'center' }}
+        >
+          <View style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: '#bbf7d0',
+            marginHorizontal: 30,
+            flexDirection: 'row'
+          }}>
+            <LottieView
+              source={require('@/assets/animations/success.json')} // Đường dẫn tới file animation
+              autoPlay
+              loop
+              style={{ width: 52, height: 52 }}
+            />
+            <Text
+              style={{
+                fontSize: 18,
+                color: '#112D4E',
+                textAlign: 'center',
+                fontWeight: 'bold'
+              }}>
+              Xóa bộ lọc thành công!
+            </Text>
+          </View>
+        </Box>;
+      }
+    });
+    onClose();
   };
 
-  // Đánh dấu ngày trên lịch
   const markedDates: { [key: string]: any } = {};
   if (tempStartDate && !tempEndDate) {
     markedDates[tempStartDate] = { selected: true, color: "#3F72AF", textColor: "white", borderRadius: 50 };
@@ -97,6 +180,8 @@ const DateRangePicker = ({ isOpen, onClose, selectedTab }: { isOpen: boolean; on
     }
   }
 
+  const currentDate = new Date().toISOString().split("T")[0];
+
   return (
     <Actionsheet isOpen={isOpen} onClose={onClose}>
       <Actionsheet.Content style={styles.sheetContent}>
@@ -106,6 +191,7 @@ const DateRangePicker = ({ isOpen, onClose, selectedTab }: { isOpen: boolean; on
           markingType={"period"}
           markedDates={markedDates}
           onDayPress={onDayPress}
+          maxDate={currentDate}
           style={styles.calendar}
         />
         <View style={styles.buttonContainer}>

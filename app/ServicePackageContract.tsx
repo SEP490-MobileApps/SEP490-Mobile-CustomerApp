@@ -1,12 +1,12 @@
-// app/ServicePackageContract.tsx
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Linking } from 'react-native';
-import { Button, useDisclose, useToast } from 'native-base';
+import { Box, Button, useDisclose, useToast } from 'native-base';
 import { useLocalSearchParams } from 'expo-router';
 import useServicePackages from '@/hooks/useServicePackage';
 import PaymentMethodModal from '@/components/home/PaymentMethodModal';
 import { useRouter } from 'expo-router';
 import Lottie from 'lottie-react-native';
+import LottieView from 'lottie-react-native';
 
 export default function ServicePackageContract() {
   const { packageItem } = useLocalSearchParams();
@@ -20,8 +20,8 @@ export default function ServicePackageContract() {
   useEffect(() => {
     if (packageItem) {
       const parsedPackageData = JSON.parse(packageItem as string);
-      setPackageData(parsedPackageData); // Lưu lại packageData
-      createDraftContract(parsedPackageData.servicePackageId); // Tạo hợp đồng nháp
+      setPackageData(parsedPackageData);
+      createDraftContract(parsedPackageData.servicePackageId);
     }
   }, [packageItem]);
 
@@ -35,25 +35,119 @@ export default function ServicePackageContract() {
       const isOnlinePayment = paymentMethod === 'payos';
       console.log('Calling handlePaymentMethod with:', packageData.servicePackageId, isOnlinePayment);
 
-      const result = await handlePaymentMethod(packageData.servicePackageId, isOnlinePayment); // Sử dụng packageData.servicePackageId
+      const result = await handlePaymentMethod(packageData.servicePackageId, isOnlinePayment);
 
       if (result.type === 'link') {
         onClose();
         Linking.openURL(result.data);
       } else if (result.type === 'message') {
         onClose();
-        router.replace("/(tabs)");
+        router.push("/(tabs)");
         toast.show({
-          description: result.data,
+          duration: 3800,
           placement: 'top',
-          duration: 5000,
+          render: () => {
+            return <Box
+              borderTopColor='#16a34a'
+              borderTopWidth={5} bg="#bbf7d0"
+              alignSelf='center'
+              px="2"
+              py="1"
+              rounded="sm"
+              mb={5}
+              style={{ flexDirection: 'column', width: '98%', justifyContent: 'center' }}
+            >
+              <View style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: '#bbf7d0',
+                marginHorizontal: 30,
+                flexDirection: 'row'
+              }}>
+                <LottieView
+                  source={require('@/assets/animations/success.json')} // Đường dẫn tới file animation
+                  autoPlay
+                  loop
+                  style={{ width: 52, height: 52 }}
+                />
+                <Text
+                  style={{
+                    fontSize: 18,
+                    color: '#112D4E',
+                    textAlign: 'center',
+                    fontWeight: 'bold'
+                  }}>
+                  Thanh toán thành công!
+                </Text>
+              </View>
+              <View >
+                <Text
+                  style={{
+                    fontSize: 14,
+                    color: '#112D4E',
+                    textAlign: 'center',
+                    marginBottom: 12,
+                    marginHorizontal: 12
+                  }}>
+                  {result.data}
+                </Text>
+              </View>
+            </Box>;
+          }
         });
       }
     } catch (error) {
       toast.show({
-        description: 'Có lỗi xảy ra khi xử lý thanh toán.',
+        duration: 3800,
         placement: 'top',
-        duration: 5000,
+        render: () => {
+          return <Box
+            borderTopColor='#dc2626'
+            borderTopWidth={5} bg="#fecaca"
+            alignSelf='center'
+            px="2"
+            py="1"
+            rounded="sm"
+            mb={5}
+            style={{ flexDirection: 'column', width: '98%', justifyContent: 'center' }}
+          >
+            <View style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: '#fecaca',
+              marginHorizontal: 30,
+              flexDirection: 'row'
+            }}>
+              <LottieView
+                source={require('@/assets/animations/error.json')}
+                autoPlay
+                loop
+                style={{ width: 52, height: 52 }}
+              />
+              <Text
+                style={{
+                  fontSize: 18,
+                  color: '#112D4E',
+                  textAlign: 'center',
+                  fontWeight: 'bold'
+                }}>
+                Thanh toán thất bại!
+              </Text>
+            </View>
+            <View >
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: '#112D4E',
+                  textAlign: 'center',
+                  marginBottom: 12,
+                  marginHorizontal: 12
+                }}>
+                Có lỗi xảy ra khi thanh toán.
+              </Text>
+            </View>
+          </Box>;
+        }
       });
       console.error('Error in handlePayment:', error);
     }
@@ -131,6 +225,8 @@ export default function ServicePackageContract() {
       <Button style={styles.registerButton} onPress={onOpen}>
         XÁC NHẬN THANH TOÁN
       </Button>
+
+
 
       <PaymentMethodModal
         isOpen={isOpen}

@@ -22,7 +22,7 @@ export function useAuth() {
 
       if (!response) {
         Alert.alert("Đăng nhập thất bại", "Sai tài khoản hoặc mật khẩu.");
-        return false; // Trả về false khi tài khoản hoặc mật khẩu sai
+        return false;
       }
 
       const { at, rt } = response;
@@ -40,7 +40,7 @@ export function useAuth() {
       await SecureStore.setItemAsync("accountId", decoded.accountId);
 
       setUserInfo(decoded);
-      return true; // Trả về true khi đăng nhập thành công và vai trò là CUSTOMER
+      return true;
 
     } catch (err) {
       Alert.alert("Lỗi hệ thống", "Không thể kết nối tới máy chủ.");
@@ -107,7 +107,7 @@ export function useAuth() {
         params: { PageIndex: 1, PageSize: 8 },
       });
       return response[0];
-      
+
     } catch (error) {
       console.error("Fetch apartments error:", error);
       return [];
@@ -121,11 +121,11 @@ export function useAuth() {
         method: 'POST',
         data: { email },
       });
-  
+
       if (response) {
         return response.message || 'Yêu cầu đặt lại mật khẩu đã được gửi!';
       }
-  
+
       return false;
     } catch (error) {
       console.error('Forgot password error:', error);
@@ -133,5 +133,5 @@ export function useAuth() {
     }
   };
 
-  return { handleLogin, handleLogout,handleRegister, fetchApartments,handleForgotPassword };
+  return { handleLogin, handleLogout, handleRegister, fetchApartments, handleForgotPassword };
 }

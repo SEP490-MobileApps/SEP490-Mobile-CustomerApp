@@ -54,7 +54,9 @@ const InProgressAccordion: React.FC<Props> = ({ request }) => {
       <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
         <Modal.Content>
           <Modal.CloseButton />
-          <Modal.Header>Chi tiết vấn đề</Modal.Header>
+          <Modal.Header style={{ backgroundColor: '#3F72AF' }}>
+            <Text style={{ color: '#f9f7f7', fontWeight: 'bold', fontSize: 18 }}>Chi tiết vấn đề</Text>
+          </Modal.Header>
           <Modal.Body style={styles.modalBody}>
             <Text>{request.customerProblem}</Text>
           </Modal.Body>

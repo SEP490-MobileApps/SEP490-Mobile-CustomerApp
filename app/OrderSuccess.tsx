@@ -3,16 +3,16 @@ import React, { useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useLocalSearchParams, router, useNavigation } from 'expo-router';
 import LottieView from 'lottie-react-native';
-import useProducts from '../hooks/useProduct';
+import useProducts from '@/hooks/useProduct';
 import { useToast } from 'native-base';
 
 
 export const unstable_settings = {
-  headerShown: false, // Ẩn header
+  headerShown: false,
 };
 
 export default function OrderSuccess() {
-  const { orderCode, id1, isCanceled } = useLocalSearchParams();
+  const { orderCode, id1, isCanceled, customerNote } = useLocalSearchParams();
   const { finalizeOrder } = useProducts();
   const toast = useToast();
   const navigation = useNavigation();
@@ -36,11 +36,6 @@ export default function OrderSuccess() {
         navigateToHome();
       }
     } else {
-      toast.show({
-        description: 'Thanh toán đã bị hủy!',
-        placement: 'top',
-        duration: 5000,
-      });
       navigateToHome();
     }
   }, [orderCode, id1, isCanceled]);
@@ -50,12 +45,7 @@ export default function OrderSuccess() {
       await finalizeOrder({
         orderCode: parseInt(orderCode as string, 10),
         id1: id1 as string,
-      });
-
-      toast.show({
-        description: 'Đơn hàng đã được hoàn tất!',
-        placement: 'top',
-        duration: 5000,
+        customerNote: customerNote as string,
       });
 
       navigateToHistory();
@@ -66,8 +56,10 @@ export default function OrderSuccess() {
         placement: 'top',
         duration: 5000,
       });
+      navigateToHome();
     }
   };
+
 
   const navigateToHome = () => {
     setTimeout(() => {
@@ -79,7 +71,7 @@ export default function OrderSuccess() {
     setTimeout(() => {
       router.replace({
         pathname: '/HistoryScreen',
-        params: { selectedTab: 'order' }, // Chọn tab "order" khi điều hướng
+        params: { selectedTab: 'order' },
       });
     }, 5000);
   };
@@ -89,8 +81,8 @@ export default function OrderSuccess() {
       <LottieView
         source={
           isCanceled === undefined
-            ? require('../assets/animations/payment-success.json') // Thành công
-            : require('../assets/animations/payment-cancel.json') // Hủy
+            ? require('@/assets/animations/payment-success.json')
+            : require('@/assets/animations/payment-cancel.json')
         }
         autoPlay
         loop={false}
@@ -122,4 +114,9 @@ const styles = StyleSheet.create({
     marginTop: 16,
     color: '#112D4E',
   },
+  title1: {
+    fontSize: 16,
+    marginTop: 4,
+    color: '#112D4E'
+  }
 });

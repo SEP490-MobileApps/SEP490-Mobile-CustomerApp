@@ -3,6 +3,7 @@ import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Linking } from 'react-native';
 import { Box, Divider } from 'native-base';
 import { formatDate } from '@/utils/formatDate';
+import { FormatPriceToVnd } from '@/utils/PriceUtils';
 
 interface Props {
   contract: {
@@ -31,7 +32,7 @@ const PendingContractCard: React.FC<Props> = ({ contract }) => {
         <Divider bg="#3F72AF" thickness="2" mx="3" orientation="vertical" />
         <View style={styles.contentContainer}>
           <Text style={styles.name}>{contract.servicePackage.name}</Text>
-          <Text style={styles.price}>Giá: {contract.servicePackage.price} VND</Text>
+          <Text style={styles.price}>Giá: {FormatPriceToVnd(contract.servicePackage.price)}</Text>
           <Text style={styles.purchaseTime}>
             Ngày đăng ký: {formatDate(contract.purchaseTime)}
           </Text>

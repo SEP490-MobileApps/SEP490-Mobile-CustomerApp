@@ -29,7 +29,9 @@ const CanceledRequestAccordion: React.FC<Props> = ({ request }) => {
       <Modal isOpen={isConclusionModalOpen} onClose={() => setConclusionModalOpen(false)}>
         <Modal.Content>
           <Modal.CloseButton />
-          <Modal.Header>Chi tiết lý do hủy</Modal.Header>
+          <Modal.Header style={{ backgroundColor: '#3F72AF' }}>
+            <Text style={{ color: '#f9f7f7', fontWeight: 'bold', fontSize: 18 }}>Chi tiết lý do hủy </Text>
+          </Modal.Header>
           <Modal.Body style={styles.modalBody}>
             <Text>{request.customerProblem}</Text>
           </Modal.Body>

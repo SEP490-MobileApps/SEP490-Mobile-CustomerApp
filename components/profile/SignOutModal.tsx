@@ -1,5 +1,7 @@
 import React from "react";
-import { Modal, Button, VStack, Text, Image, HStack } from "native-base";
+import { Modal, Button, Text, HStack } from "native-base";
+import { View } from "react-native";
+import LottieView from "lottie-react-native";
 
 interface SignOutModalProps {
   isOpen: boolean;
@@ -12,7 +14,15 @@ const SignOutModal: React.FC<SignOutModalProps> = ({ isOpen, onClose, onConfirm 
     <Modal isOpen={isOpen} onClose={onClose}>
       <Modal.Content maxWidth="400px" bg="#DBE2EF">
         <Modal.Body alignItems="center">
-          <Image source={require("../../assets/images/signout.png")} alt="Sign Out" size="160" mb={4} />
+          <View >
+            <LottieView
+              source={require('@/assets/animations/signout.json')} // Đường dẫn tới file animation
+              autoPlay
+              loop
+              speed={1.6}
+              style={{ width: 200, height: 200 }}
+            />
+          </View>
           <Text fontSize="lg" fontWeight="bold" textAlign="center" mb={2}>
             BẠN ĐANG RỜI ĐI
           </Text>
@@ -20,7 +30,7 @@ const SignOutModal: React.FC<SignOutModalProps> = ({ isOpen, onClose, onConfirm 
             Bạn có chắc muốn đăng xuất không?
           </Text>
           <HStack space={4} justifyContent="center" width="100%">
-            <Button variant="outline" colorScheme="coolGray" flex={1} onPress={onClose}>
+            <Button variant="outline" colorScheme="coolGray" flex={1} onPress={onClose} style={{ borderColor: '#3F72AF', borderWidth: 2 }}>
               Huỷ
             </Button>
             <Button

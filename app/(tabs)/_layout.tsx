@@ -13,7 +13,7 @@ import { useGlobalState } from "@/contexts/GlobalProvider";
 
 export default function TabLayout() {
   const { cartItemCount } = useGlobalState();
-  const router = useRouter(); // Khởi tạo router để điều hướng
+  const router = useRouter();
 
   return (
     <>

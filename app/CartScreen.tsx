@@ -1,6 +1,6 @@
-import React, { useCallback, useState, useRef } from 'react';
+import React, { useCallback, useState, useRef, useEffect } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Linking, ScrollView } from 'react-native';
-import { Button, AlertDialog, Toast } from 'native-base';
+import { Button, AlertDialog, Toast, Modal, Input, Divider } from 'native-base';
 import { FontAwesome } from '@expo/vector-icons';
 import { FormatPriceToVnd } from '@/utils/PriceUtils';
 import useProducts from '@/hooks/useProduct';
@@ -11,17 +11,20 @@ import NoProduct from '@/components/ui/NoProduct';
 export default function CartScreen() {
   const { cartItems, totalAmount, fetchCartItems, deleteCartItem, handleOrderPayment } = useProducts();
   const [isOpen, setIsOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const onClose = () => setIsOpen(false);
   const cancelRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [customerNote, setCustomerNote] = useState('');
 
   const handleCheckout = async () => {
     try {
-      const result = await handleOrderPayment();
+      const result = await handleOrderPayment(customerNote);
       if (result.type === 'link') {
         Linking.openURL(result.data);
       }
+      setCustomerNote('');
     } catch (error) {
       Toast.show({
         description: 'Có lỗi khi tạo đơn hàng.',
@@ -47,17 +50,26 @@ export default function CartScreen() {
   const handleDeleteItem = async () => {
     if (selectedProductId) {
       await deleteCartItem(selectedProductId);
-      fetchCartItems();
-      onClose();
+      closeDeleteModal();
     }
   };
+
+  const openDeleteModal = (productId: string) => {
+    setSelectedProductId(productId);
+    setIsDeleteModalOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+  };
+
 
   return (
     <View style={styles.container}>
       {isLoading ? (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F9F7F7' }}>
           <Lottie
-            source={require('../assets/animations/loading.json')}
+            source={require('@/assets/animations/loading.json')}
             autoPlay
             loop
             style={{ width: 150, height: 150 }}
@@ -73,21 +85,19 @@ export default function CartScreen() {
           {cartItems.map((item) => (
             <View key={item.productId} style={styles.itemContainer}>
               <Image source={{ uri: item.imageUrl }} style={styles.image} />
+              <Divider orientation="vertical" bg="#3F72AF" thickness={2} style={{ marginLeft: 12 }} />
               <View style={styles.detailsContainer}>
                 <Text style={styles.name}>{item.name}</Text>
                 <Text style={styles.price}>{FormatPriceToVnd(item.priceByDate)}</Text>
                 <View style={styles.quantityContainer}>
 
                   <View style={styles.quantityBox}>
-                    <Text style={styles.quantity}>số lượng: {item.quantity}</Text>
+                    <Text style={styles.quantity}>Số lượng: {item.quantity}</Text>
                   </View>
                 </View>
               </View>
               <TouchableOpacity
-                onPress={() => {
-                  setSelectedProductId(item.productId);
-                  setIsOpen(true);
-                }}
+                onPress={() => openDeleteModal(item.productId)}
               >
                 <FontAwesome name="remove" size={24} color="red" />
               </TouchableOpacity>
@@ -97,29 +107,57 @@ export default function CartScreen() {
             <Text style={styles.totalText}>Tổng cộng</Text>
             <Text style={styles.totalAmount}>{FormatPriceToVnd(totalAmount)}</Text>
           </View>
-          <Button style={styles.checkoutButton} onPress={handleCheckout}>
+          <Button style={styles.checkoutButton} onPress={() => setIsOpen(true)}>
             <Text style={styles.checkoutText}>THANH TOÁN</Text>
           </Button>
         </ScrollView>
       )}
 
+      <Modal isOpen={isOpen} onClose={() => { setIsOpen(false); setCustomerNote(''); }}>
+        <Modal.Content>
+          <Modal.CloseButton />
+          <Modal.Header style={{ backgroundColor: '#3F72AF' }}>
+            <Text style={{ color: '#f9f7f7', fontWeight: 'bold', fontSize: 18 }}>Nhập ghi chú khách hàng</Text>
+          </Modal.Header>
+          <Modal.Body>
+            <Input
+              value={customerNote}
+              onChangeText={setCustomerNote}
+              placeholder="Nhập ghi chú (tối đa 200 ký tự)"
+              maxLength={200}
+            />
+          </Modal.Body>
+          <Modal.Footer style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <Button style={{ width: '48%', backgroundColor: '#dc2626' }} onPress={() => { setIsOpen(false); setCustomerNote(''); }} >
+              Hủy
+            </Button>
+            <Button style={{ width: '48%', backgroundColor: '#3F72AF' }} onPress={handleCheckout} colorScheme="blue">
+              Xác nhận
+            </Button>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
+
+
       <AlertDialog
         leastDestructiveRef={cancelRef}
-        isOpen={isOpen}
-        onClose={onClose}
+        isOpen={isDeleteModalOpen}
+        onClose={closeDeleteModal}
         closeOnOverlayClick={false}
       >
         <AlertDialog.Content>
           <AlertDialog.CloseButton />
-          <AlertDialog.Header>Xác nhận xóa</AlertDialog.Header>
-          <AlertDialog.Body>
+          <AlertDialog.Header style={{ backgroundColor: '#3F72AF' }}>
+            <Text style={{ color: '#f9f7f7', fontWeight: 'bold', fontSize: 18 }}>Xác nhận xóa</Text>
+          </AlertDialog.Header>
+          <AlertDialog.Body style={{ backgroundColor: '#DBE2EF' }}>
             Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng không?
           </AlertDialog.Body>
-          <AlertDialog.Footer>
-            <Button ref={cancelRef} onPress={onClose} variant="ghost" colorScheme="coolGray">
+          <AlertDialog.Footer style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <Button style={{ width: '48%', backgroundColor: '#dc2626' }} ref={cancelRef} onPress={closeDeleteModal}>
               Hủy
             </Button>
-            <Button colorScheme="red" onPress={handleDeleteItem} ml={3}>
+            <Button style={{ width: '48%', backgroundColor: '#3F72AF' }} onPress={handleDeleteItem} >
               Xóa
             </Button>
           </AlertDialog.Footer>
@@ -158,11 +196,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 8,
+    marginLeft: 8
   },
   price: {
     fontSize: 16,
     color: '#3F72AF',
     marginBottom: 8,
+    marginLeft: 8
   },
   quantityContainer: {
     flexDirection: 'row',

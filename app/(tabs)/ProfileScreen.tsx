@@ -2,13 +2,14 @@ import React, { useState, useCallback } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Modal } from 'react-native';
 import { FontAwesome, MaterialIcons, Fontisto, FontAwesome5 } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Divider, useToast } from 'native-base';
+import { Box, Button, useToast } from 'native-base';
 import { useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import SignOutModal from '@/components/profile/SignOutModal';
 import { useAuth } from '@/hooks/useAuth';
 import useUser from '@/hooks/useUser';
 import { useFocusEffect } from '@react-navigation/native';
+import LottieView from 'lottie-react-native';
 
 export default function ProfileScreen() {
   const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
@@ -27,8 +28,44 @@ export default function ProfileScreen() {
   const handleSignOut = async () => {
     await handleLogout();
     toast.show({
-      description: "Đã đăng xuất thành công",
-      duration: 3000,
+      duration: 3800,
+      placement: 'top',
+      render: () => {
+        return <Box
+          borderTopColor='#16a34a'
+          borderTopWidth={5} bg="#bbf7d0"
+          alignSelf='center'
+          px="2"
+          py="1"
+          rounded="sm"
+          mb={5}
+          style={{ flexDirection: 'column', width: '98%', justifyContent: 'center' }}
+        >
+          <View style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: '#bbf7d0',
+            marginHorizontal: 30,
+            flexDirection: 'row'
+          }}>
+            <LottieView
+              source={require('@/assets/animations/success.json')}
+              autoPlay
+              loop
+              style={{ width: 52, height: 52 }}
+            />
+            <Text
+              style={{
+                fontSize: 18,
+                color: '#112D4E',
+                textAlign: 'center',
+                fontWeight: 'bold'
+              }}>
+              Đã đăng xuất thành công
+            </Text>
+          </View>
+        </Box>;
+      }
     });
   };
 
@@ -122,7 +159,7 @@ export default function ProfileScreen() {
       <Modal visible={isImageModalOpen} transparent={true}>
         <View style={styles.modalContainer}>
           <Image
-            source={user?.avatarUrl ? { uri: user.avatarUrl } : require('../../assets/images/no-image.png')}
+            source={user?.avatarUrl ? { uri: user.avatarUrl } : require('@/assets/images/no-image.png')}
             style={styles.fullSizeImage}
           />
           <TouchableOpacity style={styles.closeButton} onPress={() => setIsImageModalOpen(false)}>

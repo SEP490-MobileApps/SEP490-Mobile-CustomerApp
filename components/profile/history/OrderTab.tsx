@@ -19,7 +19,7 @@ export default function OrderTab() {
   useFocusEffect(
     React.useCallback(() => {
       if (userInfo?.accountId) {
-        fetchOrders(userInfo.accountId, orderStartDate?.toISOString(), orderEndDate?.toISOString());
+        fetchOrders(userInfo.accountId, orderStartDate?.toISOString().split("T")[0], orderEndDate?.toISOString().split("T")[0]);
       }
     }, [orderStartDate, orderEndDate, userInfo?.accountId])
   );
@@ -50,9 +50,9 @@ export default function OrderTab() {
       {flatOrders.map((order: Order) => (
         <View key={order.orderId} style={styles.orderCard}>
           <View style={styles.iconContainer}>
-            <FontAwesome name="home" size={40} color="#112D4E" />
+            <FontAwesome name="home" size={68} color="#112D4E" />
           </View>
-          <Divider orientation="vertical" bg="#112D4E" thickness={1} style={styles.divider} />
+          <Divider orientation="vertical" bg="#112D4E" thickness={2} style={styles.divider} />
           <View style={styles.orderDetails}>
             <Text style={styles.orderDateTitle}>
               Đơn hàng ngày: {order.purchaseTime ? formatDate(order.purchaseTime) : "N/A"}
@@ -71,7 +71,6 @@ export default function OrderTab() {
             >
               <Text style={styles.viewInvoice}>Xem chi tiết đơn hàng</Text>
             </TouchableOpacity>
-
           </View>
         </View>
       ))}
@@ -91,7 +90,7 @@ const styles = StyleSheet.create({
   iconContainer: {
     justifyContent: "center",
     alignItems: "center",
-    marginRight: 20,
+    marginHorizontal: 20,
     width: 60,
     height: 60,
   },
@@ -101,6 +100,7 @@ const styles = StyleSheet.create({
   },
   orderDetails: {
     flex: 1,
+    gap: 8
   },
   orderDateTitle: {
     fontSize: 16,

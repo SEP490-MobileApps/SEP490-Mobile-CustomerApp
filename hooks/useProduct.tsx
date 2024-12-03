@@ -1,11 +1,13 @@
 // hooks/useProduct.ts
 import { useCallback, useState } from 'react';
-import useSaleAxios from '../utils/useSaleAxios';
-import { Product } from '../models/Product';
-import { useToast } from 'native-base'; // Import Toast
+import useSaleAxios from '@/utils/useSaleAxios';
+import { Product } from '@/models/Product';
+import { Box, useToast } from 'native-base'; // Import Toast
 import { CartItem } from '@/models/CartItem';
 import { OrderDetail } from '@/models/OrderDetail';
 import { useGlobalState } from '@/contexts/GlobalProvider';
+import LottieView from 'lottie-react-native';
+import { Text, View } from 'react-native';
 
 const useProducts = () => {
   const { fetchData } = useSaleAxios();
@@ -24,7 +26,6 @@ const useProducts = () => {
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch products with pagination and filters
   const fetchProducts = useCallback(async (pageIndex: number = 1, pageSize: number = 6, searchByName: string = '', increasingPrice: boolean | null = null) => {
     setLoading(true);
     setApiError(null);
@@ -57,7 +58,6 @@ const useProducts = () => {
     }
   }, [fetchData]);
 
-  // Fetch product detail by productId
   const fetchProductDetail = useCallback(async (productId: string) => {
     setDetailLoading(true);
     setApiError(null);
@@ -79,35 +79,61 @@ const useProducts = () => {
     }
   }, [fetchData]);
 
-  // Add product to cart
   const addToCart = useCallback(async (productId: string, quantity: number) => {
     try {
 
       console.log('productId:', productId);
       console.log('quantity:', quantity);
 
-      // Sử dụng FormData để truyền dữ liệu đúng định dạng
       const formData = new FormData();
       formData.append('productId', productId);
-      formData.append('quantity', quantity.toString()); // Đảm bảo quantity là chuỗi
-
-
-
+      formData.append('quantity', quantity.toString());
       await fetchData({
         url: '/order/1',
         method: 'POST',
-        data: formData, // Truyền dữ liệu vào data
+        data: formData,
         header: { 'Content-Type': 'multipart/form-data' }
       });
 
-
-
-      // Hiển thị thông báo thành công
       toast.show({
-        description: 'Đã thêm vào giỏ hàng thành công',
+        duration: 1600,
         placement: 'top',
-        duration: 3000,
-        bg: 'green.500',
+        render: () => {
+          return <Box
+            borderTopColor='#16a34a'
+            borderTopWidth={5} bg="#bbf7d0"
+            alignSelf='center'
+            px="2"
+            py="1"
+            rounded="sm"
+            mb={5}
+            style={{ flexDirection: 'column', width: '98%', justifyContent: 'center' }}
+          >
+            <View style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: '#bbf7d0',
+              marginHorizontal: 30,
+              flexDirection: 'row'
+            }}>
+              <LottieView
+                source={require('@/assets/animations/success.json')}
+                autoPlay
+                loop
+                style={{ width: 52, height: 52 }}
+              />
+              <Text
+                style={{
+                  fontSize: 18,
+                  color: '#112D4E',
+                  textAlign: 'center',
+                  fontWeight: 'bold'
+                }}>
+                Thêm vào giỏ hàng thành công
+              </Text>
+            </View>
+          </Box>;
+        }
       });
     } catch (error) {
       console.error('Lỗi thêm sản phẩm vào giỏ hàng:', error);
@@ -129,13 +155,21 @@ const useProducts = () => {
         method: 'GET',
       });
 
-      if (response && Array.isArray(response)) {
-        const items = response.filter((item: any) => item.productId) as CartItem[]; // Lọc các mục có productId
+      console.log('gg1', response)
+
+      if (response) {
+        if (!Array.isArray(response)) {
+          setCartItems([]);
+          setTotalAmount(0);
+          setCartItemCount(0);
+          return;
+        }
+        const items = response.filter((item: any) => item.productId) as CartItem[];
         setCartItems(items);
         const totalPrice = response.find((item: any) => item.orderId)?.totalPrice || 0;
         setTotalAmount(totalPrice);
         const totalProductCount = items.length;
-        setCartItemCount(totalProductCount); // Update global cart count
+        setCartItemCount(totalProductCount);
       }
     } catch (error) {
       setApiError('Không thể tải dữ liệu giỏ hàng.');
@@ -158,11 +192,47 @@ const useProducts = () => {
         header: { 'Content-Type': 'multipart/form-data' }
       });
 
+      await fetchCartItems();
+
       toast.show({
-        description: 'Đã xóa sản phẩm khỏi giỏ hàng',
+        duration: 1600,
         placement: 'top',
-        duration: 3000,
-        bg: 'green.500',
+        render: () => {
+          return <Box
+            borderTopColor='#16a34a'
+            borderTopWidth={5} bg="#bbf7d0"
+            alignSelf='center'
+            px="2"
+            py="1"
+            rounded="sm"
+            mb={5}
+            style={{ flexDirection: 'column', width: '98%', justifyContent: 'center' }}
+          >
+            <View style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: '#bbf7d0',
+              marginHorizontal: 30,
+              flexDirection: 'row'
+            }}>
+              <LottieView
+                source={require('@/assets/animations/success.json')}
+                autoPlay
+                loop
+                style={{ width: 52, height: 52 }}
+              />
+              <Text
+                style={{
+                  fontSize: 18,
+                  color: '#112D4E',
+                  textAlign: 'center',
+                  fontWeight: 'bold'
+                }}>
+                Đã xóa thành công
+              </Text>
+            </View>
+          </Box>;
+        }
       });
     } catch (error) {
       console.error('Lỗi xóa sản phẩm khỏi giỏ hàng:', error);
@@ -173,7 +243,7 @@ const useProducts = () => {
         bg: 'red.500',
       });
     }
-  }, [fetchData, toast]);
+  }, [fetchData, toast, fetchCartItems]);
 
   const fetchOrders = useCallback(async (customerId: string, startDate?: string, endDate?: string) => {
     setLoading(true);
@@ -225,12 +295,17 @@ const useProducts = () => {
     }
   }, [fetchData]);
 
-  const handleOrderPayment = useCallback(async () => {
+  const handleOrderPayment = useCallback(async (customerNote: string) => {
     try {
-      // Gọi API /order/4 để lấy link thanh toán
+      const formData = new FormData();
+      formData.append('customerNote', customerNote);
       const paymentLink = await fetchData({
         url: '/order/4',
         method: 'POST',
+        header: {
+          'Content-Type': 'multipart/form-data',
+        },
+        data: formData,
       });
 
       if (paymentLink && typeof paymentLink === 'string') {
@@ -245,11 +320,12 @@ const useProducts = () => {
   }, [fetchData]);
 
   const finalizeOrder = useCallback(
-    async ({ orderCode, id1 }: { orderCode: number; id1: string }) => {
+    async ({ orderCode, id1, customerNote }: { orderCode: number; id1: string, customerNote: string }) => {
       try {
         const formData = new FormData();
         formData.append('orderCode', orderCode.toString());
         formData.append('id1', id1);
+        formData.append('customerNote', customerNote);
 
         // Gọi API /order/5 để hoàn tất đơn hàng
         const response = await fetchData({

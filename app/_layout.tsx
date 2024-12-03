@@ -12,6 +12,7 @@ import { GlobalProvider } from "@/contexts/GlobalProvider";
 import { FontAwesome as FontAwesomeIcon } from "@expo/vector-icons";
 import * as Notifications from "expo-notifications";
 import { registerForPushNotificationsAsync } from "@/utils/PushNotification";
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 export { ErrorBoundary } from "expo-router";
 
@@ -22,6 +23,8 @@ export const unstable_settings = {
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+
+
 
   const [loaded, error] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
@@ -169,6 +172,12 @@ function RootLayoutNav() {
                   headerStyle: { backgroundColor: "#3F72AF" },
                   headerTintColor: "#FFF",
                   headerTitleAlign: "center",
+                  headerLeft: () => (
+                    <IconButton
+                      icon={<Ionicons name="arrow-back-outline" size={24} color="white" />}
+                      onPress={() => router.replace('/(tabs)/ProfileScreen')}
+                    />
+                  ),
                 }}
               />
               <Stack.Screen

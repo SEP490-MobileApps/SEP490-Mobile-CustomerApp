@@ -3,16 +3,18 @@ import React, { useEffect } from "react";
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Keyboard } from "react-native";
 import { useRouter } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
-import { Button, Checkbox, Spinner, HStack, Icon } from "native-base";
+import { Button, Checkbox, Spinner, HStack, Icon, useToast, Box } from "native-base";
 import { useAuth } from "../../hooks/useAuth";
 import { useGlobalState } from "../../contexts/GlobalProvider";
 import { MaterialIcons } from "@expo/vector-icons";
 import { GetLatestPushNotificationRecordByLeaderId, InitializeFirestoreDb, sendPushNotification } from "@/utils/PushNotification";
+import LottieView from "lottie-react-native";
 
 export default function LoginScreen() {
   const router = useRouter();
   const { handleLogin } = useAuth();
   const { loadingLogin, setLoadingLogin } = useGlobalState();
+  const toast = useToast();
   const { control, handleSubmit, formState: { errors } } = useForm({
     defaultValues: {
       emailOrPhone: "",
@@ -29,6 +31,46 @@ export default function LoginScreen() {
 
     if (isLoginSuccessful) {
       router.replace("/(tabs)");
+      toast.show({
+        duration: 2300,
+        placement: 'top',
+        render: () => {
+          return <Box
+            borderTopColor='#16a34a'
+            borderTopWidth={5} bg="#bbf7d0"
+            alignSelf='center'
+            px="2"
+            py="1"
+            rounded="sm"
+            mb={5}
+            style={{ flexDirection: 'column', width: '98%', justifyContent: 'center' }}
+          >
+            <View style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: '#bbf7d0',
+              marginHorizontal: 30,
+              flexDirection: 'row'
+            }}>
+              <LottieView
+                source={require('@/assets/animations/success.json')}
+                autoPlay
+                loop
+                style={{ width: 52, height: 52 }}
+              />
+              <Text
+                style={{
+                  fontSize: 18,
+                  color: '#112D4E',
+                  textAlign: 'center',
+                  fontWeight: 'bold'
+                }}>
+                Đăng nhập thành công
+              </Text>
+            </View>
+          </Box>;
+        }
+      });
     }
   };
 

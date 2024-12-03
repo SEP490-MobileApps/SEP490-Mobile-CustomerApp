@@ -1,8 +1,8 @@
 // components/store/ProductListItem.tsx
 import React from 'react';
 import { Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import { Product } from '../../models/Product';
-import { FormatPriceToVnd } from '../../utils/PriceUtils';
+import { Product } from '@/models/Product';
+import { FormatPriceToVnd } from '@/utils/PriceUtils';
 import { Divider } from 'native-base';
 import { useRouter } from 'expo-router'; // Import useRouter
 

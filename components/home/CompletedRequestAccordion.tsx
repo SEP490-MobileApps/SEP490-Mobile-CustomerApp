@@ -125,7 +125,9 @@ const CompletedRequestAccordion: React.FC<Props> = ({ request }) => {
       }}>
         <Modal.Content>
           <Modal.CloseButton />
-          <Modal.Header>Đánh giá yêu cầu</Modal.Header>
+          <Modal.Header style={{ backgroundColor: '#3F72AF' }}>
+            <Text style={{ color: '#f9f7f7', fontWeight: 'bold', fontSize: 18 }}>Đánh giá yêu cầu</Text>
+          </Modal.Header>
           <Modal.Body style={styles.modalBody}>
             {feedbacks.length > 0 ? (
               <>
@@ -179,7 +181,9 @@ const CompletedRequestAccordion: React.FC<Props> = ({ request }) => {
       <Modal isOpen={isProblemModalOpen} onClose={() => setProblemModalOpen(false)}>
         <Modal.Content>
           <Modal.CloseButton />
-          <Modal.Header>Chi tiết vấn đề</Modal.Header>
+          <Modal.Header style={{ backgroundColor: '#3F72AF' }}>
+            <Text style={{ color: '#f9f7f7', fontWeight: 'bold', fontSize: 18 }}>Chi tiết vấn đề</Text>
+          </Modal.Header>
           <Modal.Body style={styles.modalBody}>
             <Text>{request.customerProblem}</Text>
           </Modal.Body>
@@ -189,7 +193,9 @@ const CompletedRequestAccordion: React.FC<Props> = ({ request }) => {
       <Modal isOpen={isConclusionModalOpen} onClose={() => setConclusionModalOpen(false)}>
         <Modal.Content>
           <Modal.CloseButton />
-          <Modal.Header>Chi tiết kết luận</Modal.Header>
+          <Modal.Header style={{ backgroundColor: '#3F72AF' }}>
+            <Text style={{ color: '#f9f7f7', fontWeight: 'bold', fontSize: 18 }}>Chi tiết kết luận</Text>
+          </Modal.Header>
           <Modal.Body style={styles.modalBody}>
             <Text>{request.conclusion}</Text>
           </Modal.Body>

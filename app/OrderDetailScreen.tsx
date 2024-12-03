@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Image, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { Divider, Modal } from 'native-base';
 import useProduct from '@/hooks/useProduct';
@@ -91,7 +91,7 @@ const OrderDetailScreen = () => {
             <Text style={{ color: '#6C757D', marginVertical: 4 }}>
               Số lượng: {item.orderDetail.quantity} cái
             </Text>
-            <Text style={{ color: '#6C757D', marginBottom: 4 }}>
+            <Text style={{ color: '#3F72AF', marginBottom: 4 }}>
               Tổng giá: {item.orderDetail.totalPrice.toLocaleString()}đ
             </Text>
             <TouchableOpacity
@@ -114,20 +114,23 @@ const OrderDetailScreen = () => {
         onClose={() => setWarrantyModalVisible(false)}
       >
         <Modal.Content>
-          <Modal.Header>Chi tiết thẻ bảo hành</Modal.Header>
+          <Modal.CloseButton />
+          <Modal.Header style={{ backgroundColor: '#3F72AF' }}>
+            <Text style={{ color: '#f9f7f7', fontWeight: 'bold', fontSize: 18 }}>Chi tiết thẻ bảo hành</Text>
+          </Modal.Header>
           <Modal.Body style={{ backgroundColor: '#DBE2EF' }}>
             {selectedWarrantyCard && (
               <>
+                <Text style={{ fontWeight: 'bold' }}>Mã bảo hành: {selectedWarrantyCard.warrantyCardId}</Text>
+                <Divider orientation="horizontal" bg="#112D4E" thickness={1} style={{ marginVertical: 8 }} />
                 <Text>Tên sản phẩm: {orderDetail.result.find(item =>
                   item.orderDetail.warrantyCards.getWarrantyCards.includes(selectedWarrantyCard)
                 )?.product.name}</Text>
-                <Divider orientation="horizontal" bg="#888" thickness={1} style={{ marginVertical: 8 }} />
-                <Text>Mã bảo hành: {selectedWarrantyCard.warrantyCardId}</Text>
-                <Divider orientation="horizontal" bg="#888" thickness={1} style={{ marginVertical: 8 }} />
+                <Divider orientation="horizontal" bg="#112D4E" thickness={1} style={{ marginVertical: 8 }} />
                 <Text>Ngày bắt đầu: {new Date(selectedWarrantyCard.startDate).toLocaleDateString()}</Text>
-                <Divider orientation="horizontal" bg="#888" thickness={1} style={{ marginVertical: 8 }} />
+                <Divider orientation="horizontal" bg="#112D4E" thickness={1} style={{ marginVertical: 8 }} />
                 <Text>Ngày hết hạn: {new Date(selectedWarrantyCard.expireDate).toLocaleDateString()}</Text>
-                <Divider orientation="horizontal" bg="#888" thickness={1} style={{ marginVertical: 8 }} />
+                <Divider orientation="horizontal" bg="#112D4E" thickness={1} style={{ marginVertical: 8 }} />
                 <Text>Còn lại: {calculateRemainingDays(selectedWarrantyCard.expireDate)} ngày</Text>
               </>
             )}

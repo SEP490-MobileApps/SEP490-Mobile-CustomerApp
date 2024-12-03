@@ -7,6 +7,7 @@ import useServicePackages from '@/hooks/useServicePackage';
 import { formatDate } from '@/utils/formatDate';
 import Lottie from 'lottie-react-native';
 import NoData from '@/components/ui/NoData';
+import { FormatPriceToVnd } from '@/utils/PriceUtils';
 
 const ServiceTab: React.FC = () => {
   const { fetchCustomerContracts, contracts, loading } = useServicePackages();
@@ -17,8 +18,8 @@ const ServiceTab: React.FC = () => {
       if (userInfo?.accountId) {
         fetchCustomerContracts(
           userInfo.accountId,
-          serviceStartDate?.toISOString(),
-          serviceEndDate?.toISOString()
+          serviceStartDate?.toISOString().split("T")[0],
+          serviceEndDate?.toISOString().split("T")[0]
         );
       }
     }, [userInfo?.accountId, serviceStartDate, serviceEndDate])
@@ -52,7 +53,7 @@ const ServiceTab: React.FC = () => {
             <Divider bg="#3F72AF" thickness="2" mx="3" orientation="vertical" />
             <View style={styles.contentContainer}>
               <Text style={styles.name}>{contract.name}</Text>
-              <Text style={styles.price}>Giá: {contract.priceByDate} VND</Text>
+              <Text style={styles.price}>Giá: {FormatPriceToVnd(contract.priceByDate)}</Text>
               <Text style={styles.purchaseTime}>
                 Ngày đăng ký: {formatDate(contract.purchaseTime)}
               </Text>
