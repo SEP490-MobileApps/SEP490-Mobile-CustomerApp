@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
-import { User } from "../models/User";
+import { User } from "@/models/User";
 
-// Định nghĩa kiểu dữ liệu context
 interface GlobalStateContextProps {
   loadingLogin: boolean;
   setLoadingLogin: (value: boolean) => void;
@@ -17,12 +16,12 @@ interface GlobalStateContextProps {
   setOrderEndDate: (date: string | null) => void;
   cartItemCount: number;
   setCartItemCount: (count: number) => void;
+  isActionSheetOpen: boolean;
+  setIsActionSheetOpen: (value: boolean) => void;
 }
 
-// Khởi tạo context
 const GlobalStateContext = createContext<GlobalStateContextProps | undefined>(undefined);
 
-// GlobalProvider component
 export const GlobalProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [loadingLogin, setLoadingLogin] = useState(false);
   const [userInfo, setUserInfo] = useState<User | null>(null);
@@ -31,13 +30,12 @@ export const GlobalProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const [orderStartDate, setOrderStartDateRaw] = useState<Date | null>(null);
   const [orderEndDate, setOrderEndDateRaw] = useState<Date | null>(null);
   const [cartItemCount, setCartItemCount] = useState(0);
+  const [isActionSheetOpen, setIsActionSheetOpen] = useState(false);
 
-  // Hàm chuyển đổi string sang Date
   const parseDate = (date: string | null): Date | null => {
-    return date ? new Date(date) : null;  // Chuyển string thành Date nếu có
+    return date ? new Date(date) : null;
   };
 
-  // Cập nhật các setter sử dụng parseDate
   const setServiceStartDate = (date: string | null) => {
     setServiceStartDateRaw(parseDate(date));
   };
@@ -71,6 +69,8 @@ export const GlobalProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         setOrderEndDate,
         cartItemCount,
         setCartItemCount,
+        isActionSheetOpen,
+        setIsActionSheetOpen,
       }}
     >
       {children}
@@ -78,7 +78,6 @@ export const GlobalProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   );
 };
 
-// Hook để truy cập GlobalState
 export const useGlobalState = () => {
   const context = useContext(GlobalStateContext);
   if (context === undefined) {

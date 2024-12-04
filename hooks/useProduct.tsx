@@ -5,6 +5,7 @@ import { Product } from '@/models/Product';
 import { Box, useToast } from 'native-base'; // Import Toast
 import { CartItem } from '@/models/CartItem';
 import { OrderDetail } from '@/models/OrderDetail';
+import { Shipping } from '@/models/Shipping';
 import { useGlobalState } from '@/contexts/GlobalProvider';
 import LottieView from 'lottie-react-native';
 import { Text, View } from 'react-native';
@@ -20,11 +21,39 @@ const useProducts = () => {
   const [productDetail, setProductDetail] = useState<Product | null>(null);
   const [orders, setOrders] = useState([]);
   const [orderDetail, setOrderDetail] = useState<OrderDetail | null>(null);
+  const [shipping, setShipping] = useState<Shipping | null>(null);
   const [detailLoading, setDetailLoading] = useState<boolean>(false);
-  const toast = useToast(); // Initialize Toast
+  const toast = useToast();
   const { setCartItemCount } = useGlobalState();
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const fetchShipping = useCallback(async (orderId: string) => {
+    setLoading(true);
+    setApiError(null);
+    try {
+      console.log('Fetching order detail for orderId:', orderId);
+
+      const response = await fetchData({
+        url: '/shipping/3',
+        method: 'GET',
+        params: { ShippingId: orderId },
+      });
+
+      if (response) {
+        setShipping(response);
+      } else {
+        console.warn('Không có chi tiết vận chuyển nào');
+        setShipping(null);
+      }
+    } catch (error) {
+      console.error('Error fetching ahipping info:', error);
+      setApiError('Không thể tải chi tiết vận chuyển.');
+      setShipping(null);
+    } finally {
+      setLoading(false);
+    }
+  }, [fetchData]);
 
   const fetchProducts = useCallback(async (pageIndex: number = 1, pageSize: number = 6, searchByName: string = '', increasingPrice: boolean | null = null) => {
     setLoading(true);
@@ -154,8 +183,6 @@ const useProducts = () => {
         url: '/order/2',
         method: 'GET',
       });
-
-      console.log('gg1', response)
 
       if (response) {
         if (!Array.isArray(response)) {
@@ -357,6 +384,8 @@ const useProducts = () => {
     setIsAddingToCart,
     orderDetail,
     fetchOrderDetail,
+    fetchShipping,
+    shipping,
     error,
     isAddingToCart,
     loading,

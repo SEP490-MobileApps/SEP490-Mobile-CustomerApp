@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
-import { Divider, Modal } from 'native-base';
+import { Divider, Modal, Actionsheet, Button } from 'native-base';
 import useProduct from '@/hooks/useProduct';
 import LottieView from 'lottie-react-native';
 import NoData from '@/components/ui/NoData';
+import { useGlobalState } from "@/contexts/GlobalProvider";
+import ShippingActionSheet from '@/components/ShippingActionSheet';
 
 type WarrantyCard = {
   warrantyCardId: string;
@@ -15,14 +17,17 @@ type WarrantyCard = {
 };
 
 const OrderDetailScreen = () => {
+
+  const { isActionSheetOpen, setIsActionSheetOpen } = useGlobalState();
   const { orderId } = useLocalSearchParams();
-  const { fetchOrderDetail, orderDetail, loading, apiError } = useProduct();
+  const { fetchOrderDetail, orderDetail, loading, apiError, fetchShipping, shipping } = useProduct();
   const [isWarrantyModalVisible, setWarrantyModalVisible] = useState(false);
   const [selectedWarrantyCard, setSelectedWarrantyCard] = useState<WarrantyCard | null>(null);
 
   React.useEffect(() => {
     if (orderId) {
       fetchOrderDetail(orderId as string);
+      fetchShipping(orderId as string)
     }
   }, [orderId]);
 
@@ -67,6 +72,20 @@ const OrderDetailScreen = () => {
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: '#F9F7F7', padding: 16 }}>
+
+      <ShippingActionSheet
+        isOpen={isActionSheetOpen}
+        onClose={() => setIsActionSheetOpen(false)}
+        shipping={shipping}
+        onRefresh={() => fetchShipping(orderId as string)}
+      />
+
+      <Text style={{ fontSize: 16, color: '#112D4E', marginBottom: 4 }}>
+        Mã đơn hàng:
+      </Text>
+      <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#112D4E', marginBottom: 16 }}>
+        {orderId}
+      </Text>
       {orderDetail.result.map((item, index) => (
         <View key={index} style={{
           flexDirection: 'row',
