@@ -47,7 +47,6 @@ const useProducts = () => {
         setShipping(null);
       }
     } catch (error) {
-      console.error('Error fetching ahipping info:', error);
       setApiError('Không thể tải chi tiết vận chuyển.');
       setShipping(null);
     } finally {
@@ -81,7 +80,6 @@ const useProducts = () => {
       }
     } catch (error) {
       setApiError('Không thể tải dữ liệu sản phẩm.');
-      console.error('Lỗi tải dữ liệu sản phẩm:', error);
     } finally {
       setLoading(false);
     }
@@ -102,7 +100,6 @@ const useProducts = () => {
       }
     } catch (error) {
       setApiError('Không thể tải chi tiết sản phẩm.');
-      console.error('Lỗi tải chi tiết sản phẩm:', error);
     } finally {
       setDetailLoading(false);
     }
@@ -165,7 +162,6 @@ const useProducts = () => {
         }
       });
     } catch (error) {
-      console.error('Lỗi thêm sản phẩm vào giỏ hàng:', error);
       toast.show({
         description: 'Không thể thêm vào giỏ hàng',
         placement: 'top',
@@ -200,7 +196,6 @@ const useProducts = () => {
       }
     } catch (error) {
       setApiError('Không thể tải dữ liệu giỏ hàng.');
-      console.error('Lỗi tải dữ liệu giỏ hàng:', error);
     } finally {
       setLoading(false);
     }
@@ -208,9 +203,8 @@ const useProducts = () => {
 
   const deleteCartItem = useCallback(async (productId: string) => {
     try {
-      // Sử dụng data thay vì params
       const formData = new FormData();
-      formData.append('productId', productId); // Đảm bảo sử dụng đúng định dạng
+      formData.append('productId', productId);
 
       await fetchData({
         url: '/order/3',
@@ -262,7 +256,6 @@ const useProducts = () => {
         }
       });
     } catch (error) {
-      console.error('Lỗi xóa sản phẩm khỏi giỏ hàng:', error);
       toast.show({
         description: 'Không thể xóa sản phẩm khỏi giỏ hàng',
         placement: 'top',
@@ -289,7 +282,6 @@ const useProducts = () => {
       setOrders(response || []);
     } catch (error) {
       setApiError('Không thể tải đơn hàng.');
-      console.error('Lỗi tải đơn hàng:', error);
     } finally {
       setLoading(false);
     }
@@ -314,7 +306,6 @@ const useProducts = () => {
         setOrderDetail(null);
       }
     } catch (error) {
-      console.error('Error fetching order detail:', error);
       setApiError('Không thể tải chi tiết đơn hàng.');
       setOrderDetail(null);
     } finally {
@@ -341,7 +332,6 @@ const useProducts = () => {
 
       throw new Error('Lỗi khi lấy link thanh toán.');
     } catch (error) {
-      console.error('Error in handleOrderPayment:', error);
       throw error;
     }
   }, [fetchData]);
@@ -354,7 +344,6 @@ const useProducts = () => {
         formData.append('id1', id1);
         formData.append('customerNote', customerNote);
 
-        // Gọi API /order/5 để hoàn tất đơn hàng
         const response = await fetchData({
           url: '/order/5',
           method: 'POST',
@@ -366,7 +355,6 @@ const useProducts = () => {
 
         return response;
       } catch (error) {
-        console.error('Error in finalizeOrder:', error);
         throw error;
       }
     },

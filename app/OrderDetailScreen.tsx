@@ -7,6 +7,8 @@ import LottieView from 'lottie-react-native';
 import NoData from '@/components/ui/NoData';
 import { useGlobalState } from "@/contexts/GlobalProvider";
 import ShippingActionSheet from '@/components/ShippingActionSheet';
+import { formatDate } from '@/utils/formatDate';
+import LinearGradient from 'react-native-linear-gradient';
 
 type WarrantyCard = {
   warrantyCardId: string;
@@ -137,18 +139,74 @@ const OrderDetailScreen = () => {
           <Modal.Header style={{ backgroundColor: '#3F72AF' }}>
             <Text style={{ color: '#f9f7f7', fontWeight: 'bold', fontSize: 18 }}>Chi tiết thẻ bảo hành</Text>
           </Modal.Header>
-          <Modal.Body style={{ backgroundColor: '#DBE2EF' }}>
+          <Modal.Body style={{ backgroundColor: '#DBE2EF', justifyContent: 'center', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
             {selectedWarrantyCard && (
               <>
-                <Text style={{ fontWeight: 'bold' }}>Mã bảo hành: {selectedWarrantyCard.warrantyCardId}</Text>
-                <Divider orientation="horizontal" bg="#112D4E" thickness={1} style={{ marginVertical: 8 }} />
+                <View>
+                  <LinearGradient
+                    colors={['#DBE2EF', '#3F72AF']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    style={{
+                      width: '100%',
+                      borderRadius: 15,
+                      marginVertical: 10,
+                      shadowColor: '#000',
+                      shadowOffset: { width: 0, height: 2 },
+                      shadowOpacity: 0.25,
+                      shadowRadius: 3.84,
+                      elevation: 5
+                    }}
+                  >
+
+                    <View style={{
+                      borderRadius: 15,
+                      padding: 16,
+                    }}>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'center',
+                          alignItems: 'center'
+                        }}
+                      >
+                        <Image
+                          source={require('@/assets/images/logo-nobg.png')}
+                          alt="Logo"
+                          style={{
+                            width: 100,
+                            height: 80,
+                            marginBottom: 10
+                          }}
+                        />
+                        <Text style={{ color: '#112D4E', fontWeight: 'bold' }}>THẺ BẢO HÀNH</Text>
+                      </View>
+                      <View
+                        style={{
+                          justifyContent: 'center',
+                          alignItems: 'center'
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontWeight: 'bold',
+                            color: '#112D4E',
+                          }}
+                        >
+                          Mã: {selectedWarrantyCard.warrantyCardId}
+                        </Text>
+                      </View>
+                    </View>
+
+                  </LinearGradient>
+                </View>
                 <Text>Tên sản phẩm: {orderDetail.result.find(item =>
                   item.orderDetail.warrantyCards.getWarrantyCards.includes(selectedWarrantyCard)
                 )?.product.name}</Text>
                 <Divider orientation="horizontal" bg="#112D4E" thickness={1} style={{ marginVertical: 8 }} />
-                <Text>Ngày bắt đầu: {new Date(selectedWarrantyCard.startDate).toLocaleDateString()}</Text>
+                <Text>Ngày bắt đầu: {formatDate(selectedWarrantyCard.startDate)}</Text>
                 <Divider orientation="horizontal" bg="#112D4E" thickness={1} style={{ marginVertical: 8 }} />
-                <Text>Ngày hết hạn: {new Date(selectedWarrantyCard.expireDate).toLocaleDateString()}</Text>
+                <Text>Ngày hết hạn: {formatDate(selectedWarrantyCard.expireDate)}</Text>
                 <Divider orientation="horizontal" bg="#112D4E" thickness={1} style={{ marginVertical: 8 }} />
                 <Text>Còn lại: {calculateRemainingDays(selectedWarrantyCard.expireDate)} ngày</Text>
               </>

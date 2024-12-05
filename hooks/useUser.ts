@@ -54,7 +54,6 @@ const useUser = () => {
       }
     } catch (error: any) {
       setApiError('Không thể tải thông tin.');
-      console.error('Lỗi tải thông tin:', error);
     } finally {
       setLoading(false);
     }
@@ -84,7 +83,6 @@ const useUser = () => {
         bg: 'green.500',
       });
     } catch (error) {
-      console.error('Lỗi cập nhật avatar:', error);
       setApiError('Không thể cập nhật ảnh đại diện.');
       toast.show({
         description: 'Không thể cập nhật ảnh đại diện',
@@ -120,7 +118,6 @@ const useUser = () => {
       // Refresh user data after update
       await fetchUserAndLeader();
     } catch (error) {
-      console.error('Lỗi cập nhật thông tin người dùng:', error);
       setApiError('Không thể cập nhật thông tin người dùng.');
       toast.show({
         description: 'Không thể cập nhật thông tin người dùng',

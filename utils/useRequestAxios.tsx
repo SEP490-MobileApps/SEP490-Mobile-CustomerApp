@@ -1,14 +1,18 @@
-// utils/useAuthAxios.ts
+// utils/useRequestAxios.ts
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
 import { useState, useRef, useEffect } from "react";
+import { Box, useToast } from 'native-base';
+import { Text, View } from 'react-native';
+import LottieView from "lottie-react-native";
 
-const useAuthAxios = () => {
+const useRequestAxios = () => {
   const [error, setError] = useState<string>("");
   const controllerRef = useRef<AbortController | null>(null);
+  const toast = useToast();
 
   const axiosInstance = axios.create({
-    baseURL: "https://ewmhuser.azurewebsites.net/api",
+    baseURL: "https://ewmhrequest.azurewebsites.net/api",
   });
 
   axiosInstance.interceptors.request.use(
@@ -22,7 +26,6 @@ const useAuthAxios = () => {
   );
 
   useEffect(() => {
-    // Cleanup to cancel request when component unmounts
     return () => {
       if (controllerRef.current) {
         controllerRef.current.abort();
@@ -36,12 +39,14 @@ const useAuthAxios = () => {
     data = {},
     params = {},
     header = {},
+    showErrorAlert = true
   }: {
     url: string;
     method: "GET" | "POST" | "PUT" | "DELETE";
     data?: object;
     params?: object;
     header?: object;
+    showErrorAlert?: boolean;
   }) => {
     if (controllerRef.current) {
       controllerRef.current.abort();
@@ -74,9 +79,50 @@ const useAuthAxios = () => {
         console.log("Request was cancelled");
       } else {
         setError(error.response ? error.response.data : error.message);
-        console.error("Error Response:", error.response?.data || error.message);
-        // const result = await error.message.text(); 
-        // return result;
+        const errorMessage = error.response?.data || error.message;
+
+        if (showErrorAlert) {
+          toast.show({
+            duration: 1600,
+            placement: 'top',
+            render: () => {
+              return <Box
+                borderTopColor='#dc2626'
+                borderTopWidth={5} bg="#fecaca"
+                alignSelf='center'
+                px="2"
+                py="1"
+                rounded="sm"
+                mb={5}
+                style={{ flexDirection: 'column', width: '98%', justifyContent: 'center' }}
+              >
+                <View style={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: '#fecaca',
+                  marginHorizontal: 30,
+                  flexDirection: 'row'
+                }}>
+                  <LottieView
+                    source={require('@/assets/animations/error.json')}
+                    autoPlay
+                    loop
+                    style={{ width: 52, height: 52 }}
+                  />
+                  <Text
+                    style={{
+                      fontSize: 18,
+                      color: '#112D4E',
+                      textAlign: 'center',
+                      fontWeight: 'bold'
+                    }}>
+                    {errorMessage}
+                  </Text>
+                </View>
+              </Box>;
+            }
+          });
+        }
       }
       return null;
     }
@@ -85,4 +131,4 @@ const useAuthAxios = () => {
   return { fetchData, error };
 };
 
-export default useAuthAxios;
+export default useRequestAxios;

@@ -30,7 +30,6 @@ const useRequest = () => {
       }
     } catch (error: any) {
       setApiError('Không thể tải dữ liệu yêu cầu.');
-      console.error('Lỗi tải dữ liệu yêu cầu:', error);
     } finally {
       setLoading(false);
     }
@@ -57,7 +56,6 @@ const useRequest = () => {
         }
       } catch (error: any) {
         setApiError('Không thể tải dữ liệu đánh giá.');
-        console.error('Lỗi tải dữ liệu đánh giá:', error);
       } finally {
         setLoading(false);
       }
@@ -89,7 +87,6 @@ const useRequest = () => {
         }
       } catch (error: any) {
         setApiError('Không thể gửi phản hồi.');
-        console.error('Lỗi gửi phản hồi:', error);
       } finally {
         setLoading(false);
       }
@@ -116,7 +113,6 @@ const useRequest = () => {
         }
       } catch (error: any) {
         setApiError('Không thể tải dữ liệu yêu cầu.');
-        console.error('Lỗi tải dữ liệu yêu cầu:', error);
       } finally {
         setLoading(false);
       }

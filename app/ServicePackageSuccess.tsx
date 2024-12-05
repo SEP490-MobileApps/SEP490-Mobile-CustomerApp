@@ -11,7 +11,7 @@ import { Leader } from '@/models/LeaderInfo';
 import { User } from '@/models/User';
 
 export const unstable_settings = {
-  headerShown: false, // Ẩn header hoàn toàn
+  headerShown: false,
 };
 
 export default function ServicePackageSuccess() {

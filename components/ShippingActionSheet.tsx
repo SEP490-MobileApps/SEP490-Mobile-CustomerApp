@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Linking } from 'react-native';
 import { Actionsheet, HStack, VStack, Image, Icon } from 'native-base';
 import { Ionicons, FontAwesome5, MaterialCommunityIcons, Entypo, Foundation } from '@expo/vector-icons';
-import LottieView from 'lottie-react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
 
@@ -33,10 +32,8 @@ const ShippingActionSheet: React.FC<ShippingActionSheetProps> = ({
   const [progressStates, setProgressStates] = useState([false, false, false, false]);
 
   useEffect(() => {
-    // Reset progress states
     const newProgressStates = [false, false, false, false];
 
-    // Activate progress states based on shipping status
     if (shipping?.shippingOrder.status !== undefined) {
       for (let i = 0; i <= shipping.shippingOrder.status; i++) {
         newProgressStates[i] = true;
@@ -132,9 +129,9 @@ const ShippingActionSheet: React.FC<ShippingActionSheetProps> = ({
           <React.Fragment key={config.name}>
             <View
               style={{
-                padding: shipping?.shippingOrder.status === config.activeStatus ? 10 : 0,
-                backgroundColor: shipping?.shippingOrder.status === config.activeStatus
-                  ? 'rgba(63, 114, 175, 0.4)' : 'transparent',
+                padding: shipping?.shippingOrder.status === config.activeStatus || (shipping?.shippingOrder.status === 4 && config.name === 'truck-delivery') ? 10 : 0,
+                backgroundColor: shipping?.shippingOrder.status === config.activeStatus || (shipping?.shippingOrder.status === 4 && config.name === 'truck-delivery')
+                  ? 'rgba(63, 114, 175, 0.3)' : 'transparent',
                 borderRadius: 10,
               }}
             >
@@ -144,7 +141,7 @@ const ShippingActionSheet: React.FC<ShippingActionSheetProps> = ({
                   config.name === 'home'
                     ? (shipping?.shippingOrder.status === config.activeStatus ? 40 : 24)
                     : (config.name === 'truck-delivery'
-                      ? (shipping?.shippingOrder.status === config.activeStatus ? 48 : 30)
+                      ? (shipping?.shippingOrder.status === config.activeStatus || shipping?.shippingOrder.status === 4 ? 48 : 30) // Thay đổi kích thước cho truck-delivery khi status = 4
                       : (shipping?.shippingOrder.status === config.activeStatus ? 32 : 20))
                 }
                 color="#3F72AF"
@@ -170,38 +167,32 @@ const ShippingActionSheet: React.FC<ShippingActionSheetProps> = ({
 
     switch (shipping?.shippingOrder.status) {
       case 0:
-        // animationSource = require('@/assets/animations/ship-accepted.json');
-        animationSource = require('@/assets/animations/loading.json');
+        animationSource = require('@/assets/images/ship-accepted.png');
         primaryText = "Đã thanh toán thành công";
         secondaryText = "Đang đợi để gán nhân viên giao hàng!";
         break;
       case 1:
-        // animationSource = require('@/assets/animations/ship-assigned.json');
-        animationSource = require('@/assets/animations/loading.json');
+        animationSource = require('@/assets/images/ship-assigned.png');
         primaryText = "Nhân viên giao hàng đã được gán";
         secondaryText = "Đơn hàng đang được đi lấy!";
         break;
       case 2:
-        animationSource = require('@/assets/animations/loading.json');
+        animationSource = require('@/assets/images/ship-delivering.png');
         primaryText = "Đơn hàng đang được giao";
         secondaryText = "Nếu có thắc mắc hay yêu cầu gì hãy liên hệ ở khung thông tin bên trên!";
 
-        // Tạo đối tượng Date từ shippingOrder.shipmentDate
         const shipmentDate = new Date(shipping?.shippingOrder.shipmentDate || '');
 
-        // Định dạng ngày
         const formattedDate = `${shipmentDate.getDate() < 10 ? '0' : ''}${shipmentDate.getDate()}/${shipmentDate.getMonth() + 1 < 10 ? '0' : ''
           }${shipmentDate.getMonth() + 1}/${shipmentDate.getFullYear()}`;
 
-        // Định dạng thời gian trong dấu ngoặc đơn
         const formattedTime = `${shipmentDate.getHours() < 10 ? '0' : ''}${shipmentDate.getHours()}:${shipmentDate.getMinutes() < 10 ? '0' : ''
           }${shipmentDate.getMinutes()}:${shipmentDate.getSeconds() < 10 ? '0' : ''}${shipmentDate.getSeconds()}`;
 
-        // Kết hợp ngày và thời gian
         tertiaryText = `Ngày giao: ${formattedDate} (${formattedTime})`;
         break;
       case 3:
-        animationSource = require('@/assets/animations/loading.json');
+        animationSource = require('@/assets/images/ship-delivered.png');
         primaryText = "Đơn hàng đã được giao thành công";
 
         const deliveryDate = new Date(shipping?.shippingOrder.deliveriedDate || '');
@@ -215,7 +206,7 @@ const ShippingActionSheet: React.FC<ShippingActionSheetProps> = ({
         break;
 
       case 4:
-        animationSource = require('@/assets/animations/loading.json');
+        animationSource = require('@/assets/images/ship-delayed.png');
         primaryText = "Đơn hàng đã bị hoãn";
         break;
       default:
@@ -224,11 +215,10 @@ const ShippingActionSheet: React.FC<ShippingActionSheetProps> = ({
 
     return (
       <VStack alignItems="center" space={2} py={4}>
-        <LottieView
+        <Image
           source={animationSource}
-          autoPlay
-          loop
-          style={{ width: 200, height: 200 }}
+          alt="Animation"
+          size={200}
         />
         <Text style={{
           fontSize: 18,

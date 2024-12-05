@@ -35,7 +35,6 @@ const useServicePackages = () => {
       }
     } catch (error) {
       setApiError('Không thể tải dữ liệu gói dịch vụ.');
-      console.error('Lỗi tải dữ liệu gói dịch vụ:', error);
     } finally {
       setLoading(false);
     }
@@ -65,7 +64,6 @@ const useServicePackages = () => {
       }
     } catch (error) {
       setApiError('Không thể tải thông tin chi tiết gói dịch vụ.');
-      console.error('Lỗi tải thông tin chi tiết gói dịch vụ:', error);
     } finally {
       setLoading(false);
     }
@@ -118,7 +116,6 @@ const useServicePackages = () => {
       }
     } catch (error) {
       setApiError('Không thể tải dữ liệu hợp đồng.');
-      console.error('Lỗi tải dữ liệu hợp đồng:', error);
     } finally {
       setLoading(false);
     }
@@ -138,7 +135,6 @@ const useServicePackages = () => {
       }
     } catch (error) {
       setApiError('Không thể tạo hợp đồng nháp.');
-      console.error('Lỗi tạo hợp đồng nháp:', error);
     } finally {
       setLoading(false);
     }
@@ -171,7 +167,6 @@ const useServicePackages = () => {
       throw new Error('Dữ liệu từ API không hợp lệ');
     } catch (error) {
       setApiError('Không thể xử lý phương thức thanh toán.');
-      console.error('Lỗi xử lý phương thức thanh toán:', error);
       throw error;
     } finally {
       setLoading(false);
@@ -208,7 +203,6 @@ const useServicePackages = () => {
         return response; // Xử lý dữ liệu trả về nếu cần
       } catch (error) {
         setApiError('Không thể hoàn tất thanh toán.');
-        console.error('Error finalizing payment:', error);
         throw error;
       } finally {
         setLoading(false);
@@ -233,7 +227,6 @@ const useServicePackages = () => {
       }
     } catch (error) {
       setApiError('Không thể tải dữ liệu hợp đồng đang chờ xử lý.');
-      console.error('Lỗi tải dữ liệu:', error);
     } finally {
       setLoading(false);
     }

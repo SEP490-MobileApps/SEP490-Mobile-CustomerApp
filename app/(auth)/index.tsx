@@ -1,6 +1,6 @@
 /// app/(auth)/index.tsx
 import React, { useEffect } from "react";
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Keyboard } from "react-native";
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Keyboard, Image } from "react-native";
 import { useRouter } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import { Button, Checkbox, Spinner, HStack, Icon, useToast, Box } from "native-base";
@@ -77,6 +77,7 @@ export default function LoginScreen() {
 
   return (
     <View style={styles.container}>
+      <Image source={require('@/assets/images/logo.png')} style={styles.logo} />
       <Text style={styles.title}>Xin Chào Bạn,</Text>
       <Text style={styles.subtitle}>Hãy Đăng Nhập Để Khám Phá Những Tính Năng Của Chúng Tôi</Text>
 
@@ -153,7 +154,8 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 16, backgroundColor: '#fff' },
+  logo: { width: 200, height: 200, alignSelf: 'center', borderRadius: 200, marginTop: 100, marginBottom: 30 },
+  container: { flex: 1, alignItems: 'center', padding: 16, backgroundColor: '#F9F7F7' },
   title: { fontSize: 24, fontWeight: 'bold', marginBottom: 8 },
   subtitle: { fontSize: 14, color: '#6C757D', textAlign: 'center', marginBottom: 23 },
   inputContainer: { width: '100%', marginBottom: 15, position: 'relative' },

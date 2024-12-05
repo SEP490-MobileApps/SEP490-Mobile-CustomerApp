@@ -56,7 +56,7 @@ export default function RegisterScreen() {
     phoneNumber: string;
     cmT_CCCD: string;
     password: string;
-    confirmPassword: string; // Thêm dòng này
+    confirmPassword: string;
     dateOfBirth: string;
     areaId?: string;
     roomIds: string;
@@ -66,7 +66,7 @@ export default function RegisterScreen() {
     phoneNumber: '',
     cmT_CCCD: '',
     password: '',
-    confirmPassword: '', // Thêm dòng này
+    confirmPassword: '',
     dateOfBirth: '',
     areaId: '',
     roomIds: '',
@@ -96,7 +96,7 @@ export default function RegisterScreen() {
       phoneNumber: '',
       cmT_CCCD: '',
       password: '',
-      confirmPassword: '', // Reset lỗi xác nhận mật khẩu
+      confirmPassword: '',
       dateOfBirth: '',
       areaId: '',
       roomIds: '',
@@ -124,7 +124,6 @@ export default function RegisterScreen() {
 
   const handleApartmentSelect = (apartment: Apartment) => {
     if (apartment.areaId !== areaId) {
-      // Nếu chọn một chung cư mới, xóa dữ liệu căn hộ cũ
       setRoomIds([]);
       setFilteredRooms([]);
     }
@@ -168,17 +167,17 @@ export default function RegisterScreen() {
   };
 
   const handleCancelApartment = () => {
-    setSelectedApartment(null); // Xóa thông tin chung cư đã chọn
-    setAreaId(''); // Xóa AreaId để nút "Chọn căn hộ" ẩn đi
-    setRooms([]); // Xóa danh sách phòng
-    setRoomIds([]); // Xóa các căn hộ đã chọn
-    setApartmentModalVisible(false); // Đóng modal
+    setSelectedApartment(null);
+    setAreaId('');
+    setRooms([]);
+    setRoomIds([]);
+    setApartmentModalVisible(false);
   };
 
 
   const handleCancelRooms = () => {
-    setRoomIds([]); // Xóa lựa chọn căn hộ
-    setRoomModalVisible(false); // Đóng modal
+    setRoomIds([]);
+    setRoomModalVisible(false);
   };
 
   const validateFields = (): boolean => {
@@ -266,8 +265,8 @@ export default function RegisterScreen() {
             </HStack>
           </Box>
         ),
-        placement: 'top', // Hiển thị từ trên
-        duration: 2000, // Thời gian hiển thị
+        placement: 'top',
+        duration: 2000,
       });
       resetForm();
       setTimeout(() => {
@@ -285,14 +284,13 @@ export default function RegisterScreen() {
             </HStack>
           </Box>
         ),
-        placement: 'top', // Hiển thị từ trên
-        duration: 2000, // Thời gian hiển thị
+        placement: 'top',
+        duration: 2000,
       });
     }
   };
   return (
     <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
-      {/* Logo và thông điệp */}
       <Image source={require('@/assets/images/logo.png')} style={styles.logo} />
       <Text style={styles.introText}>
         Đăng ký tài khoản để tận hưởng các dịch vụ tốt nhất của chúng tôi!
@@ -327,7 +325,7 @@ export default function RegisterScreen() {
         />
         {!!errors.fullName && <Text style={styles.errorText}>{errors.fullName}</Text>}
 
-        <Text>Email (*)</Text>
+        <Text>Email</Text>
         <Input
           value={email}
           onChangeText={setEmail}
@@ -393,17 +391,17 @@ export default function RegisterScreen() {
           mode="date"
           onConfirm={handleDateConfirm}
           onCancel={() => setDatePickerVisible(false)}
+          maximumDate={new Date()}
         />
 
-        {/* Nút chọn chung cư */}
         <Button
-          onPress={() => setApartmentModalVisible(true)} // Luôn mở modal chọn chung cư
+          onPress={() => setApartmentModalVisible(true)}
           style={styles.button_register}
         >
           Chọn chung cư (*)
         </Button>
 
-        {/* Hiển thị thông tin chung cư đã chọn */}
+
         {selectedApartment && (
           <Box style={styles.selectedApartmentInfo}>
             <Image source={{ uri: selectedApartment.avatarUrl }} style={styles.apartmentImageLarge} />
@@ -415,7 +413,7 @@ export default function RegisterScreen() {
         )}
 
 
-        {/* Modal chọn chung cư */}
+
         <Modal visible={isApartmentModalVisible} animationType="slide">
           <View style={styles.modalContainer}>
             <TextInput
@@ -457,13 +455,12 @@ export default function RegisterScreen() {
               setRoomModalVisible(true);
             }
           }}
-          isDisabled={!areaId} // Disable khi chưa chọn chung cư
-          backgroundColor={!areaId ? '#ccc' : '#3F72AF'} // Màu xám khi không khả dụng
+          isDisabled={!areaId}
+          backgroundColor={!areaId ? '#ccc' : '#3F72AF'}
         >
           {roomIds.length > 0 ? `Đã chọn ${roomIds.length} căn hộ` : 'Chọn căn hộ (*)'}
         </Button>
 
-        {/* Modal chọn căn hộ */}
         <Modal visible={isRoomModalVisible} animationType="slide">
           <View style={styles.modalContainer}>
             <TextInput
@@ -494,7 +491,7 @@ export default function RegisterScreen() {
           </View>
         </Modal>
 
-        {/* Hiển thị danh sách căn hộ */}
+
         <Box flexWrap="wrap" flexDirection="row" marginTop={2}>
           {roomIds.map((roomId) => (
             <Badge key={roomId} colorScheme="success" marginRight={2} marginBottom={2}>

@@ -1,5 +1,4 @@
-// hooks/useAuth.ts
-import useAxios from "../utils/useAuthAxios";
+import useAxios from "@/utils/useAuthAxios";
 import { router } from "expo-router";
 import { jwtDecode } from "jwt-decode";
 import * as SecureStore from "expo-secure-store";
@@ -21,20 +20,17 @@ export function useAuth() {
       });
 
       if (!response) {
-        Alert.alert("Đăng nhập thất bại", "Sai tài khoản hoặc mật khẩu.");
         return false;
       }
 
       const { at, rt } = response;
       const decoded = jwtDecode(at) as any;
 
-      // Kiểm tra vai trò người dùng
       if (decoded.role !== "CUSTOMER") {
         Alert.alert("Không có quyền truy cập", "Tài khoản này không phải là khách hàng.");
-        return false; // Trả về false khi không phải là CUSTOMER
+        return false;
       }
 
-      // Lưu token và thông tin người dùng
       await SecureStore.setItemAsync("accessToken", at);
       await SecureStore.setItemAsync("refreshToken", rt);
       await SecureStore.setItemAsync("accountId", decoded.accountId);
@@ -44,7 +40,6 @@ export function useAuth() {
 
     } catch (err) {
       Alert.alert("Lỗi hệ thống", "Không thể kết nối tới máy chủ.");
-      console.error("Login error:", err);
       return false;
     } finally {
       setLoadingLogin(false);
@@ -61,7 +56,6 @@ export function useAuth() {
         header: { Authorization: `Bearer ${accessToken}` },
       });
 
-      // Xóa dữ liệu sau khi đăng xuất
       await SecureStore.deleteItemAsync("accessToken");
       await SecureStore.deleteItemAsync("refreshToken");
       await SecureStore.deleteItemAsync("accountId");
@@ -69,7 +63,6 @@ export function useAuth() {
       setUserInfo(null);
       router.replace("/(auth)");
     } catch (err) {
-      console.error("Logout failed", err);
     } finally {
       setLoadingLogin(false);
     }
@@ -94,7 +87,6 @@ export function useAuth() {
 
       return response ? true : false;
     } catch (error) {
-      console.error("Registration error:", error);
       return false;
     }
   };
@@ -106,10 +98,15 @@ export function useAuth() {
         method: "GET",
         params: { PageIndex: 1, PageSize: 8 },
       });
-      return response[0];
+
+      if (Array.isArray(response) && response.length > 0) {
+        return response[0];
+      } else {
+        console.warn("No apartments found or invalid response");
+        return [];
+      }
 
     } catch (error) {
-      console.error("Fetch apartments error:", error);
       return [];
     }
   };
@@ -128,7 +125,6 @@ export function useAuth() {
 
       return false;
     } catch (error) {
-      console.error('Forgot password error:', error);
       return false;
     }
   };
