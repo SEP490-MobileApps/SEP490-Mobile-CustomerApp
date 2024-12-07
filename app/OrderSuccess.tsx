@@ -82,7 +82,7 @@ export default function OrderSuccess() {
         toast.show({
           description: 'Thiếu thông tin đơn hàng.',
           placement: 'top',
-          duration: 5000,
+          duration: 6000,
         });
         navigateToHome();
       }
@@ -105,7 +105,7 @@ export default function OrderSuccess() {
       toast.show({
         description: 'Có lỗi khi hoàn tất đơn hàng.',
         placement: 'top',
-        duration: 5000,
+        duration: 6000,
       });
       navigateToHome();
     }
@@ -115,7 +115,7 @@ export default function OrderSuccess() {
   const navigateToHome = () => {
     setTimeout(() => {
       router.replace('/(tabs)');
-    }, 5000);
+    }, 6000);
   };
 
   const navigateToHistory = () => {
@@ -124,7 +124,7 @@ export default function OrderSuccess() {
         pathname: '/HistoryScreen',
         params: { selectedTab: 'order' },
       });
-    }, 5000);
+    }, 6000);
   };
 
   return (
@@ -143,6 +143,16 @@ export default function OrderSuccess() {
       <Text style={styles.title}>
         {isCanceled === undefined ? 'Đơn hàng đã thanh toán' : 'Thanh toán bị hủy'}
       </Text>
+      {isCanceled === undefined
+        ?
+        <Text style={styles.subtitle}>
+          Đơn hàng của bạn sẽ được xử lý trong vòng 72 giờ
+        </Text>
+        :
+        <Text style={styles.subtitle}>
+          Đơn hàng của bạn sẽ được xử lý trong vòng 72 giờ
+        </Text>
+      }
     </View>
   );
 }
@@ -169,5 +179,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginTop: 4,
     color: '#112D4E'
-  }
+  },
+  subtitle: {
+    fontSize: 18,
+    marginTop: 16,
+    color: '#112D4E',
+  },
 });

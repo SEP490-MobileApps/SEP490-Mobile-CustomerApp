@@ -107,23 +107,23 @@ export default function ServicePackageSuccess() {
       console.log('cancel', isCanceled)
       // Trường hợp thanh toán thành công
       if (servicePackageId && orderCode && contractId) {
-        handleFinalizePayment(); // Gọi API hoàn tất thanh toán
+        handleFinalizePayment();
       } else {
         toast.show({
           description: 'Lỗi: Thiếu thông tin thanh toán!',
           placement: 'top',
-          duration: 5000,
+          duration: 6000,
         });
-        navigateToHome(); // Chuyển hướng về trang chủ nếu thiếu thông tin
+        navigateToHome();
       }
     } else {
       // Trường hợp thanh toán bị hủy
       toast.show({
         description: 'Thanh toán đã bị hủy!',
         placement: 'top',
-        duration: 5000,
+        duration: 6000,
       });
-      setTimeout(navigateToHome, 5000); // 5 giây trước khi chuyển hướng
+      setTimeout(navigateToHome, 6000);
     }
   }, [isCanceled, servicePackageId, orderCode, contractId]);
 
@@ -138,16 +138,16 @@ export default function ServicePackageSuccess() {
       toast.show({
         description: 'Thanh toán thành công!',
         placement: 'top',
-        duration: 5000,
+        duration: 6000,
       });
 
-      setTimeout(navigateToHistory, 5000); // 5 giây trước khi chuyển hướng
+      setTimeout(navigateToHistory, 6000);
     } catch (error) {
       console.error('Error finalizing payment:', error);
       toast.show({
         description: 'Có lỗi khi hoàn tất thanh toán.',
         placement: 'top',
-        duration: 5000,
+        duration: 6000,
       });
     }
   };
@@ -157,7 +157,7 @@ export default function ServicePackageSuccess() {
   };
 
   const navigateToHistory = () => {
-    router.replace('/PendingContractScreen'); // Chuyển hướng về trang chủ
+    router.replace('/PendingContractScreen');
   };
 
   return (
@@ -165,8 +165,8 @@ export default function ServicePackageSuccess() {
       <LottieView
         source={
           isCanceled === undefined
-            ? require('../assets/animations/payment-success.json') // Thành công
-            : require('../assets/animations/payment-cancel.json') // Hủy
+            ? require('../assets/animations/payment-success.json')
+            : require('../assets/animations/payment-cancel.json')
         }
         autoPlay
         loop={false}
@@ -176,6 +176,16 @@ export default function ServicePackageSuccess() {
       <Text style={styles.title}>
         {isCanceled === undefined ? 'Thanh toán thành công' : 'Thanh toán bị hủy'}
       </Text>
+      {isCanceled === undefined
+        ?
+        <Text style={styles.subtitle}>
+          Hợp đồng của bạn sẽ được xử lý trong vòng 72 giờ!
+        </Text>
+        :
+        <Text style={styles.subtitle}>
+          Hợp đồng của bạn sẽ được xử lý trong vòng 72 giờ!
+        </Text>
+      }
     </View>
   );
 }
@@ -195,6 +205,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
+    marginTop: 16,
+    color: '#112D4E',
+  },
+  subtitle: {
+    fontSize: 18,
     marginTop: 16,
     color: '#112D4E',
   },

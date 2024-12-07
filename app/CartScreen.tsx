@@ -131,7 +131,7 @@ export default function CartScreen() {
             <Button style={{ width: '48%', backgroundColor: '#dc2626' }} onPress={() => { setIsOpen(false); setCustomerNote(''); }} >
               Hủy
             </Button>
-            <Button style={{ width: '48%', backgroundColor: '#3F72AF' }} onPress={handleCheckout} colorScheme="blue">
+            <Button style={{ width: '48%', backgroundColor: '#3F72AF' }} onPress={() => { handleCheckout(); setIsOpen(false); setCustomerNote('') }} colorScheme="blue">
               Xác nhận
             </Button>
           </Modal.Footer>
