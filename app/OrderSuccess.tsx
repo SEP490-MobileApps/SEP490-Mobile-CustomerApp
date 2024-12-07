@@ -5,6 +5,10 @@ import { useLocalSearchParams, router, useNavigation } from 'expo-router';
 import LottieView from 'lottie-react-native';
 import useProducts from '@/hooks/useProduct';
 import { useToast } from 'native-base';
+import { GetLatestPushNotificationRecordByLeaderId, InitializeFirestoreDb, sendPushNotificationOrder } from '@/utils/PushNotification';
+import { Leader } from '@/models/LeaderInfo';
+import { useFocusEffect } from '@react-navigation/native';
+import useUser from '@/hooks/useUser';
 
 
 export const unstable_settings = {
@@ -14,8 +18,54 @@ export const unstable_settings = {
 export default function OrderSuccess() {
   const { orderCode, id1, isCanceled, customerNote } = useLocalSearchParams();
   const { finalizeOrder } = useProducts();
+  const { fetchUserAndLeader, leaderInfo } = useUser();
   const toast = useToast();
   const navigation = useNavigation();
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchUserAndLeader();
+    }, [])
+  );
+
+  const db = InitializeFirestoreDb();
+
+  const sendPushNotificationToLeader = async ({ leaderInfo }: { leaderInfo: Leader }) => {
+    try {
+      // Lấy bản ghi push notification mới nhất từ Firestore
+      const result = await GetLatestPushNotificationRecordByLeaderId(
+        db,
+        leaderInfo.accountId
+      );
+
+      console.log('result', result)
+
+      if (result && result.exponentPushToken) {
+        const expoPushToken = result.exponentPushToken;
+
+        // Gửi push notification
+        await sendPushNotificationOrder(expoPushToken, id1 as string, customerNote as string | null);
+
+        console.log('Push notification sent successfully!');
+      } else {
+        console.error('Không tìm thấy expoPushToken trong bản ghi Firestore.');
+      }
+    } catch (error) {
+      console.error('Lỗi khi gửi push notification:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (orderCode && id1 && customerNote) {
+      console.log('log orderCode', orderCode)
+      console.log('log id1', id1)
+      console.log('log customerNote', customerNote)
+      if (leaderInfo) {
+        console.log('log 2', leaderInfo)
+        sendPushNotificationToLeader({ leaderInfo });
+      }
+    }
+  }, [orderCode, leaderInfo, id1, customerNote])
 
   useEffect(() => {
 
@@ -24,7 +74,8 @@ export default function OrderSuccess() {
     });
 
     if (isCanceled === undefined) {
-      if (orderCode && id1) {
+      console.log('cancel', isCanceled)
+      if (orderCode && id1 && customerNote) {
         console.log('thông tin:', orderCode, id1)
         handleFinalizeOrder();
       } else {
@@ -38,7 +89,7 @@ export default function OrderSuccess() {
     } else {
       navigateToHome();
     }
-  }, [orderCode, id1, isCanceled]);
+  }, [orderCode, id1, isCanceled, customerNote]);
 
   const handleFinalizeOrder = async () => {
     try {

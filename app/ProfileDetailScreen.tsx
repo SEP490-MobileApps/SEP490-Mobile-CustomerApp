@@ -164,8 +164,7 @@ export default function ProfileDetailScreen() {
         {isEditing && (
           <HStack justifyContent="space-between" mt={4}>
             <Button
-              variant="outline"
-              colorScheme="coolGray"
+              style={{ backgroundColor: "#d9534f" }}
               onPress={() => setIsEditing(false)}
               flex={1}
               mr={2}

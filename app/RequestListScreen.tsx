@@ -99,59 +99,65 @@ const RequestListScreen = () => {
     </ScrollView>
   );
 
-
-  if (loading) {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F9F7F7' }}>
-        <Lottie
-          source={require('@/assets/animations/loading.json')}
-          autoPlay
-          loop
-          style={{ width: 150, height: 150 }}
-        />
-      </View>
-    );
+  function renderRequestList() {
+    if (loading) {
+      return (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F9F7F7' }}>
+          <Lottie
+            source={require('@/assets/animations/loading.json')}
+            autoPlay
+            loop
+            style={{ width: 150, height: 150 }}
+          />
+        </View>
+      );
+    }
+    if (!allRequests || allRequests.length === 0) {
+      return (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F9F7F7' }}>
+          <NoData />
+        </View>
+      );
+    } else {
+      return (
+        <ScrollView showsVerticalScrollIndicator={false}>
+          {allRequests.map((request) => (
+            <View key={request.requestId} style={styles.accordionContainer}>
+              <TouchableOpacity
+                onPress={() => toggleAccordion(request.requestId)}
+                style={styles.header}
+              >
+                <Text style={styles.headerText}>Mã căn hộ: {request.roomId}</Text>
+                <View style={styles.rowContainer}>
+                  {renderBadge(request.status)}
+                  <MaterialIcons
+                    name={
+                      expandedRequestId === request.requestId
+                        ? 'expand-less'
+                        : 'expand-more'
+                    }
+                    size={24}
+                    color="white"
+                    style={styles.arrowIcon}
+                  />
+                </View>
+              </TouchableOpacity>
+              <Collapsible collapsed={expandedRequestId !== request.requestId}>
+                {renderAccordionContent(request)}
+              </Collapsible>
+            </View>
+          ))}
+        </ScrollView>
+      )
+    }
   }
 
-  if (!allRequests || allRequests.length === 0) {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F9F7F7' }}>
-        <NoData />
-      </View>
-    );
-  }
+
 
   return (
     <View style={styles.container}>
       <View style={styles.tabContainer}>{renderTabs()}</View>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {allRequests.map((request) => (
-          <View key={request.requestId} style={styles.accordionContainer}>
-            <TouchableOpacity
-              onPress={() => toggleAccordion(request.requestId)}
-              style={styles.header}
-            >
-              <Text style={styles.headerText}>Mã căn hộ: {request.roomId}</Text>
-              <View style={styles.rowContainer}>
-                {renderBadge(request.status)}
-                <MaterialIcons
-                  name={
-                    expandedRequestId === request.requestId
-                      ? 'expand-less'
-                      : 'expand-more'
-                  }
-                  size={24}
-                  color="white"
-                  style={styles.arrowIcon}
-                />
-              </View>
-            </TouchableOpacity>
-            <Collapsible collapsed={expandedRequestId !== request.requestId}>
-              {renderAccordionContent(request)}
-            </Collapsible>
-          </View>
-        ))}
-      </ScrollView>
+      {renderRequestList()}
     </View>
   );
 };

@@ -94,6 +94,26 @@ export async function sendPushNotification(expoPushToken: string, contractId: st
   });
 }
 
+export async function sendPushNotificationOrder(expoPushToken: string, orderId: string, customerNote: string | null) {
+  const message = {
+    to: expoPushToken,
+    sound: 'default',
+    title: 'Có một đơn hàng mới',
+    body: `${orderId} ${customerNote}`,
+    data: { orderId, customerNote },
+  };
+
+  await fetch('https://exp.host/--/api/v2/push/send', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Accept-encoding': 'gzip, deflate',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(message),
+  });
+}
+
 export function InitializeFirestoreDb(): Firestore {
   const app = initializeApp(FIREBASE_CONFIG);
   const db = getFirestore(app);

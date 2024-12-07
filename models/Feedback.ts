@@ -9,4 +9,5 @@ export interface Feedback {
   averageRate: number;
   count: number;
   requestId: string;
+  time: string;
 }

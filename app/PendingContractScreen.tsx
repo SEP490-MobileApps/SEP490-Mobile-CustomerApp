@@ -29,7 +29,12 @@ export default function PendingContractScreen() {
             />
           </View>
         ) : customerContracts.length === 0 ? (
-          <NoData />
+          (
+            <View style={{ marginTop: 200 }}>
+              <NoData />
+            </View>
+          )
+
         ) : (
           customerContracts.map((contract) => (
             <PendingContractCard key={contract.contractId} contract={contract} />
@@ -62,7 +67,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   loadingAnimation: {
-    width: 300,
-    height: 300,
+    width: 200,
+    height: 200,
+    marginTop: 300,
   },
 });

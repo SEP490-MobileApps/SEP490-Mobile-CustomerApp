@@ -2,14 +2,15 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { Box, Progress, Button, Actionsheet, Radio } from 'native-base';
-import { Feedback } from '../../models/Feedback';
-import useRequest from '../../hooks/useRequest';
+import { Feedback } from '@/models/Feedback';
+import useRequest from '@/hooks/useRequest';
+import { formatDate } from '@/utils/formatDate';
 
 interface Props {
   feedbacks: Feedback[];
 }
 
-const ITEMS_PER_PAGE = 2; // Số lượng phản hồi mỗi trang
+const ITEMS_PER_PAGE = 3; // Số lượng phản hồi mỗi trang
 
 function CustomerReviews({ feedbacks }: Props): React.JSX.Element {
   const { fetchFeedbacks } = useRequest();
@@ -122,21 +123,27 @@ function CustomerReviews({ feedbacks }: Props): React.JSX.Element {
             <Box key={feedback.feedbackId} style={styles.reviewContainer}>
               <View style={styles.reviewHeader}>
                 <Image source={{ uri: feedback.avatarUrl }} style={styles.reviewAvatar} />
-                <View>
-                  <Text style={styles.reviewName}>{feedback.customerName}</Text>
-                  <View style={{ flexDirection: 'row' }}>
-                    {[...Array(5)].map((_, i) => (
-                      <Text
-                        key={i}
-                        style={{
-                          fontSize: 14,
-                          color: i < feedback.rate ? '#3F72AF' : '#CCC',
-                        }}
-                      >
-                        ★
-                      </Text>
-                    ))}
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '84%' }}>
+                  <View>
+                    <Text style={styles.reviewName}>{feedback.customerName}</Text>
+                    <View style={{ flexDirection: 'row' }}>
+                      {[...Array(5)].map((_, i) => (
+                        <Text
+                          key={i}
+                          style={{
+                            fontSize: 14,
+                            color: i < feedback.rate ? '#3F72AF' : '#CCC',
+                          }}
+                        >
+                          ★
+                        </Text>
+                      ))}
+                    </View>
                   </View>
+                  <View>
+                    <Text>Ngày: {formatDate(feedback.time)}</Text>
+                  </View>
+
                 </View>
               </View>
               <Text style={styles.reviewText}>{feedback.content}</Text>
@@ -221,7 +228,6 @@ const styles = StyleSheet.create({
   },
   reviewHeader: {
     flexDirection: 'row',
-    alignItems: 'center',
     marginBottom: 10,
   },
   reviewAvatar: {

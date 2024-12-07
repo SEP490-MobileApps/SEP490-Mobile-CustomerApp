@@ -104,7 +104,7 @@ export default function ServicePackageSuccess() {
     });
 
     if (isCanceled === undefined) {
-      console.log('cc', isCanceled)
+      console.log('cancel', isCanceled)
       // Trường hợp thanh toán thành công
       if (servicePackageId && orderCode && contractId) {
         handleFinalizePayment(); // Gọi API hoàn tất thanh toán
