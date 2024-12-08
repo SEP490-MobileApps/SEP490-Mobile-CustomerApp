@@ -146,12 +146,11 @@ export default function OrderSuccess() {
       {isCanceled === undefined
         ?
         <Text style={styles.subtitle}>
-          Đơn hàng của bạn sẽ được xử lý trong vòng 72 giờ
+          Đơn hàng sẽ được xử lý trong vòng 72 giờ
         </Text>
         :
-        <Text style={styles.subtitle}>
-          Đơn hàng của bạn sẽ được xử lý trong vòng 72 giờ
-        </Text>
+        <>
+        </>
       }
     </View>
   );
