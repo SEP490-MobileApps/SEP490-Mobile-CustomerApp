@@ -1,4 +1,3 @@
-// hooks/useServicePackage.ts
 import { useCallback, useState } from 'react';
 import useSaleAxios from '../utils/useSaleAxios';
 import { ServicePackage } from '../models/ServicePackage';
@@ -11,8 +10,8 @@ const useServicePackages = () => {
   const [contracts, setContracts] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [apiError, setApiError] = useState<string | null>(null);
-  const [draftContract, setDraftContract] = useState<any | null>(null); // Thêm state để lưu hợp đồng nháp
-  const servicePackageCache = new Map(); // Cache for service package details to avoid redundant calls
+  const [draftContract, setDraftContract] = useState<any | null>(null);
+  const servicePackageCache = new Map();
   const [pendingContracts, setPendingContracts] = useState<any[]>([]);
 
   const fetchPackages = useCallback(async (pageIndex: number = 1, pageSize: number = 8, searchByName: string = '') => {
@@ -40,12 +39,10 @@ const useServicePackages = () => {
     }
   }, [fetchData]);
 
-  // Fetch detailed information about a service package
   const fetchServicePackageDetail = useCallback(async (servicePackageId: string) => {
     setLoading(true);
     setApiError(null);
     try {
-      // Check cache first
       if (servicePackageCache.has(servicePackageId)) {
         setServicePackageDetail(servicePackageCache.get(servicePackageId));
         return;
@@ -59,7 +56,6 @@ const useServicePackages = () => {
 
       if (response) {
         setServicePackageDetail(response);
-        // Cache the response for future use
         servicePackageCache.set(servicePackageId, response);
       }
     } catch (error) {
@@ -69,13 +65,11 @@ const useServicePackages = () => {
     }
   }, [fetchData]);
 
-  // Fetch customer contracts and enrich with service package details
   const fetchCustomerContracts = useCallback(async (customerId: string, startDate?: string, endDate?: string) => {
     setLoading(true);
     setApiError(null);
 
     try {
-      // Chuẩn bị tham số API
       const params: any = { CustomerId: customerId };
       if (startDate) params.StartDate = startDate;
       if (endDate) params.EndDate = endDate;
@@ -87,12 +81,10 @@ const useServicePackages = () => {
       });
 
       if (response) {
-        // Kết hợp logic enrich từ phiên bản cũ
         const enrichedContracts = await Promise.all(
           response.map(async (contract: any) => {
             let packageDetails = servicePackageCache.get(contract.servicePackageId);
             if (!packageDetails) {
-              // Fetch package details nếu không có trong cache
               const packageResponse = await fetchData({
                 url: '/service-package/4',
                 method: 'GET',
@@ -131,7 +123,7 @@ const useServicePackages = () => {
         params: { servicePackageId },
       });
       if (response) {
-        setDraftContract(response); // Lưu dữ liệu hợp đồng nháp
+        setDraftContract(response);
       }
     } catch (error) {
       setApiError('Không thể tạo hợp đồng nháp.');
@@ -146,7 +138,7 @@ const useServicePackages = () => {
     try {
       const formData = new FormData();
       formData.append('servicePackageId', servicePackageId);
-      formData.append('isOnlinePayment', isOnlinePayment.toString()); // Chuyển boolean thành chuỗi
+      formData.append('isOnlinePayment', isOnlinePayment.toString());
 
       const response = await fetchData({
         url: '/service-package/7',
@@ -157,11 +149,10 @@ const useServicePackages = () => {
         data: formData,
       });
 
-      // Trả về đúng loại dữ liệu
       if (isOnlinePayment && response.startsWith('http')) {
-        return { type: 'link', data: response }; // Link thanh toán
+        return { type: 'link', data: response };
       } else if (!isOnlinePayment && typeof response === 'string') {
-        return { type: 'message', data: response }; // Thông báo
+        return { type: 'message', data: response };
       }
 
       throw new Error('Dữ liệu từ API không hợp lệ');
@@ -200,7 +191,7 @@ const useServicePackages = () => {
           data: formData,
         });
 
-        return response; // Xử lý dữ liệu trả về nếu cần
+        return response;
       } catch (error) {
         setApiError('Không thể hoàn tất thanh toán.');
         throw error;

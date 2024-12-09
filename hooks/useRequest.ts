@@ -1,4 +1,3 @@
-// hooks/useRequest.ts
 import { useCallback, useState } from 'react';
 import useRequestAxios from '../utils/useRequestAxios';
 import { RepairRequest } from '../models/RepairRequest';
@@ -10,8 +9,8 @@ const useRequest = () => {
   const [requests, setRequests] = useState<RepairRequest[]>([]);
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
   const [allRequests, setAllRequests] = useState<RepairRequest[]>([]);
-  const [currentPage, setCurrentPage] = useState(1); // Theo dõi trang hiện tại
-  const [totalPages, setTotalPages] = useState(1); // Theo dõi tổng số trang
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState<boolean>(false);
   const [apiError, setApiError] = useState<string | null>(null);
   const toast = useToast();
@@ -51,7 +50,7 @@ const useRequest = () => {
 
         if (response) {
           setFeedbacks(response.results || []);
-          setTotalPages(Math.ceil(response.count / pageSize)); // Giả sử API trả về tổng số feedbacks trong `count`
+          setTotalPages(Math.ceil(response.count / pageSize));
           setCurrentPage(pageIndex);
         }
       } catch (error: any) {

@@ -1,4 +1,3 @@
-// components/home/RecentRepairs.tsx
 import React, { useMemo, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Collapsible from 'react-native-collapsible';
@@ -18,7 +17,7 @@ const RecentRepairs: React.FC<RecentRepairsProps> = ({ requests }) => {
 
   const sortedRequests = useMemo(() => {
     const sorted = [...requests].sort((a, b) => a.status - b.status);
-    return sorted.slice(0, 3); // Get top 3 requests
+    return sorted.slice(0, 3);
   }, [requests]);
 
   const toggleAccordion = (requestId: string) => {
@@ -27,13 +26,13 @@ const RecentRepairs: React.FC<RecentRepairsProps> = ({ requests }) => {
 
   const renderAccordionContent = (request: RepairRequest) => {
     switch (request.status) {
-      case 0: // requested
+      case 0:
         return <NewRequestAccordion key={request.requestId} request={request} />;
-      case 1: // processing
+      case 1:
         return <InProgressAccordion key={request.requestId} request={request} />;
-      case 2: // done
+      case 2:
         return <CompletedRequestAccordion key={request.requestId} request={request} />;
-      case 3: // canceled
+      case 3:
         return <CanceledRequestAccordion key={request.requestId} request={request} />;
       default:
         return null;
@@ -93,12 +92,11 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: '#3F72AF',
     borderRadius: 8,
-    // Thêm hiệu ứng bóng cho header
-    shadowColor: '#000', // Màu bóng (đen)
-    shadowOffset: { width: 0, height: 3 }, // Độ đậm của bóng
-    shadowOpacity: 0.1, // Độ mờ của bóng
-    shadowRadius: 4, // Bán kính bóng
-    elevation: 5, // Chỉ áp dụng cho Android
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 5,
   },
   rowContainer: {
     flexDirection: 'row',

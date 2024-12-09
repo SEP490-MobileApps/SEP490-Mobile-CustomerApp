@@ -1,4 +1,3 @@
-// components/home/ServicePackageItem.tsx
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { ServicePackage } from '../../models/ServicePackage';
@@ -39,7 +38,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
-    elevation: 3, // For Android shadow
+    elevation: 3,
   },
   image: {
     width: 50,

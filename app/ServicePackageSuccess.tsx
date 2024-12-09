@@ -29,36 +29,6 @@ export default function ServicePackageSuccess() {
 
   const db = InitializeFirestoreDb();
 
-  // const sendPushNotificationToLeader = async () => {
-  //   try {
-  //     // Lấy bản ghi mới nhất từ Firestore theo leaderId
-  //     const result = await GetLatestPushNotificationRecordByLeaderId(
-  //       db,
-  //       "L_0000000001"
-  //     );
-
-  //     // Log kết quả để kiểm tra dữ liệu
-  //     console.log("Latest Record:", result);
-
-  //     // Kiểm tra nếu dữ liệu tồn tại và chứa expoPushToken
-  //     if (result && result.exponentPushToken) {
-  //       const expoPushToken = result.exponentPushToken;
-
-  //       // Gọi hàm sendPushNotification với token
-  //       await sendPushNotification(expoPushToken);
-
-  //       console.log("Push notification sent successfully!");
-  //     } else {
-  //       console.log("No valid exponentPushToken found in the record.");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error sending push notification:", error);
-  //   }
-  // };
-
-
-
-
   const sendPushNotificationToLeader = async ({ leaderInfo, user }: { leaderInfo: Leader, user: User }) => {
     try {
       // Lấy bản ghi push notification mới nhất từ Firestore
@@ -72,10 +42,8 @@ export default function ServicePackageSuccess() {
       if (result && result.exponentPushToken) {
         const expoPushToken = result.exponentPushToken;
 
-        // Lấy fullName của user và truyền cùng contractId
-        const fullName = user.fullName; // Lấy fullName từ user
+        const fullName = user.fullName;
 
-        // Gửi push notification
         await sendPushNotification(expoPushToken, contractId as string, fullName);
 
         console.log('Push notification sent successfully!');
@@ -105,7 +73,6 @@ export default function ServicePackageSuccess() {
 
     if (isCanceled === undefined) {
       console.log('cancel', isCanceled)
-      // Trường hợp thanh toán thành công
       if (servicePackageId && orderCode && contractId) {
         handleFinalizePayment();
       } else {
@@ -117,12 +84,6 @@ export default function ServicePackageSuccess() {
         navigateToHome();
       }
     } else {
-      // Trường hợp thanh toán bị hủy
-      toast.show({
-        description: 'Thanh toán đã bị hủy!',
-        placement: 'top',
-        duration: 6000,
-      });
       setTimeout(navigateToHome, 6000);
     }
   }, [isCanceled, servicePackageId, orderCode, contractId]);
@@ -153,7 +114,7 @@ export default function ServicePackageSuccess() {
   };
 
   const navigateToHome = () => {
-    router.replace('/(tabs)'); // Chuyển hướng về trang chủ
+    router.replace('/(tabs)');
   };
 
   const navigateToHistory = () => {

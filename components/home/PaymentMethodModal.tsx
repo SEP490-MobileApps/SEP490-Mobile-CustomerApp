@@ -1,5 +1,3 @@
-// components/home/PaymentMethodModal.tsx
-
 import React from 'react';
 import { StyleSheet, View, Text, Image } from 'react-native';
 import { Modal, Button, Radio, Divider, IconButton, Icon } from 'native-base';
@@ -10,7 +8,7 @@ interface PaymentMethodModalProps {
   onClose: () => void;
   selectedMethod: string;
   setSelectedMethod: (method: string) => void;
-  handleConfirm: () => void; // Thêm hàm xử lý khi nhấn nút "Xác Nhận"
+  handleConfirm: () => void;
 }
 
 const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
@@ -35,13 +33,13 @@ const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
           <Radio.Group
             name="paymentMethodGroup"
             value={selectedMethod}
-            onChange={(nextValue) => setSelectedMethod(nextValue)} // Cập nhật paymentMethod
+            onChange={(nextValue) => setSelectedMethod(nextValue)}
           >
             <View style={styles.paymentOptionContainer}>
               <Image source={require('../../assets/images/cash.png')} style={styles.paymentImage} />
               <Text style={styles.paymentText}>Bằng tiền mặt</Text>
               <Radio
-                value="cash" // Giá trị 'cash'
+                value="cash"
                 colorScheme="blue"
                 accessibilityLabel="Thanh toán bằng tiền mặt"
                 style={styles.radioButton}
@@ -54,7 +52,7 @@ const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
               <Image source={require('../../assets/images/payos.png')} style={styles.paymentImage} />
               <Text style={styles.paymentText}>Bằng PayOS</Text>
               <Radio
-                value="payos" // Giá trị 'payos'
+                value="payos"
                 colorScheme="blue"
                 accessibilityLabel="Thanh toán bằng PayOS"
                 style={styles.radioButton}

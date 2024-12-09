@@ -3,10 +3,9 @@ import { View, StyleSheet } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 export default function ChatScreen() {
-  const webviewRef = useRef<WebView>(null); // Đảm bảo kiểu là WebView
+  const webviewRef = useRef<WebView>(null);
 
   useEffect(() => {
-    // Mỗi lần màn hình được mở lại, inject JavaScript để làm mới trang
     if (webviewRef.current) {
       webviewRef.current.injectJavaScript(`
         window.location.reload();

@@ -1,4 +1,3 @@
-// components/profile/ConfirmModal.tsx
 import React from 'react';
 import { Button, Modal, Text, VStack } from 'native-base';
 

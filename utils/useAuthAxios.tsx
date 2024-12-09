@@ -1,4 +1,3 @@
-// utils/useAuthAxios.ts
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
 import { useState, useRef, useEffect } from "react";

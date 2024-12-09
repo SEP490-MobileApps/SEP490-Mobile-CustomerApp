@@ -1,4 +1,3 @@
-// models/LeaderInfo.ts
 export interface Leader {
   accountId: string,
   fullName: string,

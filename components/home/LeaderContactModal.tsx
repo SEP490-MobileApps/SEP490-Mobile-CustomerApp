@@ -1,4 +1,3 @@
-// components/home/LeaderContactModal.tsx
 import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 import { Modal, Button } from 'native-base';
@@ -39,17 +38,13 @@ const LeaderContactModal: React.FC<LeaderContactModalProps> = ({
         </Modal.Header>
 
         <Modal.Body style={styles.modalBody}>
-          {/* Avatar */}
           <Image source={{ uri: leader.avatarUrl }} style={styles.avatar} />
 
-          {/* Leader's Name */}
           <Text style={styles.name}>{leader.fullName}</Text>
 
-          {/* Leader's Phone Number */}
           <Text style={styles.phoneNumber}>{leader.phoneNumber}</Text>
         </Modal.Body>
 
-        {/* Footer with Action Buttons */}
         <Modal.Footer style={styles.fullWidthFooter}>
           <Button variant="outline" onPress={onClose} style={styles.closeButton}>
             Đóng

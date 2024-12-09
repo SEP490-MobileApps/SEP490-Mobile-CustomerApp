@@ -78,7 +78,7 @@ export default function RegisterScreen() {
   const resetForm = () => {
     setEmail('');
     setPassword('');
-    setConfirmPassword(''); // Reset xác nhận mật khẩu
+    setConfirmPassword('');
     setFullName('');
     setPhoneNumber('');
     setCmT_CCCD('');
@@ -545,8 +545,8 @@ const styles = StyleSheet.create({
   },
 
   selectedRoomItem: {
-    backgroundColor: '#e6f7ff', // Màu nền cho mục được chọn
-    borderLeftWidth: 4, // Đường viền bên trái để nổi bật
+    backgroundColor: '#e6f7ff',
+    borderLeftWidth: 4,
     borderLeftColor: '#3F72AF',
   },
   selectedApartmentInfo: {

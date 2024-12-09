@@ -1,4 +1,3 @@
-/// app/(auth)/index.tsx
 import React, { useEffect } from "react";
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Keyboard, Image } from "react-native";
 import { useRouter } from "expo-router";

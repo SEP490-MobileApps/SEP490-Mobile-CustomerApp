@@ -105,7 +105,7 @@ export default function StoreScreen() {
       {loading && pageIndex === 1 ? (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F9F7F7' }}>
           <LottieView
-            source={require('@/assets/animations/loading.json')} // Đường dẫn tới file animation
+            source={require('@/assets/animations/loading.json')}
             autoPlay
             loop
             style={{ width: 150, height: 150 }}

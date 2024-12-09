@@ -1,4 +1,3 @@
-// models/Order.ts
 export interface OrderDetail {
   orderId: string;
   productId: string;
@@ -14,7 +13,7 @@ export interface Order {
   status: boolean;
   fileUrl: string;
   orderCode: number;
-  customer: any; // Bạn có thể xác định type chính xác nếu biết cấu trúc của `customer`
+  customer: any;
   orderDetails: OrderDetail[];
 }
 

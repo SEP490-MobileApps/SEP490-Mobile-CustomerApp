@@ -5,7 +5,7 @@ import {
   FontAwesome5,
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
-import { Tabs, useRouter } from "expo-router"; // Import useRouter
+import { Tabs, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { View } from "react-native";
 import { Icon, IconButton, Badge } from "native-base";
@@ -66,7 +66,7 @@ export default function TabLayout() {
             headerRight: () => (
               <View style={{ marginRight: 15 }}>
                 <IconButton
-                  onPress={() => router.push("/CartScreen")} // Thêm sự kiện onPress để điều hướng đến CartScreen
+                  onPress={() => router.push("/CartScreen")}
                   icon={
                     <View>
                       <Icon

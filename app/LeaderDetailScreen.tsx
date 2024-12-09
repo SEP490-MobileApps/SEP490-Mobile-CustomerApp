@@ -1,4 +1,3 @@
-// app/LeaderDetailScreen.tsx
 import React, { useCallback } from "react";
 import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
 import { Input, Icon } from "native-base";
@@ -9,14 +8,12 @@ import useUser from "../hooks/useUser";
 export default function LeaderDetailScreen() {
   const { leaderInfo, fetchUserAndLeader, loading } = useUser();
 
-  // Sử dụng useFocusEffect để gọi API khi màn hình được focus
   useFocusEffect(
     useCallback(() => {
-      fetchUserAndLeader(); // Gọi hàm lấy thông tin leader
+      fetchUserAndLeader();
     }, [])
   );
 
-  // Kiểm tra loading hoặc dữ liệu leaderInfo
   if (loading) {
     return <Text>Đang tải dữ liệu...</Text>;
   }

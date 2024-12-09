@@ -16,7 +16,7 @@ const SignOutModal: React.FC<SignOutModalProps> = ({ isOpen, onClose, onConfirm 
         <Modal.Body alignItems="center">
           <View >
             <LottieView
-              source={require('@/assets/animations/signout.json')} // Đường dẫn tới file animation
+              source={require('@/assets/animations/signout.json')}
               autoPlay
               loop
               speed={1.6}

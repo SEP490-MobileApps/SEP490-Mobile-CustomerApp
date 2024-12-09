@@ -1,4 +1,3 @@
-// models/CartItem.ts
 export interface CartItem {
   productId: string;
   name: string;

@@ -1,4 +1,3 @@
-// components/home/CustomerReviews.tsx
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { Box, Progress, Button, Actionsheet, Radio } from 'native-base';
@@ -10,13 +9,13 @@ interface Props {
   feedbacks: Feedback[];
 }
 
-const ITEMS_PER_PAGE = 3; // Số lượng phản hồi mỗi trang
+const ITEMS_PER_PAGE = 3;
 
 function CustomerReviews({ feedbacks }: Props): React.JSX.Element {
   const { fetchFeedbacks } = useRequest();
   const [currentPage, setCurrentPage] = useState(1);
   const [isActionSheetOpen, setIsActionSheetOpen] = useState(false);
-  const [pendingSort, setPendingSort] = useState<boolean | null>(null); // null = no filter
+  const [pendingSort, setPendingSort] = useState<boolean | null>(null);
   const totalReviews = feedbacks.length;
   const totalPages = Math.ceil(totalReviews / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -45,13 +44,13 @@ function CustomerReviews({ feedbacks }: Props): React.JSX.Element {
   const handleApplySort = () => {
     setIsActionSheetOpen(false);
     const sortOrder = pendingSort === true ? 'asc' : pendingSort === false ? 'desc' : undefined;
-    fetchFeedbacks(1, ITEMS_PER_PAGE, sortOrder); // Gọi API với bộ lọc mới
+    fetchFeedbacks(1, ITEMS_PER_PAGE, sortOrder);
   };
 
   const handleClearFilters = () => {
-    setPendingSort(null); // Bỏ chọn bộ lọc
+    setPendingSort(null);
     setIsActionSheetOpen(false);
-    fetchFeedbacks(1, ITEMS_PER_PAGE); // Gọi lại API không có bộ lọc
+    fetchFeedbacks(1, ITEMS_PER_PAGE);
   };
 
   return (

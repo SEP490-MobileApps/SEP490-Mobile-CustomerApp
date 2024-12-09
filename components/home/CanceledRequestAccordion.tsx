@@ -1,4 +1,3 @@
-// components/home/CanceledRequestAccordion.tsx
 import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Pressable, Modal, Button } from 'native-base';

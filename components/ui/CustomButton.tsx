@@ -1,4 +1,3 @@
-// CustomButton.tsx
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, ViewStyle, TextStyle } from 'react-native';
 
@@ -7,7 +6,7 @@ interface CustomButtonProps {
   onPress: () => void;
   variant?: 'primary' | 'secondary' | 'danger' | 'cancel';
   style?: ViewStyle;
-  textStyle?: TextStyle; // Thêm prop cho style của chữ
+  textStyle?: TextStyle;
 }
 
 const CustomButton: React.FC<CustomButtonProps> = ({ title, onPress, variant = 'primary', style, textStyle }) => {

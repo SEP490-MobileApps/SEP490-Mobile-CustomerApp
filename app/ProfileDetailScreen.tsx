@@ -1,4 +1,3 @@
-// ProfileDetailScreen.tsx
 import React, { useState, useEffect, useCallback } from "react";
 import { View, Text, StyleSheet, Image, ScrollView, Platform } from "react-native";
 import { Input, Button, HStack, IconButton, Badge } from "native-base";
@@ -63,7 +62,7 @@ export default function ProfileDetailScreen() {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F9F7F7' }}>
         <Lottie
-          source={require('../assets/animations/loading.json')} // Đường dẫn tới file animation
+          source={require('../assets/animations/loading.json')}
           autoPlay
           loop
           style={{ width: 150, height: 150 }}
@@ -75,7 +74,6 @@ export default function ProfileDetailScreen() {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.section}>
-        {/* Display Avatar without edit icon */}
         <View style={styles.imageContainer}>
           <Image
             source={{ uri: user.avatarUrl || 'https://cdn-icons-png.flaticon.com/512/219/219983.png' }}
@@ -83,7 +81,6 @@ export default function ProfileDetailScreen() {
           />
         </View>
 
-        {/* Personal Info Fields */}
         <View style={styles.fieldContainer}>
           <Text style={styles.label}>Tên đầy đủ:</Text>
           {isEditing ? (

@@ -1,4 +1,3 @@
-// utils/useSaleAxios.ts
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
 import { useState, useRef, useEffect } from "react";
@@ -72,7 +71,6 @@ const useSaleAxios = () => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      // console.log("Response Data:", result.data);
       return result.data;
     } catch (error: any) {
       if (axios.isCancel(error)) {

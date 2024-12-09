@@ -1,4 +1,3 @@
-// components/home/PendingContractCard.tsx
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Linking } from 'react-native';
 import { Box, Divider } from 'native-base';

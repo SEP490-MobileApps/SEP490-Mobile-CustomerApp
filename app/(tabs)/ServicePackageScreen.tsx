@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
-import useServicePackages from '@/hooks/useServicePackage'; // Import custom hook
-import ServicePackageItem from '@/components/home/ServicePackageItem'; // Import item component
+import useServicePackages from '@/hooks/useServicePackage';
+import ServicePackageItem from '@/components/home/ServicePackageItem';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
@@ -82,7 +82,7 @@ export default function ServicePackageScreen() {
       {loading ? (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F9F7F7' }}>
           <LottieView
-            source={require('@/assets/animations/loading.json')} // Đường dẫn tới file animation
+            source={require('@/assets/animations/loading.json')}
             autoPlay
             loop
             style={{ width: 150, height: 150 }}

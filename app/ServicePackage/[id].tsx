@@ -4,7 +4,7 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Button } from 'native-base';
 import { FormatPriceToVnd } from '@/utils/PriceUtils';
 import useServicePackages from '@/hooks/useServicePackage';
-import HTMLView from 'react-native-htmlview'; // Import thư viện
+import HTMLView from 'react-native-htmlview';
 import Lottie from 'lottie-react-native';
 
 export default function ServicePackageDetail() {

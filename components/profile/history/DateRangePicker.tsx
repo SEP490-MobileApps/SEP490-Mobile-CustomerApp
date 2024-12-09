@@ -87,7 +87,7 @@ const DateRangePicker = ({ isOpen, onClose, selectedTab }: { isOpen: boolean; on
             flexDirection: 'row'
           }}>
             <LottieView
-              source={require('@/assets/animations/success.json')} // Đường dẫn tới file animation
+              source={require('@/assets/animations/success.json')}
               autoPlay
               loop
               style={{ width: 52, height: 52 }}
@@ -140,7 +140,7 @@ const DateRangePicker = ({ isOpen, onClose, selectedTab }: { isOpen: boolean; on
             flexDirection: 'row'
           }}>
             <LottieView
-              source={require('@/assets/animations/success.json')} // Đường dẫn tới file animation
+              source={require('@/assets/animations/success.json')}
               autoPlay
               loop
               style={{ width: 52, height: 52 }}

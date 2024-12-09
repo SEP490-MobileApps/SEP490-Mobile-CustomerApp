@@ -1,8 +1,7 @@
-// hooks/useProduct.ts
 import { useCallback, useState } from 'react';
 import useSaleAxios from '@/utils/useSaleAxios';
 import { Product } from '@/models/Product';
-import { Box, useToast } from 'native-base'; // Import Toast
+import { Box, useToast } from 'native-base';
 import { CartItem } from '@/models/CartItem';
 import { OrderDetail } from '@/models/OrderDetail';
 import { Shipping } from '@/models/Shipping';
@@ -14,7 +13,7 @@ const useProducts = () => {
   const { fetchData } = useSaleAxios();
   const [products, setProducts] = useState<Product[]>([]);
   const [totalCount, setTotalCount] = useState<number>(0);
-  const [cartItems, setCartItems] = useState<CartItem[]>([]); // State cho giỏ hàng
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [apiError, setApiError] = useState<string | null>(null);
@@ -209,7 +208,7 @@ const useProducts = () => {
       await fetchData({
         url: '/order/3',
         method: 'DELETE',
-        data: formData, // Truyền vào formData
+        data: formData,
         header: { 'Content-Type': 'multipart/form-data' }
       });
 

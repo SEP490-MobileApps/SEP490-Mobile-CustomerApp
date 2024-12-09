@@ -1,11 +1,10 @@
-// components/ui/FloatButton.tsx
 import React from 'react';
 import { TouchableOpacity, StyleSheet } from 'react-native';
 import { Icon, IIconProps } from 'native-base';
 
 interface FloatButtonProps {
   onPress: () => void;
-  icon: React.ReactElement<IIconProps>; // Nhận icon bất kỳ qua props
+  icon: React.ReactElement<IIconProps>;
 }
 
 const FloatButton: React.FC<FloatButtonProps> = ({ onPress, icon }) => {
@@ -22,7 +21,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 20,
     right: 20,
-    backgroundColor: '#3F72AE', // Màu nền mặc định
+    backgroundColor: '#3F72AE',
     borderRadius: 30,
     width: 60,
     height: 60,

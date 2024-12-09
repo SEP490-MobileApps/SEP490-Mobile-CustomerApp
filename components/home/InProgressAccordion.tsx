@@ -1,4 +1,3 @@
-// components/home/InProgressAccordion.tsx
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Linking } from 'react-native';
 import { Badge, Pressable, Modal, Button } from 'native-base';

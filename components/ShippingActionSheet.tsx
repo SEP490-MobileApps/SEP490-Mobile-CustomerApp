@@ -141,7 +141,7 @@ const ShippingActionSheet: React.FC<ShippingActionSheetProps> = ({
                   config.name === 'home'
                     ? (shipping?.shippingOrder.status === config.activeStatus ? 40 : 24)
                     : (config.name === 'truck-delivery'
-                      ? (shipping?.shippingOrder.status === config.activeStatus || shipping?.shippingOrder.status === 4 ? 48 : 30) // Thay đổi kích thước cho truck-delivery khi status = 4
+                      ? (shipping?.shippingOrder.status === config.activeStatus || shipping?.shippingOrder.status === 4 ? 48 : 30)
                       : (shipping?.shippingOrder.status === config.activeStatus ? 32 : 20))
                 }
                 color="#3F72AF"

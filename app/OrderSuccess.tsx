@@ -1,4 +1,3 @@
-// app/OrderSuccess.tsx
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useLocalSearchParams, router, useNavigation } from 'expo-router';
@@ -32,7 +31,6 @@ export default function OrderSuccess() {
 
   const sendPushNotificationToLeader = async ({ leaderInfo }: { leaderInfo: Leader }) => {
     try {
-      // Lấy bản ghi push notification mới nhất từ Firestore
       const result = await GetLatestPushNotificationRecordByLeaderId(
         db,
         leaderInfo.accountId
@@ -43,7 +41,6 @@ export default function OrderSuccess() {
       if (result && result.exponentPushToken) {
         const expoPushToken = result.exponentPushToken;
 
-        // Gửi push notification
         await sendPushNotificationOrder(expoPushToken, id1 as string, customerNote as string | null);
 
         console.log('Push notification sent successfully!');

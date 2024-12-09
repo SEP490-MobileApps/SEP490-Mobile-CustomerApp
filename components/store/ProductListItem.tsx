@@ -1,17 +1,16 @@
-// components/store/ProductListItem.tsx
 import React from 'react';
 import { Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { Product } from '@/models/Product';
 import { FormatPriceToVnd } from '@/utils/PriceUtils';
 import { Divider } from 'native-base';
-import { useRouter } from 'expo-router'; // Import useRouter
+import { useRouter } from 'expo-router';
 
 interface ProductListItemProps {
   product: Product;
 }
 
 const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
-  const router = useRouter(); // Dùng router để điều hướng
+  const router = useRouter();
 
   const handlePress = () => {
     router.push(`/ProductDetail/${product.productId}`);

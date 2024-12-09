@@ -1,4 +1,3 @@
-// components/home/CompletedRequestAccordion.tsx
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Linking } from 'react-native';
 import { Badge, Pressable, Modal, Button, TextArea, Toast } from 'native-base';

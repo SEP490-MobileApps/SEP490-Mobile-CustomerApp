@@ -1,4 +1,3 @@
-// hooks/useUser.ts
 import { useCallback, useState } from 'react';
 import useAuthAxios from '@/utils/useAuthAxios';
 import { User } from '@/models/User';
@@ -17,7 +16,6 @@ const useUser = () => {
     setLoading(true);
     setApiError(null);
     try {
-      // Fetch user data
       const userResponse = await fetchData({ url: '/account/3', method: 'GET' });
       if (userResponse) {
         const { customer, apartment, rooms } = userResponse.response;
@@ -37,7 +35,6 @@ const useUser = () => {
         });
       }
 
-      // Fetch leader data
       const leaderResponse = await fetchData({ url: '/account/20', method: 'GET' });
       if (leaderResponse) {
         const { leaderInfo } = leaderResponse;
@@ -67,7 +64,7 @@ const useUser = () => {
         uri: photoUri,
         name: 'avatar.jpg',
         type: 'image/jpeg',
-      } as any); // Casting to any to bypass TypeScript issue
+      } as any);
 
       await fetchData({
         url: '/account/5',
@@ -76,7 +73,6 @@ const useUser = () => {
         header: { 'Content-Type': 'multipart/form-data' },
       });
 
-      // Show success toast
       toast.show({
         description: 'Cập nhật ảnh đại diện thành công',
         duration: 3000,
@@ -115,7 +111,6 @@ const useUser = () => {
         bg: 'green.500',
       });
 
-      // Refresh user data after update
       await fetchUserAndLeader();
     } catch (error) {
       setApiError('Không thể cập nhật thông tin người dùng.');

@@ -65,7 +65,7 @@ export default function ServicePackageContract() {
                 flexDirection: 'row'
               }}>
                 <LottieView
-                  source={require('@/assets/animations/success.json')} // Đường dẫn tới file animation
+                  source={require('@/assets/animations/success.json')}
                   autoPlay
                   loop
                   style={{ width: 52, height: 52 }}
@@ -157,7 +157,7 @@ export default function ServicePackageContract() {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F9F7F7' }}>
         <Lottie
-          source={require('@/assets/animations/loading.json')} // Đường dẫn tới file animation
+          source={require('@/assets/animations/loading.json')}
           autoPlay
           loop
           style={{ width: 150, height: 150 }}

@@ -1,8 +1,6 @@
-// utils/formatDate.ts
-
 export const formatDate = (date: Date | string | null | undefined): string => {
   if (!date) {
-    return "N/A"; // Trả về "N/A" nếu ngày không hợp lệ hoặc undefined/null
+    return "N/A";
   }
 
   if (typeof date === "string") {
@@ -27,7 +25,7 @@ export const formatDateToAPI = (date: string): string | null => {
   const parts = date.split("-");
   if (parts.length !== 3) return null;
   const [day, month, year] = parts;
-  return `${year}-${month}-${day}`; // Trả về định dạng yyyy-mm-dd
+  return `${year}-${month}-${day}`;
 };
 
 export const formatDateTime = (datetime: string | null | undefined): string => {

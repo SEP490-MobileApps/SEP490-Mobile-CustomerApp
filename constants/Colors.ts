@@ -18,7 +18,6 @@ export default {
   },
 };
 
-// constants/colors.ts
 
 export const COLORS = {
   pay: '#FFEB3B',

@@ -1,4 +1,3 @@
-// models/Product.ts
 export interface Product {
   productId: string;
   name: string;

@@ -1,4 +1,3 @@
-// models/ServicePackage.ts
 export interface ServicePackage {
   servicePackageId: string,
   name: string;
