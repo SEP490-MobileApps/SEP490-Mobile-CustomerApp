@@ -101,7 +101,7 @@ export default function ProfileScreen() {
           <View style={styles.avatarContainer}>
             <TouchableOpacity onPress={() => setIsImageModalOpen(true)}>
               <Image
-                source={{ uri: user?.avatarUrl || 'https://png.pngtree.com/png-clipart/20220726/original/pngtree-3d-loading-logo-png-image_8413023.png' }}
+                source={user?.avatarUrl ? { uri: `${user?.avatarUrl}&timestamp=${new Date().getTime()}` } : require('@/assets/images/no-image.png')}
                 style={styles.profileImage}
               />
             </TouchableOpacity>
@@ -159,7 +159,7 @@ export default function ProfileScreen() {
       <Modal visible={isImageModalOpen} transparent={true}>
         <View style={styles.modalContainer}>
           <Image
-            source={user?.avatarUrl ? { uri: user.avatarUrl } : require('@/assets/images/no-image.png')}
+            source={user?.avatarUrl ? { uri: `${user?.avatarUrl}&timestamp=${new Date().getTime()}` } : require('@/assets/images/no-image.png')}
             style={styles.fullSizeImage}
           />
           <TouchableOpacity style={styles.closeButton} onPress={() => setIsImageModalOpen(false)}>

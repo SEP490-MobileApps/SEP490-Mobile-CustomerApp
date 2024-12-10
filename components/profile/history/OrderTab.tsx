@@ -47,33 +47,36 @@ export default function OrderTab() {
 
   return (
     <ScrollView contentContainerStyle={styles.contentContainer} showsVerticalScrollIndicator={false}>
-      {flatOrders.map((order: Order) => (
-        <View key={order.orderId} style={styles.orderCard}>
-          <View style={styles.iconContainer}>
-            <FontAwesome name="home" size={68} color="#112D4E" />
+      {flatOrders
+        .slice()
+        .reverse()
+        .map((order: Order) => (
+          <View key={order.orderId} style={styles.orderCard}>
+            <View style={styles.iconContainer}>
+              <FontAwesome name="home" size={68} color="#112D4E" />
+            </View>
+            <Divider orientation="vertical" bg="#112D4E" thickness={2} style={styles.divider} />
+            <View style={styles.orderDetails}>
+              <Text style={styles.orderDateTitle}>
+                Đơn hàng ngày: {order.purchaseTime ? formatDate(order.purchaseTime) : "N/A"}
+              </Text>
+              <Text style={styles.orderInfo}>
+                {order.orderDetails ? order.orderDetails.length : 0} sản phẩm
+              </Text>
+              <TouchableOpacity onPress={() => Linking.openURL(order.fileUrl)}>
+                <Text style={styles.viewInvoice}>Xem chi tiết hóa đơn</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => router.push({
+                  pathname: '/OrderDetailScreen',
+                  params: { orderId: order.orderId }
+                })}
+              >
+                <Text style={styles.viewInvoice}>Xem chi tiết đơn hàng</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-          <Divider orientation="vertical" bg="#112D4E" thickness={2} style={styles.divider} />
-          <View style={styles.orderDetails}>
-            <Text style={styles.orderDateTitle}>
-              Đơn hàng ngày: {order.purchaseTime ? formatDate(order.purchaseTime) : "N/A"}
-            </Text>
-            <Text style={styles.orderInfo}>
-              {order.orderDetails ? order.orderDetails.length : 0} sản phẩm
-            </Text>
-            <TouchableOpacity onPress={() => Linking.openURL(order.fileUrl)}>
-              <Text style={styles.viewInvoice}>Xem chi tiết hóa đơn</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => router.push({
-                pathname: '/OrderDetailScreen',
-                params: { orderId: order.orderId }
-              })}
-            >
-              <Text style={styles.viewInvoice}>Xem chi tiết đơn hàng</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      ))}
+        ))}
     </ScrollView>
   );
 }

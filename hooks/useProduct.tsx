@@ -42,7 +42,6 @@ const useProducts = () => {
       if (response) {
         setShipping(response);
       } else {
-        console.warn('Không có chi tiết vận chuyển nào');
         setShipping(null);
       }
     } catch (error) {

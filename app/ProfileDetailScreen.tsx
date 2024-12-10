@@ -76,7 +76,7 @@ export default function ProfileDetailScreen() {
       <View style={styles.section}>
         <View style={styles.imageContainer}>
           <Image
-            source={{ uri: user.avatarUrl || 'https://cdn-icons-png.flaticon.com/512/219/219983.png' }}
+            source={user?.avatarUrl ? { uri: `${user?.avatarUrl}&timestamp=${new Date().getTime()}` } : require('@/assets/images/no-image.png')}
             style={styles.profileImage}
           />
         </View>

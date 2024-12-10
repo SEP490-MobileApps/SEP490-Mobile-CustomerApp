@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
-import { Divider, Modal, Actionsheet, Button } from 'native-base';
+import { Divider, Modal } from 'native-base';
 import useProduct from '@/hooks/useProduct';
 import LottieView from 'lottie-react-native';
 import NoData from '@/components/ui/NoData';
@@ -25,11 +25,12 @@ const OrderDetailScreen = () => {
   const { fetchOrderDetail, orderDetail, loading, apiError, fetchShipping, shipping } = useProduct();
   const [isWarrantyModalVisible, setWarrantyModalVisible] = useState(false);
   const [selectedWarrantyCard, setSelectedWarrantyCard] = useState<WarrantyCard | null>(null);
+  const [selectedProductIndex, setSelectedProductIndex] = useState<number | null>(null);
 
   React.useEffect(() => {
     if (orderId) {
       fetchOrderDetail(orderId as string);
-      fetchShipping(orderId as string)
+      fetchShipping(orderId as string);
     }
   }, [orderId]);
 
@@ -40,9 +41,14 @@ const OrderDetailScreen = () => {
     return Math.ceil(timeDiff / (1000 * 3600 * 24));
   };
 
-  const openWarrantyModal = (warrantyCard: WarrantyCard) => {
-    setSelectedWarrantyCard(warrantyCard);
+  const openWarrantyModal = (productIndex: number, warrantyCards: WarrantyCard[]) => {
+    setSelectedProductIndex(productIndex);
+    setSelectedWarrantyCard(warrantyCards[0]);
     setWarrantyModalVisible(true);
+  };
+
+  const handleWarrantyCardSelect = (card: WarrantyCard) => {
+    setSelectedWarrantyCard(card);
   };
 
   if (loading) {
@@ -67,9 +73,7 @@ const OrderDetailScreen = () => {
   }
 
   if (!orderDetail || !orderDetail.result || orderDetail.result.length === 0) {
-    return (
-      <NoData />
-    );
+    return <NoData />;
   }
 
   return (
@@ -116,7 +120,7 @@ const OrderDetailScreen = () => {
               Tổng giá: {item.orderDetail.totalPrice.toLocaleString()}đ
             </Text>
             <TouchableOpacity
-              onPress={() => openWarrantyModal(item.orderDetail.warrantyCards.getWarrantyCards[0])}
+              onPress={() => openWarrantyModal(index, item.orderDetail.warrantyCards.getWarrantyCards)}
               style={{
                 backgroundColor: '#3F72AF',
                 padding: 8,
@@ -158,7 +162,6 @@ const OrderDetailScreen = () => {
                       elevation: 5
                     }}
                   >
-
                     <View style={{
                       borderRadius: 15,
                       padding: 16,
@@ -200,21 +203,47 @@ const OrderDetailScreen = () => {
 
                   </LinearGradient>
                 </View>
-                <Text>Tên sản phẩm: {orderDetail.result.find(item =>
-                  item.orderDetail.warrantyCards.getWarrantyCards.includes(selectedWarrantyCard)
-                )?.product.name}</Text>
+                <Text style={{ marginTop: 10, fontWeight: 'bold' }}>Chọn thẻ bảo hành khác:</Text>
+                <View style={{ flexDirection: 'row' }}>
+                  {orderDetail.result[selectedProductIndex!]?.orderDetail.warrantyCards.getWarrantyCards.map((card, idx) => (
+                    <TouchableOpacity
+                      key={idx}
+                      onPress={() => handleWarrantyCardSelect(card)}
+                      style={{
+                        backgroundColor: selectedWarrantyCard?.warrantyCardId === card.warrantyCardId ? '#3F72AF' : '#DBE2EF',
+                        borderRadius: 10,
+                        padding: 8,
+                        marginHorizontal: 5,
+                        shadowColor: '#000',
+                        shadowOffset: { width: 0, height: 2 },
+                        shadowOpacity: 0.25,
+                        shadowRadius: 3.84,
+                        elevation: 5,
+                      }}
+                    >
+                      <Text style={{ color: selectedWarrantyCard?.warrantyCardId === card.warrantyCardId ? '#fff' : '#112D4E' }}>
+                        Thẻ {idx + 1}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+                <Divider orientation="horizontal" bg="#112D4E" thickness={1} style={{ marginVertical: 8 }} />
+                <Text>Tên sản phẩm: {orderDetail.result[selectedProductIndex!]?.product.name}</Text>
                 <Divider orientation="horizontal" bg="#112D4E" thickness={1} style={{ marginVertical: 8 }} />
                 <Text>Ngày bắt đầu: {formatDate(selectedWarrantyCard.startDate)}</Text>
                 <Divider orientation="horizontal" bg="#112D4E" thickness={1} style={{ marginVertical: 8 }} />
                 <Text>Ngày hết hạn: {formatDate(selectedWarrantyCard.expireDate)}</Text>
                 <Divider orientation="horizontal" bg="#112D4E" thickness={1} style={{ marginVertical: 8 }} />
-                <Text>Còn lại: {calculateRemainingDays(selectedWarrantyCard.expireDate)} ngày</Text>
+                <Text>Số ngày còn lại: {calculateRemainingDays(selectedWarrantyCard.expireDate)} ngày</Text>
+
+
               </>
             )}
           </Modal.Body>
         </Modal.Content>
       </Modal>
-    </ScrollView >
+
+    </ScrollView>
   );
 };
 

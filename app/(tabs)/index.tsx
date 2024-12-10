@@ -53,7 +53,7 @@ function HomeScreen(): React.JSX.Element {
           </View>
           <View style={styles.avatarContainer}>
             <Image
-              source={{ uri: user?.avatarUrl || 'https://png.pngtree.com/png-clipart/20220726/original/pngtree-3d-loading-logo-png-image_8413023.png' }}
+              source={user?.avatarUrl ? { uri: `${user?.avatarUrl}&timestamp=${new Date().getTime()}` } : require('@/assets/images/no-image.png')}
               style={styles.avatar}
             />
           </View>

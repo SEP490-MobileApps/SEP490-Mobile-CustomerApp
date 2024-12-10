@@ -4,6 +4,7 @@ import { Input, Icon } from "native-base";
 import { FontAwesome } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
 import useUser from "../hooks/useUser";
+import LottieView from "lottie-react-native";
 
 export default function LeaderDetailScreen() {
   const { leaderInfo, fetchUserAndLeader, loading } = useUser();
@@ -15,7 +16,16 @@ export default function LeaderDetailScreen() {
   );
 
   if (loading) {
-    return <Text>Đang tải dữ liệu...</Text>;
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F9F7F7' }}>
+        <LottieView
+          source={require('@/assets/animations/loading.json')}
+          autoPlay
+          loop
+          style={{ width: 150, height: 150 }}
+        />
+      </View>
+    )
   }
 
   if (!leaderInfo) {
@@ -26,7 +36,10 @@ export default function LeaderDetailScreen() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Image source={{ uri: leaderInfo.avatarUrl }} style={styles.avatar} />
+      <Image
+        source={leaderInfo?.avatarUrl ? { uri: `${leaderInfo?.avatarUrl}&timestamp=${new Date().getTime()}` } : require('@/assets/images/no-image.png')}
+        style={styles.avatar}
+      />
 
       <View style={styles.fieldContainer}>
         <Text style={styles.label}>Tên đầy đủ</Text>

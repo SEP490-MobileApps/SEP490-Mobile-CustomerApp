@@ -213,7 +213,7 @@ const useServicePackages = () => {
       });
 
       if (response) {
-        setPendingContracts(response);
+        setPendingContracts([...response].reverse());
         return response;
       }
     } catch (error) {

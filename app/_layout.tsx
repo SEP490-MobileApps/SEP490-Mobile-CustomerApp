@@ -203,6 +203,12 @@ function RootLayoutNav() {
                 headerStyle: { backgroundColor: "#3F72AF" },
                 headerTintColor: "#FFF",
                 headerTitleAlign: "center",
+                headerLeft: () => (
+                  <IconButton
+                    icon={<Ionicons name="arrow-back-outline" size={24} color="white" />}
+                    onPress={() => router.replace('/(tabs)/ProfileScreen')}
+                  />
+                ),
               }}
             />
             <Stack.Screen

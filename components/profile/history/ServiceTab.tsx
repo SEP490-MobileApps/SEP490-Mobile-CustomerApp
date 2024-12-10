@@ -46,27 +46,30 @@ const ServiceTab: React.FC = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
-      {contracts.map(contract => (
-        <Box key={contract.contractId} style={styles.cardContainer}>
-          <View style={styles.row}>
-            <Image source={{ uri: contract.imageUrl }} style={styles.image} />
-            <Divider bg="#3F72AF" thickness="2" mx="3" orientation="vertical" />
-            <View style={styles.contentContainer}>
-              <Text style={styles.name}>{contract.name}</Text>
-              <Text style={styles.price}>Giá: {FormatPriceToVnd(contract.priceByDate)}</Text>
-              <Text style={styles.purchaseTime}>
-                Ngày đăng ký: {formatDate(contract.purchaseTime)}
-              </Text>
-              <TouchableOpacity
-                onPress={() => Linking.openURL(contract.fileUrl)}
-                style={styles.button}
-              >
-                <Text style={styles.buttonText}>Xem hợp đồng</Text>
-              </TouchableOpacity>
+      {contracts
+        .slice()
+        .reverse()
+        .map(contract => (
+          <Box key={contract.contractId} style={styles.cardContainer}>
+            <View style={styles.row}>
+              <Image source={{ uri: contract.imageUrl }} style={styles.image} />
+              <Divider bg="#3F72AF" thickness="2" mx="3" orientation="vertical" />
+              <View style={styles.contentContainer}>
+                <Text style={styles.name}>{contract.name}</Text>
+                <Text style={styles.price}>Giá: {FormatPriceToVnd(contract.priceByDate)}</Text>
+                <Text style={styles.purchaseTime}>
+                  Ngày đăng ký: {formatDate(contract.purchaseTime)}
+                </Text>
+                <TouchableOpacity
+                  onPress={() => Linking.openURL(contract.fileUrl)}
+                  style={styles.button}
+                >
+                  <Text style={styles.buttonText}>Xem hợp đồng</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-        </Box>
-      ))}
+          </Box>
+        ))}
     </ScrollView>
   );
 };
