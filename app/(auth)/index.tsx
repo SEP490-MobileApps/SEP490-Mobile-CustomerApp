@@ -14,12 +14,12 @@ export default function LoginScreen() {
   const { handleLogin } = useAuth();
   const { loadingLogin, setLoadingLogin } = useGlobalState();
   const toast = useToast();
-  const { control, handleSubmit, formState: { errors } } = useForm({
+  const { control, handleSubmit, formState: { errors }, clearErrors } = useForm({
     defaultValues: {
       emailOrPhone: "",
       password: "",
     },
-    mode: "onBlur",
+    mode: "onChange", // Thay đổi từ "onBlur" sang "onChange"
   });
 
   const onSubmit = async (data: { emailOrPhone: string; password: string }) => {
@@ -73,7 +73,23 @@ export default function LoginScreen() {
     }
   };
 
+  const validateEmailOrPhone = (value: string) => {
+    // Loại bỏ khoảng trắng thừa
+    value = value.trim();
 
+    // Kiểm tra email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    const phoneRegex = /^[0-9]{10}$/;
+
+    if (!value) return "Email hoặc SĐT không được để trống";
+
+    if (emailRegex.test(value) || phoneRegex.test(value)) {
+      return true;
+    }
+
+    return "Vui lòng nhập email hoặc số điện thoại hợp lệ (SĐT 10 số)";
+  };
   return (
     <View style={styles.container}>
       <Image source={require('@/assets/images/logo.png')} style={styles.logo} />
@@ -84,18 +100,20 @@ export default function LoginScreen() {
         name="emailOrPhone"
         control={control}
         rules={{
-          required: "Email hoặc SĐT không được để trống",
-          pattern: {
-            value: /^\S+@\S+$/i,
-            message: "Địa chỉ email không hợp lệ",
-          },
+          validate: validateEmailOrPhone
         }}
         render={({ field: { onChange, value } }) => (
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
               placeholder="Địa chỉ Email/Số điện thoại"
-              onChangeText={onChange}
+              onChangeText={(text) => {
+                onChange(text);
+                // Xóa lỗi khi người dùng đang nhập
+                if (errors.emailOrPhone) {
+                  clearErrors("emailOrPhone");
+                }
+              }}
               value={value}
               placeholderTextColor="#B0B3B8"
             />

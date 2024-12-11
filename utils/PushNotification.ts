@@ -1,17 +1,21 @@
 import Constants from "expo-constants";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
+import * as SecureStore from "expo-secure-store";
 import { Platform } from "react-native";
 import { initializeApp } from "firebase/app";
 import {
   addDoc,
+  arrayUnion,
   collection,
+  doc,
   Firestore,
   getDocs,
   getFirestore,
   limit,
   orderBy,
   query,
+  setDoc,
   where,
 } from "firebase/firestore";
 import { CUSTOMER_TO_LEADER_COLLECTION, FIREBASE_CONFIG } from "@/constants/FirebaseConfig";
@@ -114,11 +118,46 @@ export async function sendPushNotificationOrder(expoPushToken: string, orderId: 
   });
 }
 
+export const saveNotificationToFirestore = async (notification: any, leaderId: string) => {
+
+  const db = InitializeFirestoreDb();
+
+  console.log("Saving notification to Firestore: 11", notification);
+
+  if (!leaderId) {
+    console.error("Leader ID is missing. Notification cannot be saved. 11");
+    return;
+  }
+
+  try {
+    const docRef = doc(db, "UserNotificationCollection", leaderId);
+
+    await setDoc(
+      docRef,
+      {
+        notifications: arrayUnion({
+          title: notification.title,
+          body: notification.body,
+          data: notification.data || {},
+          timestamp: new Date().toString(),
+          read: false,
+        }),
+      },
+      { merge: true }
+    );
+
+    console.log("Notification saved successfully! 11");
+  } catch (error) {
+    console.error("Error saving notification: 11", error);
+  }
+};
+
 export function InitializeFirestoreDb(): Firestore {
   const app = initializeApp(FIREBASE_CONFIG);
   const db = getFirestore(app);
   return db;
 }
+
 
 // export async function AddPushNotificationRecord(
 //   db: Firestore,

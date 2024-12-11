@@ -4,7 +4,7 @@ import { useLocalSearchParams, router, useNavigation } from 'expo-router';
 import LottieView from 'lottie-react-native';
 import useServicePackages from '../hooks/useServicePackage';
 import { useToast } from 'native-base';
-import { GetLatestPushNotificationRecordByLeaderId, InitializeFirestoreDb, sendPushNotification } from '@/utils/PushNotification';
+import { GetLatestPushNotificationRecordByLeaderId, InitializeFirestoreDb, saveNotificationToFirestore, sendPushNotification } from '@/utils/PushNotification';
 import { useFocusEffect } from '@react-navigation/native';
 import useUser from '@/hooks/useUser';
 import { Leader } from '@/models/LeaderInfo';
@@ -29,38 +29,58 @@ export default function ServicePackageSuccess() {
 
   const db = InitializeFirestoreDb();
 
-  const sendPushNotificationToLeader = async ({ leaderInfo, user }: { leaderInfo: Leader, user: User }) => {
+  // const sendPushNotificationToLeader = async ({ leaderInfo, user }: { leaderInfo: Leader, user: User }) => {
+  //   try {
+  //     // Lấy bản ghi push notification mới nhất từ Firestore
+  //     const result = await GetLatestPushNotificationRecordByLeaderId(
+  //       db,
+  //       leaderInfo.accountId
+  //     );
+
+  //     console.log('result', result)
+
+  //     if (result && result.exponentPushToken) {
+  //       const expoPushToken = result.exponentPushToken;
+
+  //       const fullName = user.fullName;
+
+  //       await sendPushNotification(expoPushToken, contractId as string, fullName);
+
+  //       console.log('Push notification sent successfully!');
+  //     } else {
+  //       console.error('Không tìm thấy expoPushToken trong bản ghi Firestore.');
+  //     }
+  //   } catch (error) {
+  //     console.error('Lỗi khi gửi push notification:', error);
+  //   }
+  // };
+
+  const savePushNotificationToLeader = async ({ leaderInfo, user }: { leaderInfo: Leader, user: User }) => {
+
+    const fullName = user.fullName;
+
     try {
-      // Lấy bản ghi push notification mới nhất từ Firestore
-      const result = await GetLatestPushNotificationRecordByLeaderId(
-        db,
+      await saveNotificationToFirestore(
+        {
+          title: 'Có hợp đồng chờ kí',
+          body: `Có hợp đồng mới chờ kí từ ${fullName}`,
+          data: { contractId },
+        },
         leaderInfo.accountId
-      );
+      )
 
-      console.log('result', result)
-
-      if (result && result.exponentPushToken) {
-        const expoPushToken = result.exponentPushToken;
-
-        const fullName = user.fullName;
-
-        await sendPushNotification(expoPushToken, contractId as string, fullName);
-
-        console.log('Push notification sent successfully!');
-      } else {
-        console.error('Không tìm thấy expoPushToken trong bản ghi Firestore.');
-      }
+      console.log('Push notification sent successfully!');
     } catch (error) {
       console.error('Lỗi khi gửi push notification:', error);
     }
-  };
+  }
 
   useEffect(() => {
     if (servicePackageId && orderCode && contractId) {
       console.log('log 1', servicePackageId)
       if (leaderInfo && user) {
         console.log('log 2', leaderInfo, user)
-        sendPushNotificationToLeader({ leaderInfo, user });
+        savePushNotificationToLeader({ leaderInfo, user });
       }
     }
   }, [servicePackageId, orderCode, contractId, leaderInfo, user])
@@ -94,12 +114,6 @@ export default function ServicePackageSuccess() {
         servicePackageId: servicePackageId as string,
         orderCode: parseInt(orderCode as string, 10),
         contractId: contractId as string,
-      });
-
-      toast.show({
-        description: 'Thanh toán thành công!',
-        placement: 'top',
-        duration: 6000,
       });
 
       setTimeout(navigateToHistory, 6000);
