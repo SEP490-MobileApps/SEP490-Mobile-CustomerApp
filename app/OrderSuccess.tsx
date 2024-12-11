@@ -71,7 +71,7 @@ export default function OrderSuccess() {
   }
 
   useEffect(() => {
-    if (orderCode && id1 && customerNote) {
+    if (orderCode && id1) {
       console.log('log orderCode', orderCode)
       console.log('log id1', id1)
       console.log('log customerNote', customerNote)
@@ -90,8 +90,9 @@ export default function OrderSuccess() {
 
     if (isCanceled === undefined) {
       console.log('cancel', isCanceled)
-      if (orderCode && id1 && customerNote) {
+      if (orderCode && id1) {
         console.log('thông tin:', orderCode, id1)
+        console.log('cusnote order success', customerNote)
         handleFinalizeOrder();
       } else {
         toast.show({

@@ -21,6 +21,7 @@ export default function ProfileDetailScreen() {
   const [birthDate, setBirthDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const router = useRouter();
 
   useFocusEffect(
     useCallback(() => {
@@ -37,9 +38,17 @@ export default function ProfileDetailScreen() {
     }
   }, [user]);
 
+  console.log('isEdit', isEdit)
+  console.log('isEditing', isEditing)
+
   useEffect(() => {
     setIsEditing(isEdit === "true");
   }, [isEdit]);
+
+  const handleCancel = () => {
+    router.setParams({ isEdit: "false" });
+    setIsEditing(false);
+  };
 
   const handleSave = () => {
     setShowConfirmModal(true);
@@ -162,7 +171,7 @@ export default function ProfileDetailScreen() {
           <HStack justifyContent="space-between" mt={4}>
             <Button
               style={{ backgroundColor: "#d9534f" }}
-              onPress={() => setIsEditing(false)}
+              onPress={handleCancel}
               flex={1}
               mr={2}
             >

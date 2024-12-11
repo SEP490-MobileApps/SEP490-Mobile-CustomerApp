@@ -24,6 +24,7 @@ export default function CartScreen() {
       if (result.type === 'link') {
         Linking.openURL(result.data);
       }
+      console.log('gg cus note', customerNote)
       setCustomerNote('');
     } catch (error) {
       Toast.show({
