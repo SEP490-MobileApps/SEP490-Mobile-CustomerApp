@@ -13,6 +13,8 @@ interface ShippingActionSheetProps {
       status?: number;
       shipmentDate: string;
       deliveriedDate: string | null;
+      proofFileUrl: string;
+
     };
     workerInfo: {
       avatarUrl: string;
@@ -163,7 +165,10 @@ const ShippingActionSheet: React.FC<ShippingActionSheetProps> = ({
   };
 
   const renderAnimationSection = () => {
-    let animationSource, primaryText, secondaryText, tertiaryText;
+
+    const [showProofImage, setShowProofImage] = useState(false);
+
+    let animationSource, primaryText, secondaryText, tertiaryText, proofFileUrl;
 
     switch (shipping?.shippingOrder.status) {
       case 0:
@@ -205,6 +210,8 @@ const ShippingActionSheet: React.FC<ShippingActionSheetProps> = ({
         tertiaryText = `Ngày nhận: ${formattedDeliveryDate} (${formattedDeliveryTime})`;
         break;
 
+        const proofFileUrl = shipping?.shippingOrder.proofFileUrl;
+
       case 4:
         animationSource = require('@/assets/images/ship-delayed.png');
         primaryText = "Đơn hàng đã bị hoãn";
@@ -243,7 +250,38 @@ const ShippingActionSheet: React.FC<ShippingActionSheetProps> = ({
             {secondaryText}
           </Text>
         )}
+        {shipping?.shippingOrder.status === 3 && shipping.shippingOrder.proofFileUrl && (
+          <VStack alignItems="center" space={2} mt={4}>
+            <TouchableOpacity
+              onPress={() => setShowProofImage(!showProofImage)}
+              style={{
+                backgroundColor: '#3F72AF',
+                paddingHorizontal: 16,
+                paddingVertical: 10,
+                borderRadius: 10,
+                marginTop: 10
+              }}
+            >
+              <Text style={{
+                color: 'white',
+                fontWeight: 'bold'
+              }}>
+                {showProofImage ? 'Ẩn ảnh giao hàng' : 'Xem ảnh giao hàng'}
+              </Text>
+            </TouchableOpacity>
 
+            {showProofImage && (
+              <Image
+                source={{ uri: shipping.shippingOrder.proofFileUrl }}
+                alt="Proof of Delivery"
+                size={250}
+                borderRadius={15}
+                resizeMode="cover"
+                mt={4}
+              />
+            )}
+          </VStack>
+        )}
       </VStack>
     );
   };
