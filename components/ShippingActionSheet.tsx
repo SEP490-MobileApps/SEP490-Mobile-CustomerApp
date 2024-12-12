@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, Linking } from 'react-native';
 import { Actionsheet, HStack, VStack, Image, Icon } from 'native-base';
 import { Ionicons, FontAwesome5, MaterialCommunityIcons, Entypo, Foundation } from '@expo/vector-icons';
 import LinearGradient from 'react-native-linear-gradient';
+import { Modal } from 'native-base';
 
 
 interface ShippingActionSheetProps {
@@ -32,6 +33,7 @@ const ShippingActionSheet: React.FC<ShippingActionSheetProps> = ({
   onRefresh
 }) => {
   const [progressStates, setProgressStates] = useState([false, false, false, false]);
+  const [showProofImageModal, setShowProofImageModal] = useState(false);
 
   useEffect(() => {
     const newProgressStates = [false, false, false, false];
@@ -168,6 +170,7 @@ const ShippingActionSheet: React.FC<ShippingActionSheetProps> = ({
 
     const [showProofImage, setShowProofImage] = useState(false);
 
+
     let animationSource, primaryText, secondaryText, tertiaryText, proofFileUrl;
 
     switch (shipping?.shippingOrder.status) {
@@ -251,9 +254,9 @@ const ShippingActionSheet: React.FC<ShippingActionSheetProps> = ({
           </Text>
         )}
         {shipping?.shippingOrder.status === 3 && shipping.shippingOrder.proofFileUrl && (
-          <VStack alignItems="center" space={2} mt={4}>
+          <>
             <TouchableOpacity
-              onPress={() => setShowProofImage(!showProofImage)}
+              onPress={() => setShowProofImageModal(true)}
               style={{
                 backgroundColor: '#3F72AF',
                 paddingHorizontal: 16,
@@ -266,21 +269,29 @@ const ShippingActionSheet: React.FC<ShippingActionSheetProps> = ({
                 color: 'white',
                 fontWeight: 'bold'
               }}>
-                {showProofImage ? 'Ẩn ảnh giao hàng' : 'Xem ảnh giao hàng'}
+                Xem ảnh giao hàng
               </Text>
             </TouchableOpacity>
 
-            {showProofImage && (
-              <Image
-                source={{ uri: shipping.shippingOrder.proofFileUrl }}
-                alt="Proof of Delivery"
-                size={250}
-                borderRadius={15}
-                resizeMode="cover"
-                mt={4}
-              />
-            )}
-          </VStack>
+            <Modal
+              isOpen={showProofImageModal}
+              onClose={() => setShowProofImageModal(false)}
+              size="full"
+            >
+              <Modal.Content style={{ width: '90%' }}>
+                <Modal.CloseButton />
+                <Modal.Header style={{ backgroundColor: '#3F72AF', alignItems: 'center' }}>Ảnh giao hàng</Modal.Header>
+                <Modal.Body style={{ backgroundColor: '#DBE2EF' }}>
+                  <Image
+                    source={{ uri: shipping.shippingOrder.proofFileUrl }}
+                    alt="Proof of Delivery"
+                    width="100%"
+                    height={300}
+                  />
+                </Modal.Body>
+              </Modal.Content>
+            </Modal>
+          </>
         )}
       </VStack>
     );

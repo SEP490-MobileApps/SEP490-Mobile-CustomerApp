@@ -146,9 +146,9 @@ export default function LoginScreen() {
       />
 
       <View style={styles.row}>
-        <Checkbox value="rememberMe" accessibilityLabel="Ghi nhớ đăng nhập">
+        {/* <Checkbox value="rememberMe" accessibilityLabel="Ghi nhớ đăng nhập">
           Ghi nhớ đăng nhập
-        </Checkbox>
+        </Checkbox> */}
         <TouchableOpacity onPress={() => router.push("/(auth)/ForgotPasswordScreen")}>
           <Text style={styles.forgotPassword}>Quên mật khẩu?</Text>
         </TouchableOpacity>
