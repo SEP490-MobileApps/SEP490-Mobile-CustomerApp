@@ -311,10 +311,11 @@ const useProducts = () => {
     }
   }, [fetchData]);
 
-  const handleOrderPayment = useCallback(async (customerNote: string) => {
+  const handleOrderPayment = useCallback(async (customerNote: string, address: string) => {
     try {
       const formData = new FormData();
       formData.append('customerNote', customerNote);
+      formData.append('address', address);
       const paymentLink = await fetchData({
         url: '/order/4',
         method: 'POST',
@@ -335,12 +336,13 @@ const useProducts = () => {
   }, [fetchData]);
 
   const finalizeOrder = useCallback(
-    async ({ orderCode, id1, customerNote }: { orderCode: number; id1: string, customerNote: string }) => {
+    async ({ orderCode, id1, customerNote, address }: { orderCode: number; id1: string, customerNote: string, address: string }) => {
       try {
         const formData = new FormData();
         formData.append('orderCode', orderCode.toString());
         formData.append('id1', id1);
         formData.append('customerNote', customerNote);
+        formData.append('address', address);
 
         const response = await fetchData({
           url: '/order/5',

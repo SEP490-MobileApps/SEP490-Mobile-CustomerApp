@@ -15,7 +15,7 @@ export const unstable_settings = {
 };
 
 export default function OrderSuccess() {
-  const { orderCode, id1, isCanceled, customerNote } = useLocalSearchParams();
+  const { orderCode, id1, isCanceled, customerNote, address } = useLocalSearchParams();
   const { finalizeOrder } = useProducts();
   const { fetchUserAndLeader, leaderInfo } = useUser();
   const toast = useToast();
@@ -75,12 +75,13 @@ export default function OrderSuccess() {
       console.log('log orderCode', orderCode)
       console.log('log id1', id1)
       console.log('log customerNote', customerNote)
+      console.log('log address', address)
       if (leaderInfo) {
         console.log('log 2', leaderInfo)
         savePushNotificationToLeader({ leaderInfo });
       }
     }
-  }, [orderCode, leaderInfo, id1, customerNote])
+  }, [orderCode, leaderInfo, id1, customerNote, address])
 
   useEffect(() => {
 
@@ -93,6 +94,7 @@ export default function OrderSuccess() {
       if (orderCode && id1) {
         console.log('thông tin:', orderCode, id1)
         console.log('cusnote order success', customerNote)
+        console.log('address order success', address)
         handleFinalizeOrder();
       } else {
         toast.show({
@@ -113,6 +115,7 @@ export default function OrderSuccess() {
         orderCode: parseInt(orderCode as string, 10),
         id1: id1 as string,
         customerNote: customerNote as string,
+        address: address as string
       });
 
       navigateToHistory();

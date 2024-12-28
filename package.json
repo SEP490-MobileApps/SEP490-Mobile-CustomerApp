@@ -36,6 +36,7 @@
     "firebase": "11.0.2",
     "jwt-decode": "4.0.0",
     "lottie-react-native": "6.7.0",
+    "lucide-react-native": "0.469.0",
     "native-base": "3.4.28",
     "patch-package": "8.0.0",
     "react": "18.2.0",

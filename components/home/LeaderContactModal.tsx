@@ -34,7 +34,7 @@ const LeaderContactModal: React.FC<LeaderContactModalProps> = ({
       <Modal.Content style={styles.modalContent}>
         {/* Modal Title */}
         <Modal.Header style={styles.modalHeader}>
-          <Text style={styles.headerText}>Yêu cầu sửa chữa</Text>
+          <Text style={styles.headerText}>Thông tin trưởng nhóm</Text>
         </Modal.Header>
 
         <Modal.Body style={styles.modalBody}>

@@ -2,7 +2,9 @@ import { useCallback, useState } from 'react';
 import useRequestAxios from '../utils/useRequestAxios';
 import { RepairRequest } from '../models/RepairRequest';
 import { Feedback } from '../models/Feedback';
-import { useToast } from 'native-base';
+import { Box, useToast } from 'native-base';
+import { Text, View } from 'react-native';
+import LottieView from 'lottie-react-native';
 
 const useRequest = () => {
   const { fetchData } = useRequestAxios();
@@ -14,6 +16,74 @@ const useRequest = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [apiError, setApiError] = useState<string | null>(null);
   const toast = useToast();
+
+  const createRequest = useCallback(async (customerId: string, roomId: string, customerProblem: string, categoryRequest: number) => {
+    setLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append('customerId', customerId);
+      formData.append('roomId', roomId);
+      formData.append('customerProblem', customerProblem);
+      formData.append('categoryRequest', categoryRequest.toString());
+
+      await fetchData({
+        url: '/request/29',
+        method: 'POST',
+        data: formData,
+        header: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      toast.show({
+        duration: 1600,
+        placement: 'top',
+        render: () => {
+          return <Box
+            borderTopColor='#16a34a'
+            borderTopWidth={5} bg="#bbf7d0"
+            alignSelf='center'
+            px="2"
+            py="1"
+            rounded="sm"
+            mb={5}
+            style={{ flexDirection: 'column', width: '98%', justifyContent: 'center' }}
+          >
+            <View style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: '#bbf7d0',
+              marginHorizontal: 30,
+              flexDirection: 'row'
+            }}>
+              <LottieView
+                source={require('@/assets/animations/success.json')}
+                autoPlay
+                loop
+                style={{ width: 52, height: 52 }}
+              />
+              <Text
+                style={{
+                  fontSize: 18,
+                  color: '#112D4E',
+                  textAlign: 'center',
+                  fontWeight: 'bold'
+                }}>
+                Gởi yêu cầu thành công
+              </Text>
+            </View>
+          </Box>;
+        }
+      });
+    } catch (error) {
+      setApiError('Không thể tạo yêu cầu.');
+      toast.show({
+        description: 'Không thể tạo yêu cầu',
+        duration: 3000,
+        bg: 'red.500',
+      });
+    } finally {
+      setLoading(false);
+    }
+  }, [fetchData, toast]);
 
   const fetchRecentRequests = useCallback(async (quantity: number = 3) => {
     setLoading(true);
@@ -119,7 +189,7 @@ const useRequest = () => {
     [fetchData]
   );
 
-  return { requests, feedbacks, fetchRecentRequests, fetchFeedbacks, loading, apiError, currentPage, totalPages, setCurrentPage, allRequests, fetchAllRequests, submitFeedback };
+  return { requests, feedbacks, fetchRecentRequests, fetchFeedbacks, loading, apiError, currentPage, totalPages, setCurrentPage, allRequests, fetchAllRequests, submitFeedback, createRequest };
 };
 
 export default useRequest;

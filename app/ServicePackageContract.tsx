@@ -177,6 +177,7 @@ export default function ServicePackageContract() {
         <Text style={styles.text}>{draftContract.side_A.apartmentName}</Text>
         <Text style={styles.text}>{draftContract.side_A.address}</Text>
         <Text style={styles.text}>{draftContract.side_A.phoneNumber}</Text>
+        <Text style={styles.text}>{draftContract.side_A.email}</Text>
         <Text style={styles.text}>{draftContract.side_A.role}</Text>
       </View>
 
@@ -184,7 +185,10 @@ export default function ServicePackageContract() {
         <Text style={styles.text}>{draftContract.side_B.b}</Text>
         <Text style={styles.text}>{draftContract.side_B.userName}</Text>
         <Text style={styles.text}>{draftContract.side_B.apartmentName}</Text>
+        <Text style={styles.text}>{draftContract.side_B.address}</Text>
+        <Text style={styles.text}>{draftContract.side_B.roomIds}</Text>
         <Text style={styles.text}>{draftContract.side_B.phoneNumber}</Text>
+        <Text style={styles.text}>{draftContract.side_B.email}</Text>
         <Text style={styles.text}>{draftContract.side_B.role}</Text>
       </View>
 
