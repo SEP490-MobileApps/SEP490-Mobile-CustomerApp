@@ -17,8 +17,6 @@ const CompletedRequestAccordion: React.FC<Props> = ({ request }) => {
   const [isFeedbackModalOpen, setFeedbackModalOpen] = useState(false);
   const [rating, setRating] = useState<number>(0);
   const [content, setContent] = useState<string>('');
-  const [showPreRepairModal, setShowPreRepairModal] = useState(false);
-  const [showPostRepairModal, setShowPostRepairModal] = useState(false);
 
 
   const feedbacks = request.feedback?.filter((feedback) => feedback.status) || [];
@@ -91,7 +89,7 @@ const CompletedRequestAccordion: React.FC<Props> = ({ request }) => {
           <View style={styles.divider} />
           <View style={styles.row}>
             <Text>Bằng Chứng Trước Sửa Chữa:</Text>
-            <Pressable onPress={() => setShowPreRepairModal(true)}>
+            <Pressable onPress={() => Linking.openURL(request.preRepairEvidenceUrl)}>
               <Text style={styles.link}>Chi tiết</Text>
             </Pressable>
           </View>
@@ -102,7 +100,7 @@ const CompletedRequestAccordion: React.FC<Props> = ({ request }) => {
           <View style={styles.divider} />
           <View style={styles.row}>
             <Text>Nghiệm Thu Sau Sửa Chữa:</Text>
-            <Pressable onPress={() => setShowPostRepairModal(true)}>
+            <Pressable onPress={() => Linking.openURL(request.postRepairEvidenceUrl)}>
               <Text style={styles.link}>Chi tiết</Text>
             </Pressable>
           </View>
@@ -228,50 +226,6 @@ const CompletedRequestAccordion: React.FC<Props> = ({ request }) => {
           </Modal.Body>
         </Modal.Content>
       </Modal>
-
-      <Modal
-        isOpen={showPreRepairModal}
-        onClose={() => setShowPreRepairModal(false)}
-        size="full"
-      >
-        <Modal.Content style={{ width: '90%' }}>
-          <Modal.CloseButton />
-          <Modal.Header style={{ backgroundColor: '#3F72AF', alignItems: 'center' }}>
-            Ảnh Bằng Chứng Trước Sửa Chữa
-          </Modal.Header>
-          <Modal.Body style={{ backgroundColor: '#DBE2EF' }}>
-            <Image
-              source={{ uri: request.preRepairEvidenceUrl }}
-              alt="Pre Repair Evidence"
-              width="100%"
-              height={300}
-            />
-          </Modal.Body>
-        </Modal.Content>
-      </Modal>
-
-      <Modal
-        isOpen={showPostRepairModal}
-        onClose={() => setShowPostRepairModal(false)}
-        size="full"
-      >
-        <Modal.Content style={{ width: '90%' }}>
-          <Modal.CloseButton />
-          <Modal.Header style={{ backgroundColor: '#3F72AF', alignItems: 'center' }}>
-            Ảnh Nghiệm Thu Sau Sửa Chữa
-          </Modal.Header>
-          <Modal.Body style={{ backgroundColor: '#DBE2EF' }}>
-            <Image
-              source={{ uri: request.postRepairEvidenceUrl }}
-              alt="Post Repair Evidence"
-              width="100%"
-              height={300}
-            />
-          </Modal.Body>
-        </Modal.Content>
-      </Modal>
-
-
     </View>
   );
 };

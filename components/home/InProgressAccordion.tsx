@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Linking } from 'react-native';
-import { Badge, Pressable, Modal, Button, Image } from 'native-base';
+import { Badge, Pressable, Modal, Button } from 'native-base';
 import { RepairRequest } from '../../models/RepairRequest';
 import { COLORS } from '../../constants/Colors';
 import { formatDate } from '../../utils/formatDate';
@@ -11,7 +11,6 @@ interface Props {
 
 const InProgressAccordion: React.FC<Props> = ({ request }) => {
   const [isModalOpen, setModalOpen] = useState(false);
-  const [showPreRepairModal, setShowPreRepairModal] = useState(false);
 
   return (
     <View style={styles.container}>
@@ -39,13 +38,17 @@ const InProgressAccordion: React.FC<Props> = ({ request }) => {
         </Badge>
       </View>
 
-      <View style={styles.divider} />
-      <View style={styles.row}>
-        <Text>Bằng Chứng Trước Sửa Chữa:</Text>
-        <Pressable onPress={() => setShowPreRepairModal(true)}>
-          <Text style={styles.link}>Chi tiết</Text>
-        </Pressable>
-      </View>
+      {request.preRepairEvidenceUrl && (
+        <>
+          <View style={styles.divider} />
+          <View style={styles.row}>
+            <Text>Bằng Chứng Trước Sửa Chữa:</Text>
+            <Pressable onPress={() => Linking.openURL(request.preRepairEvidenceUrl)}>
+              <Text style={styles.link}>Chi tiết</Text>
+            </Pressable>
+          </View>
+        </>
+      )}
 
       {request.fileUrl && (
         <>
@@ -68,27 +71,6 @@ const InProgressAccordion: React.FC<Props> = ({ request }) => {
           </Modal.Header>
           <Modal.Body style={styles.modalBody}>
             <Text>{request.customerProblem}</Text>
-          </Modal.Body>
-        </Modal.Content>
-      </Modal>
-
-      <Modal
-        isOpen={showPreRepairModal}
-        onClose={() => setShowPreRepairModal(false)}
-        size="full"
-      >
-        <Modal.Content style={{ width: '90%' }}>
-          <Modal.CloseButton />
-          <Modal.Header style={{ backgroundColor: '#3F72AF', alignItems: 'center' }}>
-            Ảnh Bằng Chứng Trước Sửa Chữa
-          </Modal.Header>
-          <Modal.Body style={{ backgroundColor: '#DBE2EF' }}>
-            <Image
-              source={{ uri: request.preRepairEvidenceUrl }}
-              alt="Pre Repair Evidence"
-              width="100%"
-              height={300}
-            />
           </Modal.Body>
         </Modal.Content>
       </Modal>

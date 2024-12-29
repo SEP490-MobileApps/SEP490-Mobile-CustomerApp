@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Text, View, StyleSheet, ScrollView, Image, Alert } from 'react-native';
-import { Icon, useToast } from 'native-base';
+import { Icon, Spinner, useToast } from 'native-base';
 import { FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import RecentRepairs from '@/components/home/RecentRepairs';
 import CustomerReviews from '@/components/home/CustomerReviews';
@@ -21,7 +21,6 @@ import Animated, {
   withSpring,
   useSharedValue
 } from 'react-native-reanimated';
-import LinearGradient from 'react-native-linear-gradient';
 
 function HomeScreen(): React.JSX.Element {
   const { user, leaderInfo, fetchUserAndLeader } = useUser();
@@ -35,6 +34,7 @@ function HomeScreen(): React.JSX.Element {
   const [selectedRoom, setSelectedRoom] = useState('');
   const [requestType, setRequestType] = useState('warranty');
   const [description, setDescription] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const menuAnimation = useSharedValue(0);
 
@@ -102,22 +102,26 @@ function HomeScreen(): React.JSX.Element {
       return;
     }
 
+    setIsSubmitting(true);
     const categoryRequestValue = requestType === 'warranty' ? '0' : '1';
 
     try {
-      await createRequest(
-        user!.accountId,
-        selectedRoom,
-        description,
-        parseInt(categoryRequestValue)
-      );
-
+      if (user) {
+        await createRequest(
+          user.accountId,
+          selectedRoom,
+          description,
+          parseInt(categoryRequestValue)
+        );
+      }
       setCreateRequestOpen(false);
       setSelectedRoom('');
       setRequestType('warranty');
       setDescription('');
     } catch (error) {
       console.error('Error creating request:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -302,8 +306,9 @@ function HomeScreen(): React.JSX.Element {
           <Modal.Footer>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
               <Button
-                bg="#d9534f"
-                _text={{ color: '#F9F7F7' }}
+                style={{ borderWidth: 1, borderColor: '#3F72AF' }}
+                bg="#F9F7F7"
+                _text={{ color: '#3F72AF' }}
                 width="48%"
                 onPress={() => {
                   setSelectedRoom('');
@@ -319,8 +324,9 @@ function HomeScreen(): React.JSX.Element {
                 _text={{ color: '#F9F7F7' }}
                 width="48%"
                 onPress={handleConfirmPress}
+                isDisabled={isSubmitting}
               >
-                Xác nhận
+                {isSubmitting ? <Spinner color="white" /> : "Xác nhận"}
               </Button>
             </View>
           </Modal.Footer>

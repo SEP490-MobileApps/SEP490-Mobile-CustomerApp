@@ -17,6 +17,6 @@ export interface RepairRequest {
   orderCode?: number;
   isOnlinePayment: boolean;
   feedback?: Feedback[];
-  preRepairEvidenceUrl?: string;
-  postRepairEvidenceUrl?: string;
+  preRepairEvidenceUrl: string;
+  postRepairEvidenceUrl: string;
 }
