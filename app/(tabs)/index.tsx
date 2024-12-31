@@ -21,6 +21,7 @@ import Animated, {
   withSpring,
   useSharedValue
 } from 'react-native-reanimated';
+import { saveNotificationToFirestore } from '@/utils/PushNotification';
 
 function HomeScreen(): React.JSX.Element {
   const { user, leaderInfo, fetchUserAndLeader } = useUser();
@@ -28,7 +29,6 @@ function HomeScreen(): React.JSX.Element {
   const { contracts, fetchCustomerContracts, loading: contractLoading } = useServicePackages();
   const [isModalOpen, setModalOpen] = useState(false);
   const { userInfo } = useGlobalState();
-  const toast = useToast();
   const [isCreateRequestOpen, setCreateRequestOpen] = useState(false);
   const [showFloatMenu, setShowFloatMenu] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState('');
@@ -37,7 +37,6 @@ function HomeScreen(): React.JSX.Element {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const menuAnimation = useSharedValue(0);
-
 
   useFocusEffect(
     React.useCallback(() => {
@@ -107,17 +106,34 @@ function HomeScreen(): React.JSX.Element {
 
     try {
       if (user) {
-        await createRequest(
+        const response = await createRequest(
           user.accountId,
           selectedRoom,
           description,
           parseInt(categoryRequestValue)
         );
+
+        if (response && leaderInfo) {
+          try {
+            await saveNotificationToFirestore(
+              {
+                title: 'Có một yêu cầu mới từ khách hàng',
+                body: `${description}`,
+                data: { requestId: response },
+              },
+              leaderInfo.accountId
+            );
+            console.log('Push notification request sent successfully!');
+          } catch (error) {
+            console.error('Lỗi khi gửi push notification request', error);
+          }
+        }
+
+        setCreateRequestOpen(false);
+        setSelectedRoom('');
+        setRequestType('warranty');
+        setDescription('');
       }
-      setCreateRequestOpen(false);
-      setSelectedRoom('');
-      setRequestType('warranty');
-      setDescription('');
     } catch (error) {
       console.error('Error creating request:', error);
     } finally {

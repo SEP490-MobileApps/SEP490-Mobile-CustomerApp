@@ -4,7 +4,7 @@ import { useLocalSearchParams, router, useNavigation } from 'expo-router';
 import LottieView from 'lottie-react-native';
 import useProducts from '@/hooks/useProduct';
 import { useToast } from 'native-base';
-import { GetLatestPushNotificationRecordByLeaderId, InitializeFirestoreDb, saveNotificationToFirestore, sendPushNotificationOrder } from '@/utils/PushNotification';
+import { saveNotificationToFirestore } from '@/utils/PushNotification';
 import { Leader } from '@/models/LeaderInfo';
 import { useFocusEffect } from '@react-navigation/native';
 import useUser from '@/hooks/useUser';
@@ -26,31 +26,6 @@ export default function OrderSuccess() {
       fetchUserAndLeader();
     }, [])
   );
-
-  const db = InitializeFirestoreDb();
-
-  // const sendPushNotificationToLeader = async ({ leaderInfo }: { leaderInfo: Leader }) => {
-  //   try {
-  //     const result = await GetLatestPushNotificationRecordByLeaderId(
-  //       db,
-  //       leaderInfo.accountId
-  //     );
-
-  //     console.log('result', result)
-
-  //     if (result && result.exponentPushToken) {
-  //       const expoPushToken = result.exponentPushToken;
-
-  //       await sendPushNotificationOrder(expoPushToken, id1 as string, customerNote as string | null);
-
-  //       console.log('Push notification sent successfully!');
-  //     } else {
-  //       console.error('Không tìm thấy expoPushToken trong bản ghi Firestore.');
-  //     }
-  //   } catch (error) {
-  //     console.error('Lỗi khi gửi push notification:', error);
-  //   }
-  // };
 
   const savePushNotificationToLeader = async ({ leaderInfo }: { leaderInfo: Leader }) => {
 

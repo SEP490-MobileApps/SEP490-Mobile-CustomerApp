@@ -19,6 +19,7 @@ const useRequest = () => {
 
   const createRequest = useCallback(async (customerId: string, roomId: string, customerProblem: string, categoryRequest: number) => {
     setLoading(true);
+    setApiError(null);
     try {
       const formData = new FormData();
       formData.append('customerId', customerId);
@@ -26,7 +27,7 @@ const useRequest = () => {
       formData.append('customerProblem', customerProblem);
       formData.append('categoryRequest', categoryRequest.toString());
 
-      await fetchData({
+      const response = await fetchData({
         url: '/request/29',
         method: 'POST',
         data: formData,
@@ -73,6 +74,9 @@ const useRequest = () => {
           </Box>;
         }
       });
+
+      return response;
+
     } catch (error) {
       setApiError('Không thể tạo yêu cầu.');
       toast.show({
