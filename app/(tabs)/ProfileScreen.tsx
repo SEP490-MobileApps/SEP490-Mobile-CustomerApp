@@ -138,7 +138,7 @@ export default function ProfileScreen() {
 
           <TouchableOpacity style={styles.optionContainer} onPress={() => router.push("/LeaderDetailScreen")}>
             <Fontisto name="person" size={24} color="#112D4E" />
-            <Text style={styles.optionText}>Coi thông tin Leader</Text>
+            <Text style={styles.optionText}>Coi thông tin trưởng nhóm</Text>
             <MaterialIcons name="navigate-next" size={24} color="#112D4E" />
           </TouchableOpacity>
 

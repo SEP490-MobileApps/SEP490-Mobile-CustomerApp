@@ -166,7 +166,7 @@ function RootLayoutNav() {
             <Stack.Screen
               name="LeaderDetailScreen"
               options={{
-                title: "Chi tiết Leader",
+                title: "Chi tiết trưởng nhóm",
                 headerStyle: { backgroundColor: "#3F72AF" },
                 headerTintColor: "#FFF",
                 headerTitleAlign: "center",

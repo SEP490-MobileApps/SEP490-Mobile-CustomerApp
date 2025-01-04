@@ -172,7 +172,7 @@ export default function ServicePackageContract() {
       <Text style={styles.date}>{draftContract.date}</Text>
 
       <View style={styles.section}>
-        <Text style={styles.text}>{draftContract.side_A.a}</Text>
+        <Text style={styles.text1}>{draftContract.side_A.a}</Text>
         <Text style={styles.text}>{draftContract.side_A.businessName}</Text>
         <Text style={styles.text}>{draftContract.side_A.apartmentName}</Text>
         <Text style={styles.text}>{draftContract.side_A.address}</Text>
@@ -182,7 +182,7 @@ export default function ServicePackageContract() {
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.text}>{draftContract.side_B.b}</Text>
+        <Text style={styles.text1}>{draftContract.side_B.b}</Text>
         <Text style={styles.text}>{draftContract.side_B.userName}</Text>
         <Text style={styles.text}>{draftContract.side_B.apartmentName}</Text>
         <Text style={styles.text}>{draftContract.side_B.address}</Text>
@@ -193,7 +193,7 @@ export default function ServicePackageContract() {
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.text}>{draftContract.clause1.title1}</Text>
+        <Text style={styles.text1}>{draftContract.clause1.title1}</Text>
         <Text style={styles.text}>{`Dịch vụ: ${draftContract.clause1.name}`}</Text>
         <Text style={styles.text}>{`Số lượng yêu cầu: ${draftContract.clause1.numOfRequest}`}</Text>
         <Text style={styles.text}>{`Giá theo ngày: ${draftContract.clause1.priceByDate}`}</Text>
@@ -201,27 +201,27 @@ export default function ServicePackageContract() {
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.text}>{draftContract.clause2.title2}</Text>
+        <Text style={styles.text1}>{draftContract.clause2.title2}</Text>
         <Text style={styles.text}>{draftContract.clause2.policy}</Text>
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.text}>{draftContract.clause3.title3}</Text>
+        <Text style={styles.text1}>{draftContract.clause3.title3}</Text>
         <Text style={styles.text}>{draftContract.clause3.rule}</Text>
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.text}>{draftContract.clause4.title4}</Text>
+        <Text style={styles.text1}>{draftContract.clause4.title4}</Text>
         <Text style={styles.text}>{draftContract.clause4.generalTerms}</Text>
       </View>
 
       <View style={styles.section1}>
         <View >
-          <Text style={styles.text}>{draftContract.signature_A.a}</Text>
+          <Text style={styles.text1}>{draftContract.signature_A.a}</Text>
           <Text style={styles.text}>{draftContract.signature_A.sign}</Text>
         </View>
         <View >
-          <Text style={styles.text}>{draftContract.signature_B.b}</Text>
+          <Text style={styles.text1}>{draftContract.signature_B.b}</Text>
           <Text style={styles.text}>{draftContract.signature_B.sign}</Text>
         </View>
       </View>
@@ -277,6 +277,14 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     color: '#333',
     textAlign: 'justify',
+  },
+  text1: {
+    fontSize: 16,
+    lineHeight: 24,
+    color: '#333',
+    textAlign: 'justify',
+    fontWeight: 'bold',
+    marginBottom: 8
   },
   registerButton: {
     backgroundColor: '#3F72AF',

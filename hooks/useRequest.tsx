@@ -68,7 +68,7 @@ const useRequest = () => {
                   textAlign: 'center',
                   fontWeight: 'bold'
                 }}>
-                Gởi yêu cầu thành công
+                Gửi yêu cầu thành công
               </Text>
             </View>
           </Box>;
