@@ -117,8 +117,8 @@ function HomeScreen(): React.JSX.Element {
           try {
             await saveNotificationToFirestore(
               {
-                title: 'Có một yêu cầu mới từ khách hàng',
-                body: `${description}`,
+                title: 'Nhận  một yêu cầu mới từ khách hàng',
+                body: `Yêu cầu từ số căn hộ ${selectedRoom}`,
                 data: { requestId: response },
               },
               leaderInfo.accountId
