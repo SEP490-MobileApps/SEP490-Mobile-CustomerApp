@@ -137,6 +137,7 @@ function HomeScreen(): React.JSX.Element {
     } catch (error) {
       console.error('Error creating request:', error);
     } finally {
+      fetchRecentRequests(3);
       setIsSubmitting(false);
     }
   };
