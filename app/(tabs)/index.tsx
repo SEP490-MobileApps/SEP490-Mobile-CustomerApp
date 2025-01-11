@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Text, View, StyleSheet, ScrollView, Image, Alert } from 'react-native';
-import { Icon, Spinner, useToast } from 'native-base';
+import { Icon, Spinner, ChevronRightIcon } from 'native-base';
 import { FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import RecentRepairs from '@/components/home/RecentRepairs';
 import CustomerReviews from '@/components/home/CustomerReviews';
@@ -35,6 +35,7 @@ function HomeScreen(): React.JSX.Element {
   const [requestType, setRequestType] = useState('warranty');
   const [description, setDescription] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showGuideModal, setShowGuideModal] = useState(false);
 
   const menuAnimation = useSharedValue(0);
 
@@ -253,6 +254,64 @@ function HomeScreen(): React.JSX.Element {
         />
       )}
 
+      <Modal isOpen={showGuideModal} onClose={() => setShowGuideModal(false)} size="lg">
+        <Modal.Content>
+          <Modal.Header bg="#3F72AF">
+            <Text style={{ fontWeight: 'bold', color: '#F9F7F7', textAlign: 'center', width: '100%', fontSize: 18 }}>
+              Hướng dẫn tạo yêu cầu
+            </Text>
+          </Modal.Header>
+          <Modal.Body bg="#DBE2EF" p={4}>
+            <ScrollView>
+              <Text style={{ fontStyle: 'italic', marginBottom: 10 }}>
+                Vui lòng mô tả chi tiết vấn đề bạn gặp phải. Một mô tả tốt nên bao gồm:
+              </Text>
+
+              <View style={{ marginLeft: 10, gap: 12 }}>
+                <View>
+                  <Text style={{ fontWeight: 'bold' }}>1. Vấn đề cụ thể:</Text>
+                  <Text>Điều gì đang xảy ra? (Ví dụ: Nước chảy yếu, đèn không sáng)</Text>
+                </View>
+
+                <View>
+                  <Text style={{ fontWeight: 'bold' }}>2. Vị trí xảy ra sự cố:</Text>
+                  <Text>Sự cố xảy ra ở đâu? (Ví dụ: Vòi nước phòng bếp, công tắc đèn phòng ngủ)</Text>
+                </View>
+
+                <View>
+                  <Text style={{ fontWeight: 'bold' }}>3. Thời gian bắt đầu sự cố:</Text>
+                  <Text>Khi nào vấn đề bắt đầu? (Ví dụ: Từ sáng nay, đã xảy ra 3 ngày)</Text>
+                </View>
+
+                <View>
+                  <Text style={{ fontWeight: 'bold' }}>4. Hiện tượng bạn quan sát thấy:</Text>
+                  <Text>Bạn nhận thấy gì bất thường? (Ví dụ: Có tiếng rò rỉ, đèn nhấp nháy)</Text>
+                </View>
+
+                <View>
+                  <Text style={{ fontWeight: 'bold' }}>5. Bất kỳ thông tin nào khác có thể hữu ích:</Text>
+                  <Text>(Ví dụ: Bạn đã thử khắc phục gì chưa?)</Text>
+                </View>
+              </View>
+
+              <Text style={{ fontStyle: 'italic', marginTop: 16 }}>
+                Ví dụ: "Vòi nước trong phòng bếp không chảy nước kể từ sáng nay. Tôi nghe tiếng rò rỉ từ đường ống dưới bồn rửa."
+              </Text>
+            </ScrollView>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              bg="#3F72AF"
+              _text={{ color: '#F9F7F7' }}
+              onPress={() => setShowGuideModal(false)}
+              width="100%"
+            >
+              Đã hiểu
+            </Button>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
+
       <Modal isOpen={isCreateRequestOpen} onClose={() => setCreateRequestOpen(false)} size="lg" closeOnOverlayClick={false}>
         <Modal.Content>
           <Modal.Header bg="#3F72AF">
@@ -262,12 +321,39 @@ function HomeScreen(): React.JSX.Element {
           </Modal.Header>
           <Modal.Body bg="#DBE2EF" p={4}>
             <View style={{ gap: 16 }}>
-              <View style={styles.warningContainer}>
-                <Icon as={MaterialIcons} name="warning" size="md" color="#f0ad4e" />
-                <Text style={styles.warningText}>
-                  Vui lòng bổ sung đầy đủ thông tin căn hộ, mô tả yêu cầu cho yêu cầu sửa chữa.
+              <Button
+                onPress={() => setShowGuideModal(true)}
+                variant="subtle"
+                bg="#fcf8e3"
+                _pressed={{ bg: '#faf2cc' }}
+                leftIcon={<Icon as={MaterialIcons} name="warning" size="md" color="#f0ad4e" />}
+                rightIcon={<ChevronRightIcon size="sm" color="#8a6d3b" />}
+                py={2}  // Giảm padding dọc
+                px={3}  // Giảm padding ngang
+                alignItems="center"
+                style={{
+                  elevation: 3,  // Shadow cho Android
+                  shadowColor: '#000',  // Shadow cho iOS
+                  shadowOffset: {
+                    width: 0,
+                    height: 2,
+                  },
+                  shadowOpacity: 0.25,
+                  shadowRadius: 3.84,
+                  alignSelf: 'flex-start',  // Cho button chỉ rộng bằng nội dung
+                  borderRadius: 8,  // Bo góc cho đẹp
+                  flexDirection: 'row',  // Đảm bảo các thành phần nằm ngang
+                  justifyContent: 'space-between', // Icon warning bên trái, mũi tên bên phải
+                }}
+              >
+                <Text style={{
+                  color: '#8a6d3b',
+                  fontSize: 14,
+                  marginHorizontal: 8  // Khoảng cách giữa text và icons
+                }}>
+                  Lưu ý khi tạo yêu cầu
                 </Text>
-              </View>
+              </Button>
 
               <View>
                 <Text style={{ fontSize: 16, fontWeight: '500', marginBottom: 16 }}>Căn hộ yêu cầu:</Text>
@@ -313,7 +399,6 @@ function HomeScreen(): React.JSX.Element {
                   value={description}
                   onChangeText={setDescription}
                   placeholder="Nhập mô tả yêu cầu"
-                  maxLength={200}
                   autoCompleteType={undefined}
                   h="100"
                 />
@@ -411,19 +496,6 @@ const styles = StyleSheet.create({
     borderRadius: 34,
     borderColor: "#3F72AF",
     borderWidth: 3,
-  },
-  warningContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fcf8e3',
-    padding: 15,
-    borderRadius: 8,
-    gap: 16,
-  },
-  warningText: {
-    color: '#8a6d3b',
-    flex: 1,
-    fontSize: 14,
   },
 });
 
