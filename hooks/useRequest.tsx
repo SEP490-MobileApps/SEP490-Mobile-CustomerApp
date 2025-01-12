@@ -182,8 +182,15 @@ const useRequest = () => {
         });
 
         if (response) {
-          setAllRequests(response.map((item: any) => item.get));
+          const sortedRequests = response
+            .map((item: any) => item.get)
+            .sort((a: any, b: any) => {
+              return new Date(b.start).getTime() - new Date(a.start).getTime();
+            });
+
+          setAllRequests(sortedRequests);
         }
+
       } catch (error: any) {
         setApiError('Không thể tải dữ liệu yêu cầu.');
       } finally {
