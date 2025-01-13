@@ -32,7 +32,7 @@ const CanceledRequestAccordion: React.FC<Props> = ({ request }) => {
             <Text style={{ color: '#f9f7f7', fontWeight: 'bold', fontSize: 18 }}>Chi tiết lý do hủy </Text>
           </Modal.Header>
           <Modal.Body style={styles.modalBody}>
-            <Text>{request.customerProblem}</Text>
+            <Text>{request.conclusion}</Text>
           </Modal.Body>
         </Modal.Content>
       </Modal>
