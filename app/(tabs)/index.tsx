@@ -324,36 +324,39 @@ function HomeScreen(): React.JSX.Element {
               <Button
                 onPress={() => setShowGuideModal(true)}
                 variant="subtle"
-                bg="#fcf8e3"
-                _pressed={{ bg: '#faf2cc' }}
-                leftIcon={<Icon as={MaterialIcons} name="warning" size="md" color="#f0ad4e" />}
-                rightIcon={<ChevronRightIcon size="sm" color="#8a6d3b" />}
-                py={2}  // Giảm padding dọc
-                px={3}  // Giảm padding ngang
+                bg="#e3f2fd" // Màu xanh nhạt
+                _pressed={{ bg: '#bbdefb' }} // Màu xanh đậm hơn khi nhấn
+                leftIcon={<Icon as={MaterialIcons} name="help-outline" size="md" color="#2196f3" />} // Icon trợ giúp
+                rightIcon={<ChevronRightIcon size="sm" color="#1565c0" />} // Chevron icon màu xanh đậm
+                py={2}
+                px={3}
                 alignItems="center"
                 style={{
-                  elevation: 3,  // Shadow cho Android
-                  shadowColor: '#000',  // Shadow cho iOS
+                  elevation: 3,
+                  shadowColor: '#000',
                   shadowOffset: {
                     width: 0,
                     height: 2,
                   },
                   shadowOpacity: 0.25,
                   shadowRadius: 3.84,
-                  alignSelf: 'flex-start',  // Cho button chỉ rộng bằng nội dung
-                  borderRadius: 8,  // Bo góc cho đẹp
-                  flexDirection: 'row',  // Đảm bảo các thành phần nằm ngang
-                  justifyContent: 'space-between', // Icon warning bên trái, mũi tên bên phải
+                  alignSelf: 'flex-start',
+                  borderRadius: 8,
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
                 }}
               >
-                <Text style={{
-                  color: '#8a6d3b',
-                  fontSize: 14,
-                  marginHorizontal: 8  // Khoảng cách giữa text và icons
-                }}>
-                  Lưu ý khi tạo yêu cầu
+                <Text
+                  style={{
+                    color: '#1565c0', // Màu xanh đậm cho text
+                    fontSize: 14,
+                    marginHorizontal: 8,
+                  }}
+                >
+                  Hướng dẫn tạo yêu cầu
                 </Text>
               </Button>
+
 
               <View>
                 <Text style={{ fontSize: 16, fontWeight: '500', marginBottom: 16 }}>Căn hộ yêu cầu:</Text>
